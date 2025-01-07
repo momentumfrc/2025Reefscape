@@ -170,8 +170,11 @@ out/
 
 # Simulation GUI and other tools window save file
 networktables.json
+networktables.json.bck
+simgui-ds.json
 simgui.json
 *-window.json
+pid_constants.ini
 
 # Simulation data log directory
 logs/
