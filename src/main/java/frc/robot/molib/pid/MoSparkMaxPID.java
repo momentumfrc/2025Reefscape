@@ -12,6 +12,7 @@ import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
 import frc.robot.molib.encoder.MoEncoder;
 import frc.robot.utils.MoUtils;
+import java.util.function.Consumer;
 
 public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
     protected final Type type;
@@ -82,6 +83,12 @@ public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>
     public void setIZone(double iZone) {
         SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
         config.closedLoop.iZone(iZone, pidSlot);
+        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
+    public void setConfigOption(Consumer<SparkBaseConfig> op) {
+        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
+        op.accept(config);
         motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
