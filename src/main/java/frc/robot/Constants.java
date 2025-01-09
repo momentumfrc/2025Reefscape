@@ -15,6 +15,8 @@ public class Constants {
     public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
     public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
 
+    public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(0);
+
     public static Path DATA_STORE_FILE;
 
     static {
@@ -31,6 +33,13 @@ public class Constants {
      * adding "CAN_ADDR" to the constant's name.
      */
     public static record CANAddress(int address) {}
+
+    /**
+     * A wrapper class holding a single integer value representing a HID Port. The point of this
+     * class is to indicate that the wrapped value is a HID Port in a more robust way than just
+     * adding "PORT" to the constant's name.
+     */
+    public static record HIDPort(int hidport) {}
 
     private Constants() {
         throw new UnsupportedOperationException("Constants is a static class");
