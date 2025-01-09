@@ -4,16 +4,21 @@
 
 package frc.robot;
 
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
+import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
+    private AHRS gyro = new AHRS(NavXComType.kMXP_UART);
 
     private DriveSubsystem drive = new DriveSubsystem();
+    private PositioningSubsystem positioning = new PositioningSubsystem(gyro);
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 

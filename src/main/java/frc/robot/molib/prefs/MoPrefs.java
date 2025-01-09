@@ -36,6 +36,11 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
+    /**
+     * The yaw offset between "forward" on the robot and "angle zero" on the gyro
+     */
+    public static final AngleUnitPref navxYawOffset = rotationsPref("NavX Yaw Offset", Units.Rotations.zero());
+
     public static final LinearVelocityUnitPref swerveMaxLinearSpeed =
             metersPerSecPref("SWRV Max Linear Speed", Units.MetersPerSecond.of(5));
     public static final AngularVelocityUnitPref swerveMaxAngularSpeed =
