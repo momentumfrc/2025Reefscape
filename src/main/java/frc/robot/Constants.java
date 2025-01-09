@@ -5,6 +5,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Constants {
+
+    public static final CANAddress SWERVE_TURN_LEFT_FRONT = new CANAddress(11);
+    public static final CANAddress SWERVE_TURN_LEFT_REAR = new CANAddress(13);
+    public static final CANAddress SWERVE_TURN_RIGHT_FRONT = new CANAddress(5);
+    public static final CANAddress SWERVE_TURN_RIGHT_REAR = new CANAddress(12);
+    public static final CANAddress SWERVE_DRIVE_LEFT_FRONT = new CANAddress(2);
+    public static final CANAddress SWERVE_DRIVE_LEFT_REAR = new CANAddress(3);
+    public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
+    public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
+
     public static Path DATA_STORE_FILE;
 
     static {
@@ -14,6 +24,13 @@ public class Constants {
             DATA_STORE_FILE = Paths.get("./pid_constants.ini");
         }
     }
+
+    /**
+     * A wrapper class holding a single integer value representing a CAN Address. The point of this
+     * class is to indicate that the wrapped value is a CAN Address in a more robust way than just
+     * adding "CAN_ADDR" to the constant's name.
+     */
+    public static record CANAddress(int address) {}
 
     private Constants() {
         throw new UnsupportedOperationException("Constants is a static class");
