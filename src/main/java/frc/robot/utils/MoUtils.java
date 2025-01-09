@@ -19,6 +19,14 @@ public class MoUtils {
         }
     }
 
+    public static double curve(double val, double curve) {
+        if (curve == 0) {
+            return val;
+        }
+
+        return Math.signum(val) * Math.pow(Math.abs(val), curve);
+    }
+
     private MoUtils() {
         throw new UnsupportedOperationException("MoUtils is a static class");
     }

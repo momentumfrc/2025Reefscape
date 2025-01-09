@@ -27,6 +27,10 @@ import java.util.Set;
 /** Robot preferences, accessible through Shuffleboard */
 public class MoPrefs {
 
+    public static final Pref<Double> inputDeadzone = unitlessDoublePref("Input Deadzone", 0.05);
+    public static final Pref<Double> inputCurve = unitlessDoublePref("Input Curve", 1.5);
+    public static final Pref<Double> driveRampTime = unitlessDoublePref("Input Ramp Time", 0.1);
+
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> swerveRotScale =
             encoderTicksPerRotationPref("SWRV ROT Scale", MoUnits.EncoderTicksPerRotation.ofNative(12.8));
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> swerveDistScale =

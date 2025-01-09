@@ -9,6 +9,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.command.TeleopDriveCommand;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
@@ -20,12 +21,16 @@ public class RobotContainer {
     private DriveSubsystem drive = new DriveSubsystem();
     private PositioningSubsystem positioning = new PositioningSubsystem(gyro);
 
+    private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
+
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
     public RobotContainer() {
         configureBindings();
 
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
+
+        drive.setDefaultCommand(driveCommand);
     }
 
     private void configureBindings() {}
