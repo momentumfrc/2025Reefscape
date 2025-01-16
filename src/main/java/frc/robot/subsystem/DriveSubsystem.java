@@ -1,6 +1,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -162,6 +163,16 @@ public class DriveSubsystem extends SubsystemBase {
                 mutFwdRequest, mutLeftRequest, mutTurnRequest, fieldOrientedDriveAngle);
 
         driveRobotRelativeSpeeds(speeds);
+    }
+
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        // TODO
+        return null;
+    }
+
+    public void driveRobotRelativeSpeeds(ChassisSpeeds chassisSpeeds, DriveFeedforwards driveFeedforwards) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds speeds) {
