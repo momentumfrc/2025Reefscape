@@ -25,4 +25,24 @@ public class ControllerInput implements MoInput {
     public boolean getReZeroGyro() {
         return controller.getBackButtonPressed();
     }
+
+    @Override
+    public boolean getIntakeIn() {
+        return controller.getAButtonPressed();
+    }
+
+    @Override
+    public boolean getIntakeShoot() {
+        return controller.getBButtonPressed();
+    }
+
+    @Override
+    public boolean getIntakeAlgae() {
+        return controller.getXButtonPressed();
+    }
+
+    @Override
+    public boolean getIntakeOut() {
+        return controller.getYButtonPressed();
+    }
 }
