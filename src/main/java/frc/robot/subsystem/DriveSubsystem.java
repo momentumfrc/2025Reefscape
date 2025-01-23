@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -123,6 +124,12 @@ public class DriveSubsystem extends SubsystemBase {
 
             board.driveTab.add(this);
         });
+    }
+
+    public SwerveModulePosition[] getWheelPositions() {
+        return new SwerveModulePosition[] {
+            frontLeft.getPosition(), frontRight.getPosition(), rearLeft.getPosition(), rearRight.getPosition()
+        };
     }
 
     private void forEachSwerveModule(Consumer<SwerveModule> forBody) {
