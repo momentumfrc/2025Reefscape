@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.prefs.MoPrefs;
@@ -41,6 +43,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void stopMotors() {
         roller.set(ControlMode.PercentOutput, 0);
         wrist.set(0);
+    }
+
+    private MutCurrent wristCurrent = Units.Amps.mutable(0);
+    public Current getWristCurrent() {
+        double current = wrist.getOutputCurrent();
+        wristCurrent.mut_replace(current, Units.Amps);
+        return wristCurrent;
     }
 
     /*public void intakeAlgae() {

@@ -5,13 +5,20 @@ import frc.robot.input.MoInput;
 import frc.robot.subsystem.IntakeSubsystem;
 import java.util.function.Supplier;
 
-public class TeleopIntakeCommand extends Command {
-    private final IntakeSubsystem intake;
-    private final Supplier<MoInput> inputSupplier;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 
-    public TeleopIntakeCommand(IntakeSubsystem intake, Supplier<MoInput> inputSupplier) {
+public class TeleopIntakeCommand extends Command {
+    public enum Direction {
+        SHOOT,
+        INTAKE
+    };
+
+    private final IntakeSubsystem intake;
+    private final Direction direction;
+
+    public TeleopIntakeCommand(IntakeSubsystem intake, Direction direction) {
         this.intake = intake;
-        this.inputSupplier = inputSupplier;
+        this.direction = direction;
 
         addRequirements(intake);
     }
@@ -35,6 +42,10 @@ public class TeleopIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        intake.rollerShoot();
+        if(direction == Direction.SHOOT) {
+            intake.rollerShoot();
+        } else {
+            intake.rollerIntake();
+        }
     }
 }

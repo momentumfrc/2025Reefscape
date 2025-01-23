@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.TeleopIntakeCommand;
 import frc.robot.command.TeleopShootCommand;
-import frc.robot.command.TeleopWristInCommand;
+import frc.robot.command.MoveGroundWristCommand;
 import frc.robot.command.TeleopWristOutCommand;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
@@ -33,7 +33,7 @@ public class RobotContainer {
     private final TeleopIntakeCommand intakeCommand = new TeleopIntakeCommand(intake, this::getInput);
     private final TeleopShootCommand shootCommand = new TeleopShootCommand(intake, this::getInput);
     private final TeleopWristOutCommand wristOutCommand = new TeleopWristOutCommand(intake, this::getInput);
-    private final TeleopWristInCommand wristInCommand = new TeleopWristInCommand(intake, this::getInput);
+    private final MoveGroundWristCommand wristInCommand = new MoveGroundWristCommand(intake, this::getInput);
     private final Trigger intakeDeployTrigger;
     private final Trigger intakRetractTrigger;
     private final Trigger intakeAlgaeTrigger;

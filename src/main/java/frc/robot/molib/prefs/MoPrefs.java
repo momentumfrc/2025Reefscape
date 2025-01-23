@@ -43,7 +43,10 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
-    public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
+    public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(8));
+
+    public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold = ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
+    public static final UnitPref<TimeUnit> intakeWristCurrentTime = secondsPref("Intake Wrist Time", Units.Seconds.one());
 
     // private final MutableMeasure<U> currValue;
 
