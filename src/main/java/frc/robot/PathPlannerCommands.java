@@ -4,12 +4,10 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -18,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
+import java.util.Optional;
 
 public class PathPlannerCommands {
     public static Command getFollowPathCommand(
@@ -38,25 +36,26 @@ public class PathPlannerCommands {
         double driveBaseRadius = DriveSubsystem.SWERVE_WHEEL_OFFSET.in(Units.Meters) * Math.sqrt(2);
 
         // TODO: figure this out
-        RobotConfig config = null;
+        PathFollowingController controller = drive.getDriveController();
+        RobotConfig config = Constants.pathPlannerRobotConfig;
 
         FollowPathCommand driveControllerCommand = new FollowPathCommand(
                 path,
                 positioning::getRobotPose,
                 drive::getRobotRelativeSpeeds,
                 drive::driveRobotRelativeSpeeds,
+                controller,
                 config,
                 () -> false, // Do not allow PathPlanner to flip the path, we already did manually
                 drive);
 
-        if (shouldAssumeRobotIsAtStart) {
+        if (shouldAssumeRobotIsAtStart && startPose.isPresent()) {
             return new SequentialCommandGroup(
-                    new InstantCommand(() -> positioning.setRobotPose(startPose)), driveControllerCommand);
+                    new InstantCommand(() -> positioning.setRobotPose(startPose.get())), driveControllerCommand);
         } else {
             return driveControllerCommand;
         }
     }
-
 
     public static Command getFollowPathCommand(
             DriveSubsystem drive,
@@ -64,9 +63,9 @@ public class PathPlannerCommands {
             String pathName,
             boolean shouldAssumeRobotIsAtStart) {
         try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
             return getFollowPathCommand(drive, positioning, path, shouldAssumeRobotIsAtStart);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
             return Commands.print("Failed to load autonomous path!");
         }

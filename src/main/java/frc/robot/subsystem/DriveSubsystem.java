@@ -1,6 +1,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -22,6 +23,8 @@ import frc.robot.Constants;
 import frc.robot.component.SwerveModule;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
+import frc.robot.utils.MutablePIDConstants;
+import frc.robot.utils.TunerUtils;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -53,6 +56,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final Timer resetEncoderTimer = new Timer();
 
     public final SwerveDriveKinematics kinematics;
+
+    private final MutablePIDConstants translationPIDConstants = new MutablePIDConstants();
+    private final MutablePIDConstants rotationPIDConstants = new MutablePIDConstants();
 
     public DriveSubsystem() {
         super("Drive");
@@ -124,6 +130,9 @@ public class DriveSubsystem extends SubsystemBase {
 
             board.driveTab.add(this);
         });
+
+        TunerUtils.forPathPlanner(translationPIDConstants, "PP trans PID");
+        TunerUtils.forPathPlanner(rotationPIDConstants, "PP rot PID");
     }
 
     public SwerveModulePosition[] getWheelPositions() {
@@ -184,6 +193,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds speeds) {
         driveSwerveStates(kinematics.toSwerveModuleStates(speeds));
+    }
+
+    public PPHolonomicDriveController getDriveController() {
+        return new PPHolonomicDriveController(
+                translationPIDConstants.toImmutable(), rotationPIDConstants.toImmutable());
     }
 
     public void driveSwerveStates(SwerveModuleState[] states) {
