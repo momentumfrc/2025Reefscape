@@ -11,15 +11,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
-import frc.robot.input.ControllerInput;
-import frc.robot.input.MoInput;
-import frc.robot.subsystem.DriveSubsystem;
-import frc.robot.subsystem.PositioningSubsystem;
-import frc.robot.subsystem.IntakeSubsystem;
 import frc.robot.command.TeleopIntakeCommand;
 import frc.robot.command.TeleopShootCommand;
 import frc.robot.command.TeleopWristInCommand;
 import frc.robot.command.TeleopWristOutCommand;
+import frc.robot.input.ControllerInput;
+import frc.robot.input.MoInput;
+import frc.robot.subsystem.DriveSubsystem;
+import frc.robot.subsystem.IntakeSubsystem;
+import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -41,24 +41,24 @@ public class RobotContainer {
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
-        public RobotContainer() {
-            configureBindings();
+    public RobotContainer() {
+        configureBindings();
 
-            inputChooser.setDefaultOption("Single F310", new ControllerInput());
+        inputChooser.setDefaultOption("Single F310", new ControllerInput());
 
-            drive.setDefaultCommand(driveCommand);
+        drive.setDefaultCommand(driveCommand);
 
-            intakeDeployTrigger = new Trigger(() -> getInput().getIntakeOut());
-            intakRetractTrigger = new Trigger(() -> getInput().getIntakeIn());
-            intakeAlgaeTrigger = new Trigger(() -> getInput().getIntakeAlgae());
-            intakeShootTrigger = new Trigger(() -> getInput().getIntakeShoot());
-        }
+        intakeDeployTrigger = new Trigger(() -> getInput().getIntakeOut());
+        intakRetractTrigger = new Trigger(() -> getInput().getIntakeIn());
+        intakeAlgaeTrigger = new Trigger(() -> getInput().getIntakeAlgae());
+        intakeShootTrigger = new Trigger(() -> getInput().getIntakeShoot());
+    }
 
-        private void configureBindings() {
-            intakeDeployTrigger.whileTrue(wristOutCommand);
-            intakRetractTrigger.whileTrue(wristInCommand);
-            intakeAlgaeTrigger.whileTrue(intakeCommand);
-            intakeShootTrigger.whileTrue(shootCommand);
+    private void configureBindings() {
+        intakeDeployTrigger.whileTrue(wristOutCommand);
+        intakRetractTrigger.whileTrue(wristInCommand);
+        intakeAlgaeTrigger.whileTrue(intakeCommand);
+        intakeShootTrigger.whileTrue(shootCommand);
     }
 
     private MoInput getInput() {

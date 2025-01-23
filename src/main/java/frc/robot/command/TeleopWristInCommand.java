@@ -1,13 +1,12 @@
 package frc.robot.command;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.IntakeSubsystem;
+import java.util.function.Supplier;
 
-public class TeleopWristInCommand extends Command{
- private final IntakeSubsystem intake;
+public class TeleopWristInCommand extends Command {
+    private final IntakeSubsystem intake;
     private final Supplier<MoInput> inputSupplier;
 
     public TeleopWristInCommand(IntakeSubsystem intake, Supplier<MoInput> inputSupplier) {
@@ -18,9 +17,7 @@ public class TeleopWristInCommand extends Command{
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {

@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
-//import edu.wpi.first.units.MutableMeasure;
+// import edu.wpi.first.units.MutableMeasure;
 
 /** Robot preferences, accessible through Shuffleboard */
 public class MoPrefs {
@@ -45,7 +45,7 @@ public class MoPrefs {
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
 
-    //private final MutableMeasure<U> currValue;
+    // private final MutableMeasure<U> currValue;
 
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro

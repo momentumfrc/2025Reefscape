@@ -1,12 +1,11 @@
 package frc.robot.command;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.IntakeSubsystem;
 import java.util.function.Supplier;
 
-public class TeleopIntakeCommand extends Command{
+public class TeleopIntakeCommand extends Command {
     private final IntakeSubsystem intake;
     private final Supplier<MoInput> inputSupplier;
 
@@ -18,9 +17,7 @@ public class TeleopIntakeCommand extends Command{
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() {}
 
     /*private void runIntake(boolean runIntake, boolean runIntakeReverse) {
         if (runIntake) {
@@ -35,7 +32,6 @@ public class TeleopIntakeCommand extends Command{
         }
 
     }*/
-
 
     @Override
     public void execute() {
