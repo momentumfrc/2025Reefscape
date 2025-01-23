@@ -33,7 +33,7 @@ public class RobotContainer {
         drive.setDefaultCommand(driveCommand);
     }
 
-    public Command getAutonomousDriveCommand() {
+    public Command getAutonomousCommand() {
         // Load the path you want to follow using its name in the GUI
         return PathPlannerCommands.getFollowPathCommand(drive, positioning, "Example Path", false);
     }
@@ -44,7 +44,4 @@ public class RobotContainer {
         return inputChooser.getSelected();
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
-    }
 }
