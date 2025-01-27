@@ -16,7 +16,7 @@ import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
-    private AHRS gyro = new AHRS(NavXComType.kMXP_UART);
+    private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
     private DriveSubsystem drive = new DriveSubsystem();
     private PositioningSubsystem positioning = new PositioningSubsystem(gyro, drive);
