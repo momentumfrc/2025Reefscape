@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.component.LimelightHelpers;
+import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
-import frc.robot.utils.MoShuffleboard;
 // import java.util.EnumMap;
 import java.util.Map;
 
