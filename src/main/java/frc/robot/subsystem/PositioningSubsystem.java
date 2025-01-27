@@ -1,14 +1,11 @@
 package frc.robot.subsystem;
 
 import com.studica.frc.AHRS;
-// import edu.wpi.first.apriltag.AprilTagFieldLayout;
-// import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
-// import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -17,15 +14,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.component.LimelightHelpers;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
-// import java.util.EnumMap;
 import java.util.Map;
 
 public class PositioningSubsystem extends SubsystemBase {
     private Pose2d robotPose = new Pose2d();
 
     private Field2d field = MoShuffleboard.getInstance().field;
-
-    // private EnumMap<DriverStation.Alliance, Pose2d> speakerPoses = new EnumMap<>(DriverStation.Alliance.class);
 
     private GenericEntry didEstablishInitialPosition = MoShuffleboard.getInstance()
             .driveTab
@@ -65,10 +59,6 @@ public class PositioningSubsystem extends SubsystemBase {
                 drive.kinematics, gyro.getRotation2d(), drive.getWheelPositions(), new Pose2d());
 
         resetFieldOrientedFwd();
-
-        // AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-        // speakerPoses.put(DriverStation.Alliance.Blue, layout.getTagPose(7).get().toPose2d());
-        // speakerPoses.put(DriverStation.Alliance.Red, layout.getTagPose(4).get().toPose2d());
 
         var posGroup = MoShuffleboard.getInstance()
                 .driveTab
