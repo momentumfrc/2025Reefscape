@@ -19,7 +19,7 @@ public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
     private DriveSubsystem drive = new DriveSubsystem();
-    private PositioningSubsystem positioning = new PositioningSubsystem(gyro);
+    private PositioningSubsystem positioning = new PositioningSubsystem(gyro, drive);
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
 
