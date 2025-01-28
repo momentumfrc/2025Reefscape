@@ -182,13 +182,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
-        // TODO
-        return null;
-    }
+        return kinematics.toChassisSpeeds(
+            frontLeft.getState(), frontRight.getState(),
+            rearLeft.getState(), rearRight.getState());    }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds chassisSpeeds, DriveFeedforwards driveFeedforwards) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+       throw new UnsupportedOperationException("Not implemented");
     }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds speeds) {
