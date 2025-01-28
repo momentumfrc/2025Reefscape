@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
@@ -11,8 +13,7 @@ import frc.robot.molib.prefs.MoPrefs;
 
 public class GroundIntakeRollerSubsystem extends SubsystemBase {
     private final VictorSPX roller;
-
-    // private final MutableMeasure<Current> intakeRollerCurrent = MutableMeasure.zero(Units.Amps);
+    private MutCurrent rollerCurrent = Units.Amps.mutable(0);
 
     public GroundIntakeRollerSubsystem() {
         super("Ground Intake Rollers");
@@ -32,6 +33,12 @@ public class GroundIntakeRollerSubsystem extends SubsystemBase {
 
     public void stopRollerMotor() {
         roller.set(ControlMode.PercentOutput, 0);
+    }
+
+    public Current getRollerCurrent() {
+        double current = roller.getMotorOutputVoltage();
+        rollerCurrent.mut_replace(current, Units.Amps);
+        return rollerCurrent;
     }
 
     /*public void intakeAlgae() {

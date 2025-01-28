@@ -18,6 +18,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.molib.MoUnits;
@@ -54,6 +55,11 @@ public class MoPrefs {
             ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
     public static final UnitPref<TimeUnit> intakeWristCurrentTime =
             secondsPref("Intake Wrist Time", Units.Seconds.one());
+
+    public static final UnitPref<CurrentUnit> intakeRollerCurrentThreshold =
+            ampsPref("Intake Roller Current Thresh",  Units.Amps.of(15));
+    public static final UnitPref<TimeUnit> intakeRollerCurrentTime =
+            secondsPref("Intake Roller Time", Units.Seconds.one());
 
     // private final MutableMeasure<U> currValue;
 
