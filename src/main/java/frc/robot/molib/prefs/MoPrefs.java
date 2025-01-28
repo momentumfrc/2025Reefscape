@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.CurrentUnit;
@@ -120,8 +121,12 @@ public class MoPrefs {
 
     private MoPrefs() {
         backingTable = NetworkTableInstance.getDefault().getTable("Preferences");
-        typePublisher = backingTable.getStringTopic(".type").publish();
-        typePublisher.set("RobotPreferences");
+
+        String kSmartDashboardType = "RobotPreferences";
+        typePublisher = backingTable
+                .getStringTopic(".type")
+                .publishEx(StringTopic.kTypeString, "{\"SmartDashboard\":\"" + kSmartDashboardType + "\"}");
+        typePublisher.set(kSmartDashboardType);
     }
 
     private static Pref<Boolean> booleanPref(String key, boolean defaultValue) {
