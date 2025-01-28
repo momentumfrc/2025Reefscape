@@ -7,6 +7,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 
 public class GroundIntakeWristSubsystem extends SubsystemBase {
@@ -14,7 +15,10 @@ public class GroundIntakeWristSubsystem extends SubsystemBase {
     private MutCurrent wristCurrent = Units.Amps.mutable(0);
 
     public GroundIntakeWristSubsystem() {
+        super("Ground Intake Wrist");
         this.wrist = new SparkMax(Constants.INTAKE_WRIST.address(), MotorType.kBrushless);
+
+        MoShuffleboard.getInstance().groundIntakeTab.add(this);
     }
 
     public void wristOut() {

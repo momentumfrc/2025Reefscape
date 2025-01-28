@@ -49,7 +49,7 @@ public class MoShuffleboard {
     private final SendableChooser<SysIdMode> sysidMode = MoShuffleboard.enumToChooser(SysIdMode.class);
 
     public final ShuffleboardTab driveTab;
-    public final ShuffleboardTab intakeTab;
+    public final ShuffleboardTab groundIntakeTab;
     public final ShuffleboardTab climberTab;
     public final ShuffleboardTab settingsTab;
     public final ShuffleboardTab autoTab;
@@ -66,7 +66,7 @@ public class MoShuffleboard {
         settingsTab = Shuffleboard.getTab("Settings");
         autoTab = Shuffleboard.getTab("Auto");
         driveTab = Shuffleboard.getTab("Drive");
-        intakeTab = Shuffleboard.getTab("Intake");
+        groundIntakeTab = Shuffleboard.getTab("Ground Intake");
         climberTab = Shuffleboard.getTab("Climber");
         field = new Field2d();
 

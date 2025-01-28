@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 
 public class GroundIntakeRollerSubsystem extends SubsystemBase {
@@ -14,9 +15,11 @@ public class GroundIntakeRollerSubsystem extends SubsystemBase {
     // private final MutableMeasure<Current> intakeRollerCurrent = MutableMeasure.zero(Units.Amps);
 
     public GroundIntakeRollerSubsystem() {
-        super("Intake");
+        super("Ground Intake Rollers");
         this.roller = new VictorSPX(Constants.INTAKE_ROLLER.address());
         this.roller.setNeutralMode(NeutralMode.Brake);
+
+        MoShuffleboard.getInstance().groundIntakeTab.add(this);
     }
 
     public void rollerIntake() {
