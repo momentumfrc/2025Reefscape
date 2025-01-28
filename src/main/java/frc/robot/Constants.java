@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Constants {
+    public static final double FLOAT_EPSILON = 1e-6;
 
     public static final CANAddress SWERVE_TURN_LEFT_FRONT = new CANAddress(11);
     public static final CANAddress SWERVE_TURN_LEFT_REAR = new CANAddress(13);
@@ -14,6 +15,10 @@ public class Constants {
     public static final CANAddress SWERVE_DRIVE_LEFT_REAR = new CANAddress(3);
     public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
     public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
+    public static final CANAddress ELEVATORA = new CANAddress(0);
+    public static final CANAddress ELEVATORB = new CANAddress(0);
+    public static final CANAddress ELEVATOR_WRIST = new CANAddress(0);
+    public static final CANAddress END_EFFECTOR = new CANAddress(0);
 
     public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(0);
 

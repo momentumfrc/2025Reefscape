@@ -15,6 +15,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -40,6 +41,8 @@ public class MoPrefs {
     public static final AngleUnitPref swerveFRZero = rotationsPref("SWRV Zero FR", Units.Rotations.of(0.48));
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
+
+    public static final UnitPref<VoltageUnit> endEffectorPower = voltsPref("End Effector Power", Units.Volts.of(5));
 
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro
@@ -166,5 +169,9 @@ public class MoPrefs {
 
     private static UnitPref<CurrentUnit> ampsPref(String key, Measure<CurrentUnit> defaultValue) {
         return new UnitPref<>(key, Units.Amps, defaultValue);
+    }
+
+    private static UnitPref<VoltageUnit> voltsPref(String key, Measure<VoltageUnit> defaultValue) {
+        return new UnitPref<>(key, Units.Volts, defaultValue);
     }
 }
