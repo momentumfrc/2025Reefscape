@@ -19,6 +19,10 @@ public class MoUtils {
         }
     }
 
+    public static double clamp(double value, double min, double max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
     public static double curve(double val, double curve) {
         if (curve == 0) {
             return val;
