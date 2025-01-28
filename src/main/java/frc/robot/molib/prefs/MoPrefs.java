@@ -43,10 +43,16 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
-    public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(8));
+    public static final UnitPref<DimensionlessUnit> intakeRollerPercent =
+            percentPref("Intake Roller Percent Output", Units.Percent.of(66));
 
-    public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold = ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
-    public static final UnitPref<TimeUnit> intakeWristCurrentTime = secondsPref("Intake Wrist Time", Units.Seconds.one());
+    public static final UnitPref<VoltageUnit> intakeWristHoldPower =
+            voltsPref("Intake Hold Wrist Power", Units.Volts.of(1));
+
+    public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold =
+            ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
+    public static final UnitPref<TimeUnit> intakeWristCurrentTime =
+            secondsPref("Intake Wrist Time", Units.Seconds.one());
 
     // private final MutableMeasure<U> currValue;
 
@@ -175,5 +181,9 @@ public class MoPrefs {
 
     private static UnitPref<VoltageUnit> voltsPref(String key, Measure<VoltageUnit> defaultValue) {
         return new UnitPref<>(key, Units.Volts, defaultValue);
+    }
+
+    private static UnitPref<DimensionlessUnit> percentPref(String key, Measure<DimensionlessUnit> defaultValue) {
+        return new UnitPref<>(key, Units.Percent, defaultValue);
     }
 }

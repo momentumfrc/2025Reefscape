@@ -1,13 +1,11 @@
-package frc.robot.command;
+package frc.robot.command.groundintake;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.input.MoInput;
 import frc.robot.molib.prefs.MoPrefs;
-import frc.robot.subsystem.IntakeSubsystem;
-import java.util.function.Supplier;
+import frc.robot.subsystem.GroundIntakeWristSubsystem;
 
 public class MoveGroundWristCommand extends Command {
     public enum Direction {
@@ -15,12 +13,12 @@ public class MoveGroundWristCommand extends Command {
         IN
     };
 
-    private final IntakeSubsystem intake;
+    private final GroundIntakeWristSubsystem intake;
     private final Direction direction;
 
     private final Timer wristCurrentTimer = new Timer();
 
-    public MoveGroundWristCommand(IntakeSubsystem intake, Direction direction) {
+    public MoveGroundWristCommand(GroundIntakeWristSubsystem intake, Direction direction) {
         this.intake = intake;
         this.direction = direction;
 
@@ -34,7 +32,7 @@ public class MoveGroundWristCommand extends Command {
 
     @Override
     public void execute() {
-        if(direction == Direction.IN) {
+        if (direction == Direction.IN) {
             intake.wristIn();
         } else {
             intake.wristOut();
@@ -44,8 +42,9 @@ public class MoveGroundWristCommand extends Command {
     @Override
     public boolean isFinished() {
         Current currAmps = intake.getWristCurrent();
-        if(currAmps.gte(MoPrefs.intakeWristCurrentThreshold.get())) {
-            if(wristCurrentTimer.hasElapsed(MoPrefs.intakeWristCurrentTime.get().in(Units.Seconds))) {
+        if (currAmps.gte(MoPrefs.intakeWristCurrentThreshold.get())) {
+            if (wristCurrentTimer.hasElapsed(
+                    MoPrefs.intakeWristCurrentTime.get().in(Units.Seconds))) {
                 return true;
             }
         } else {
