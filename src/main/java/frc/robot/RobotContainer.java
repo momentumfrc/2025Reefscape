@@ -46,7 +46,6 @@ public class RobotContainer {
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
     public RobotContainer() {
-        configureBindings();
 
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
 
@@ -55,6 +54,7 @@ public class RobotContainer {
         intakeWrist.setDefaultCommand(groundIntakeWristDefaultCommand);
 
         intakeDeployTrigger = new Trigger(() -> getInput().getIntake());
+        configureBindings();
     }
 
     private void configureBindings() {
