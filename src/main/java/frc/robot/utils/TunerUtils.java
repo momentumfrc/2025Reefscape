@@ -10,6 +10,7 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
 import frc.robot.Constants;
+import frc.robot.molib.pid.MoSparkMaxArmPID;
 import frc.robot.molib.pid.MoSparkMaxElevatorPID;
 import frc.robot.molib.pid.MoSparkMaxPID;
 import frc.robot.molib.pid.MoTalonFxPID;
@@ -55,6 +56,16 @@ public class TunerUtils {
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> PIDTuner forMoSparkMax(
             MoSparkMaxPID<Dim, VDim> sparkMax, String controllerName) {
         return moSparkBase(sparkMax, controllerName).withFF(sparkMax::setFF).safeBuild();
+    }
+
+    public static PIDTuner forMoSparkArm(MoSparkMaxArmPID armPID, String controllerName) {
+        return moSparkBase(armPID, controllerName)
+                .withProperty("ff_builtin", armPID::setFF)
+                .withProperty("ff_kS", armPID::setKS)
+                .withProperty("ff_kG", armPID::setKG)
+                .withProperty("ff_kV", armPID::setKV)
+                .withStateValue("calculated_ff", armPID::getLastFF)
+                .safeBuild();
     }
 
     public static PIDTuner forMoSparkElevator(MoSparkMaxElevatorPID controller, String controllerName) {
