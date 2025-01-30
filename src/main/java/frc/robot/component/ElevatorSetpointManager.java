@@ -2,6 +2,7 @@ package frc.robot.component;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutDistance;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorPosition;
 import frc.robot.utils.SetpointDataStore;
 import java.util.EnumMap;
@@ -27,7 +28,7 @@ public class ElevatorSetpointManager {
 
         private final SetpointDataStore store;
 
-        private final MutAngle elevatorAngle = Units.Degrees.mutable(0);
+        private final MutDistance elevatorDistance = Units.Centimeters.mutable(0);
         private final MutAngle wristAngle = Units.Degrees.mutable(0);
 
         public ElevatorSetpointEntry(String key, SetpointDataStore store) {
@@ -38,12 +39,12 @@ public class ElevatorSetpointManager {
 
         public ElevatorPosition getValue() {
             return new ElevatorPosition(
-                    elevatorAngle.mut_replace(store.getValue(elevatorKey), Units.Rotations),
+                    elevatorDistance.mut_replace(store.getValue(elevatorKey), Units.Centimeters),
                     wristAngle.mut_replace(store.getValue(wristKey), Units.Rotations));
         }
 
         public void setValue(ElevatorPosition position) {
-            store.putValue(elevatorKey, position.elevatorAngle().in(Units.Rotations));
+            store.putValue(elevatorKey, position.elevatorDistance().in(Units.Centimeters));
             store.putValue(wristKey, position.wristAngle().in(Units.Rotations));
         }
     }
