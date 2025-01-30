@@ -8,9 +8,11 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.CurrentUnit;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
@@ -42,24 +44,37 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
-    public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> elevatorEncoderScale =
-            encoderTicksPerRotationPref("Elevator Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(144));
+    public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
+            encoderTicksPerCentimeterPref(
+                    "Elevator Encoder Scale", MoUnits.EncoderTicksPerCentimeter.ofNative(144)); // Temp
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> elevatorAbsEncoderScale =
             encoderTicksPerRotationPref(
-                    "Elevator Absolute Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(2.4));
+                    "Elevator Absolute Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(2.4)); // Temp
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> wristEncoderScale =
-            encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(1));
+            encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(1)); // Temp
 
     public static final UnitPref<AngleUnit> elevatorAbsZero =
-            rotationsPref("Shoulder Absolute Zero", Units.Rotations.of(0));
-    public static final UnitPref<AngleUnit> wristAbsZero = rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0));
+            rotationsPref("Elevator Absolute Zero", Units.Rotations.of(0)); // Temp
+    public static final UnitPref<AngleUnit> wristAbsZero =
+            rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0)); // Temp
 
-    public static final UnitPref<AngleUnit> elevatorMaxExtension =
-            rotationsPref("Wrist Absolute Zero", Units.Degrees.of(0));
+    public static final UnitPref<DistanceUnit> elevatorMaxExtension =
+            centimetersPref("Elevator Absolute Zero", Units.Centimeters.of(0)); // Temp
     public static final UnitPref<AngleUnit> wristMaxExtension =
-            rotationsPref("Wrist Absolute Zero", Units.Degrees.of(0));
+            rotationsPref("Wrist Absolute Zero", Units.Degrees.of(0)); // Temp
 
-    public static final UnitPref<VoltageUnit> endEffectorPower = voltsPref("End Effector Power", Units.Volts.of(5));
+    public static final UnitPref<DistanceUnit> elevatorBottom =
+            centimetersPref("Elevator Bottom", Units.Centimeters.of(0.25)); // Temp
+    public static final UnitPref<AngleUnit> wristHorizontal =
+            rotationsPref("Wrist Horizontal", Units.Rotations.of(0.25)); // Temp
+
+    public static final UnitPref<LinearVelocityUnit> elevatorMaxRps =
+            metersPerSecPref("Elevator Max Spd", Units.MetersPerSecond.of(0.5)); // Temp
+    public static final UnitPref<AngularVelocityUnit> wristMaxRps =
+            rotationsPerSecPref("Wrist Max Speed", Units.RotationsPerSecond.of(0.5)); // Temp
+
+    public static final UnitPref<VoltageUnit> endEffectorPower =
+            voltsPref("End Effector Power", Units.Volts.of(5)); // Temp
 
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro
