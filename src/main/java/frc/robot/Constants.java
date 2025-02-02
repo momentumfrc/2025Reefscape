@@ -15,6 +15,11 @@ public class Constants {
     public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
     public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
 
+    public static final CANAddress CLIMBER_LEFT = new CANAddress(0);
+    public static final CANAddress CLIMBER_RIGHT = new CANAddress(0);
+
+    public static final PWMPort CLIMBER_RACHET = new PWMPort(0);
+
     public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(0);
 
     public static Path DATA_STORE_FILE;
@@ -40,6 +45,8 @@ public class Constants {
      * adding "PORT" to the constant's name.
      */
     public static record HIDPort(int hidport) {}
+
+    public static record PWMPort(int port) {}
 
     private Constants() {
         throw new UnsupportedOperationException("Constants is a static class");

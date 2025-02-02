@@ -8,4 +8,6 @@ public interface MoInput {
     public abstract double getTurnRequest();
 
     public abstract boolean getReZeroGyro();
+
+    public abstract double getClimberMoveRequest();
 }

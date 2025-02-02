@@ -41,6 +41,9 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
+    public static final UnitPref<TimeUnit> climberRachetLockoutTime =
+            secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));
+
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro
      */

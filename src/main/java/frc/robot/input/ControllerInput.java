@@ -25,4 +25,9 @@ public class ControllerInput implements MoInput {
     public boolean getReZeroGyro() {
         return controller.getBackButtonPressed();
     }
+
+    @Override
+    public double getClimberMoveRequest() {
+        return (-1 * controller.getLeftTriggerAxis()) + controller.getRightTriggerAxis();
+    }
 }
