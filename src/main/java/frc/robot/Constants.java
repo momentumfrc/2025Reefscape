@@ -15,7 +15,11 @@ public class Constants {
     public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
     public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
 
-    public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(0);
+    public static final CANAddress INTAKE_WRIST = new CANAddress(2);
+    public static final CANAddress INTAKE_ROLLER = new CANAddress(0);
+
+    public static final HIDPort JOYSTICK = new HIDPort(0);
+    public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(1);
 
     public static Path DATA_STORE_FILE;
 

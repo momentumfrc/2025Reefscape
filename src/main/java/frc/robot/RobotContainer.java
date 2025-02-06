@@ -9,10 +9,14 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
+import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
+import frc.robot.subsystem.IntakeRollerSubsystem;
+import frc.robot.subsystem.IntakeWristSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
@@ -23,17 +27,35 @@ public class RobotContainer {
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
 
+    private final IntakeRollerSubsystem intakeRoller = new IntakeRollerSubsystem();
+    private final IntakeWristSubsystem intakeWrist = new IntakeWristSubsystem();
+
+    private final Command teleopIntakeDeployCommand = IntakeCommands.intakeDeployCommand(intakeWrist, intakeRoller);
+    private final Command teleopIntakeRetractCommand = IntakeCommands.intakeRetractCommand(intakeWrist, intakeRoller);
+
+    private final Command intakeRollersDefaultCommand = IntakeCommands.intakeRollerDefaultCommand(intakeRoller);
+    private final Command intakeWristDefaultCommand = IntakeCommands.intakeWristDefaultCommand(intakeWrist);
+
+    private final Trigger intakeDeployTrigger;
+
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
     public RobotContainer() {
-        configureBindings();
 
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
 
         drive.setDefaultCommand(driveCommand);
+        intakeRoller.setDefaultCommand(intakeRollersDefaultCommand);
+        intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
+
+        intakeDeployTrigger = new Trigger(() -> getInput().getIntake());
+        configureBindings();
     }
 
-    private void configureBindings() {}
+    private void configureBindings() {
+        intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
+        intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
+    }
 
     private MoInput getInput() {
         return inputChooser.getSelected();
