@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.PathPlannerCommands;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.DriveSubsystem;
