@@ -14,13 +14,15 @@ import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
-import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.molib.MoUnits;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -52,16 +54,15 @@ public class MoPrefs {
 
     public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold =
             ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
-    public static final UnitPref<TimeUnit> intakeWristCurrentTime =
-            secondsPref("Intake Wrist Time", Units.Seconds.one());
+    public static final TimeUnitPref intakeWristCurrentTime = secondsPref("Intake Wrist Time", Units.Seconds.one());
 
-    public static final UnitPref<TimeUnit> intakeRollerSpinupTime =
+    public static final TimeUnitPref intakeRollerSpinupTime =
             secondsPref("Intake Roller Spinup Time", Units.Seconds.of(0.25));
     public static final UnitPref<AngularVelocityUnit> intakeVelocityThreshold =
             rotationsPerSecPref("Intake Roller Velocity Threshold", Units.RotationsPerSecond.of(5));
-    public static final UnitPref<TimeUnit> intakeRollerThesholdTime =
+    public static final TimeUnitPref intakeRollerThesholdTime =
             secondsPref("Intake Roller Threshold Time", Units.Seconds.of(0.5));
-    public static final UnitPref<TimeUnit> intakeRollerExtakeTime =
+    public static final TimeUnitPref intakeRollerExtakeTime =
             secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
 
     // private final MutableMeasure<U> currValue;
@@ -170,6 +171,14 @@ public class MoPrefs {
         return new AngularVelocityUnitPref(key, Units.RotationsPerSecond, defaultValue);
     }
 
+    private static LinearAccelerationUnitPref metersPerSecPerSecPref(String key, LinearAcceleration defaultValue) {
+        return new LinearAccelerationUnitPref(key, Units.MetersPerSecondPerSecond, defaultValue);
+    }
+
+    private static AngularAccelerationUnitPref rotationsPerSecPerSecPref(String key, AngularAcceleration defaultValue) {
+        return new AngularAccelerationUnitPref(key, Units.RotationsPerSecondPerSecond, defaultValue);
+    }
+
     private static UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> encoderTicksPerCentimeterPref(
             String key, Measure<PerUnit<DimensionlessUnit, DistanceUnit>> defaultValue) {
         return new UnitPref<>(key, MoUnits.EncoderTicksPerCentimeter, defaultValue);
@@ -185,8 +194,8 @@ public class MoPrefs {
         return new UnitPref<>(key, MoUnits.EncoderTicksPerRotation, defaultValue);
     }
 
-    private static UnitPref<TimeUnit> secondsPref(String key, Measure<TimeUnit> defaultValue) {
-        return new UnitPref<>(key, Units.Seconds, defaultValue);
+    private static TimeUnitPref secondsPref(String key, Time defaultValue) {
+        return new TimeUnitPref(key, Units.Seconds, defaultValue);
     }
 
     private static UnitPref<CurrentUnit> ampsPref(String key, Measure<CurrentUnit> defaultValue) {
