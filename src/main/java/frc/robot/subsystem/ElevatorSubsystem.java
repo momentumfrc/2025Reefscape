@@ -17,8 +17,10 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.encoder.MoDistanceEncoder;
 import frc.robot.molib.encoder.MoRotationEncoder;
 import frc.robot.molib.pid.MoSparkMaxArmPID;
@@ -31,6 +33,12 @@ import frc.robot.utils.TunerUtils;
 public class ElevatorSubsystem extends SubsystemBase {
     private static final int ELEVATOR_CURRENT_LIMIT = 50;
     private static final int WRIST_CURRENT_LIMIT = 50;
+
+    public static enum ElevatorControlMode {
+        SMARTMOTION,
+        DIRECT_VELOCITY,
+        FALLBACK_DIRECT_POWER
+    };
 
     private final SparkMax elevatorA;
     private final SparkMax elevatorB;
@@ -57,6 +65,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final PIDTuner wristVelTuner;
     private final PIDTuner elevatorPosTuner;
     private final PIDTuner wristPosTuner;
+
+    public final SendableChooser<ElevatorControlMode> controlMode;
 
     public static record ElevatorPosition(Distance elevatorDistance, Angle wristAngle) {}
 
@@ -159,6 +169,24 @@ public class ElevatorSubsystem extends SubsystemBase {
         wristVelTuner = TunerUtils.forMoSparkArm(wristVelocityPid, "Wrist Vel.");
         elevatorPosTuner = TunerUtils.forMoSparkElevator(elevatorSmartMotionPid, "Elevator Pos.");
         wristPosTuner = TunerUtils.forMoSparkArm(wristSmartMotionPid, "Wrist Pos.");
+
+        controlMode = MoShuffleboard.enumToChooser(ElevatorControlMode.class);
+        MoShuffleboard.getInstance().settingsTab.add("Elevator Control Mode", controlMode);
+
+        MoShuffleboard.getInstance().elevatorTab.add(this);
+    }
+
+    public void reZeroElevator() {
+        MoUtils.setupRelativeEncoder(
+                elevatorRelEncoder,
+                elevatorAbsEncoder.getPosition(),
+                MoPrefs.elevatorAbsZero.get(),
+                MoPrefs.elevatorEncoderScale.get());
+        MoUtils.setupRelativeEncoder(
+                wristRelEncoder,
+                wristAbsEncoder.getPosition(),
+                MoPrefs.wristAbsZero.get(),
+                MoPrefs.wristEncoderScale.get());
     }
 
     private Distance getElevatorDistanceFromBottom() {
@@ -192,6 +220,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         return new ElevatorMovementRequest(elevatorPower, wristPower);
     }
 
+    public ElevatorPosition getElevatorPosition() {
+        return new ElevatorPosition(elevatorRelEncoder.getPosition(), wristRelEncoder.getPosition());
+    }
+
+    public void adjustDirectPower(ElevatorMovementRequest request) {
+        request = limitElevatorMovementRequest(request);
+        elevatorA.set(request.elevatorPower);
+        endEffector.set(ControlMode.PercentOutput, request.wristPower);
+    }
+
     public void adjustVelocity(ElevatorMovementRequest request) {
         request = limitElevatorMovementRequest(request);
 
@@ -206,6 +244,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void adjustSmartPosition(ElevatorPosition position) {
         elevatorSmartMotionPid.setPositionReference(position.elevatorDistance);
         wristSmartMotionPid.setPositionReference(position.wristAngle);
+    }
+
+    public boolean atPosition(ElevatorPosition position) {
+
+        double thresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        return elevatorRelEncoder.getPosition().isNear(position.elevatorDistance(), thresh)
+                && wristRelEncoder.getPosition().isNear(position.wristAngle(), thresh);
     }
 
     public void intakeAlgaeCoralExtake() {

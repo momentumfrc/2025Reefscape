@@ -20,6 +20,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.molib.MoUnits;
@@ -44,6 +45,8 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
+    public static final Pref<Double> elevatorRampTime = unitlessDoublePref("Elevator Ramp Time", 0.15);
+
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
             encoderTicksPerCentimeterPref(
                     "Elevator Encoder Scale", MoUnits.EncoderTicksPerCentimeter.ofNative(144)); // Temp
@@ -52,6 +55,9 @@ public class MoPrefs {
                     "Elevator Absolute Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(2.4)); // Temp
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> wristEncoderScale =
             encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(1)); // Temp
+
+    public static final DimensionlessUnitPref elevatorSetpointVarianceThreshold =
+            percentPref("Elevator Setpoint Variance Threshold", Units.Percent.of(3));
 
     public static final UnitPref<AngleUnit> elevatorAbsZero =
             rotationsPref("Elevator Absolute Zero", Units.Rotations.of(0)); // Temp
@@ -178,6 +184,10 @@ public class MoPrefs {
 
     private static AngularVelocityUnitPref rotationsPerSecPref(String key, AngularVelocity defaultValue) {
         return new AngularVelocityUnitPref(key, Units.RotationsPerSecond, defaultValue);
+    }
+
+    private static DimensionlessUnitPref percentPref(String key, Dimensionless defaultValue) {
+        return new DimensionlessUnitPref(key, Units.Percent, defaultValue);
     }
 
     private static UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> encoderTicksPerCentimeterPref(

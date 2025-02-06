@@ -10,7 +10,11 @@ import java.util.EnumMap;
 public class ElevatorSetpointManager {
 
     public static enum ElevatorSetpoint {
-        STOW
+        STOW,
+        L1,
+        L2,
+        L3,
+        PROCESSOR
     };
 
     private static ElevatorSetpointManager instance;

@@ -53,6 +53,7 @@ public class MoShuffleboard {
     public final ShuffleboardTab climberTab;
     public final ShuffleboardTab settingsTab;
     public final ShuffleboardTab autoTab;
+    public final ShuffleboardTab elevatorTab;
     public final Field2d field;
 
     private final GenericEntry voltRampEntry;
@@ -68,6 +69,7 @@ public class MoShuffleboard {
         driveTab = Shuffleboard.getTab("Drive");
         intakeTab = Shuffleboard.getTab("Intake");
         climberTab = Shuffleboard.getTab("Climber");
+        elevatorTab = Shuffleboard.getTab("Elevator");
 
         field = new Field2d();
 
