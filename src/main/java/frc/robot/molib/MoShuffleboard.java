@@ -66,7 +66,7 @@ public class MoShuffleboard {
         settingsTab = Shuffleboard.getTab("Settings");
         autoTab = Shuffleboard.getTab("Auto");
         driveTab = Shuffleboard.getTab("Drive");
-        intakeTab = Shuffleboard.getTab("Ground Intake");
+        intakeTab = Shuffleboard.getTab("Intake");
         climberTab = Shuffleboard.getTab("Climber");
         field = new Field2d();
 
