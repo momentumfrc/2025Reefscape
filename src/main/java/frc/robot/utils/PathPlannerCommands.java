@@ -9,7 +9,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,9 +33,6 @@ public class PathPlannerCommands {
 
         Optional<Pose2d> startPose = path.getStartingHolonomicPose();
 
-        double driveBaseRadius = DriveSubsystem.SWERVE_WHEEL_OFFSET.in(Units.Meters) * Math.sqrt(2);
-
-        // TODO: figure this out
         PathFollowingController controller = drive.getDriveController();
         RobotConfig config = Constants.pathPlannerRobotConfig;
 
