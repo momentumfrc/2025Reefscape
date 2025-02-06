@@ -5,8 +5,10 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.CurrentUnit;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
@@ -14,6 +16,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -23,6 +26,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
+// import edu.wpi.first.units.MutableMeasure;
 
 /** Robot preferences, accessible through Shuffleboard */
 public class MoPrefs {
@@ -39,6 +43,28 @@ public class MoPrefs {
     public static final AngleUnitPref swerveFRZero = rotationsPref("SWRV Zero FR", Units.Rotations.of(0.48));
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
+
+    public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
+    public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
+
+    public static final UnitPref<VoltageUnit> intakeWristHoldPower =
+            voltsPref("Intake Hold Wrist Power", Units.Volts.of(1));
+
+    public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold =
+            ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
+    public static final UnitPref<TimeUnit> intakeWristCurrentTime =
+            secondsPref("Intake Wrist Time", Units.Seconds.one());
+
+    public static final UnitPref<TimeUnit> intakeRollerSpinupTime =
+            secondsPref("Intake Roller Spinup Time", Units.Seconds.of(0.25));
+    public static final UnitPref<AngularVelocityUnit> intakeVelocityThreshold =
+            rotationsPerSecPref("Intake Roller Velocity Threshold", Units.RotationsPerSecond.of(5));
+    public static final UnitPref<TimeUnit> intakeRollerThesholdTime =
+            secondsPref("Intake Roller Threshold Time", Units.Seconds.of(0.5));
+    public static final UnitPref<TimeUnit> intakeRollerExtakeTime =
+            secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
+
+    // private final MutableMeasure<U> currValue;
 
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro
@@ -104,8 +130,12 @@ public class MoPrefs {
 
     private MoPrefs() {
         backingTable = NetworkTableInstance.getDefault().getTable("Preferences");
-        typePublisher = backingTable.getStringTopic(".type").publish();
-        typePublisher.set("RobotPreferences");
+
+        String kSmartDashboardType = "RobotPreferences";
+        typePublisher = backingTable
+                .getStringTopic(".type")
+                .publishEx(StringTopic.kTypeString, "{\"SmartDashboard\":\"" + kSmartDashboardType + "\"}");
+        typePublisher.set(kSmartDashboardType);
     }
 
     private static Pref<Boolean> booleanPref(String key, boolean defaultValue) {
@@ -161,5 +191,13 @@ public class MoPrefs {
 
     private static UnitPref<CurrentUnit> ampsPref(String key, Measure<CurrentUnit> defaultValue) {
         return new UnitPref<>(key, Units.Amps, defaultValue);
+    }
+
+    private static UnitPref<VoltageUnit> voltsPref(String key, Measure<VoltageUnit> defaultValue) {
+        return new UnitPref<>(key, Units.Volts, defaultValue);
+    }
+
+    private static UnitPref<DimensionlessUnit> percentPref(String key, Measure<DimensionlessUnit> defaultValue) {
+        return new UnitPref<>(key, Units.Percent, defaultValue);
     }
 }

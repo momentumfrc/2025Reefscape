@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.component.SwerveModule;
@@ -105,34 +106,38 @@ public class DriveSubsystem extends SubsystemBase {
 
         this.kinematics = new SwerveDriveKinematics(fl, fr, rl, rr);
 
-        MoShuffleboard.getInstance().ifPresent(board -> {
-            forEachSwerveModule((module) -> {
-                var group = board.driveTab
-                        .getLayout(module.getKey(), BuiltInLayouts.kList)
-                        .withSize(2, 2)
-                        .withProperties(Map.of("Label Position", "RIGHT"));
-                group.addDouble(
-                        "Drive Position (raw)",
-                        () -> module.driveMotor.getRotorPosition().getValueAsDouble());
-                group.addDouble(
-                        "Drive Position (m)",
-                        () -> module.distEncoder.getPosition().in(Units.Meters));
-                group.addDouble(
-                        "Drive Velocity (m_s)",
-                        () -> module.distEncoder.getVelocity().in(Units.MetersPerSecond));
-                group.addDouble(
-                        "Turn Relative (R)",
-                        () -> module.relativeEncoder.getPosition().in(Units.Rotations));
-                group.addDouble(
-                        "Turn Absolute (R)",
-                        () -> module.absoluteEncoder.getPosition().in(Units.Rotations));
-            });
-
-            board.driveTab.add(this);
+        forEachSwerveModule((module) -> {
+            var group = MoShuffleboard.getInstance()
+                    .driveTab
+                    .getLayout(module.getKey(), BuiltInLayouts.kList)
+                    .withSize(2, 2)
+                    .withProperties(Map.of("Label Position", "RIGHT"));
+            group.addDouble(
+                            "Drive Position (raw)",
+                            () -> module.driveMotor.getRotorPosition().getValueAsDouble())
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Drive Position (m)",
+                            () -> module.distEncoder.getPosition().in(Units.Meters))
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Drive Velocity (m_s)",
+                            () -> module.distEncoder.getVelocity().in(Units.MetersPerSecond))
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Turn Relative (R)",
+                            () -> module.relativeEncoder.getPosition().in(Units.Rotations))
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Turn Absolute (R)",
+                            () -> module.absoluteEncoder.getPosition().in(Units.Rotations))
+                    .withWidget(BuiltInWidgets.kTextView);
         });
 
         TunerUtils.forPathPlanner(translationPIDConstants, "PP trans PID");
         TunerUtils.forPathPlanner(rotationPIDConstants, "PP rot PID");
+
+        MoShuffleboard.getInstance().driveTab.add(this);
     }
 
     public SwerveModulePosition[] getWheelPositions() {
@@ -183,11 +188,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return kinematics.toChassisSpeeds(
-            frontLeft.getState(), frontRight.getState(),
-            rearLeft.getState(), rearRight.getState());    }
+                frontLeft.getState(), frontRight.getState(),
+                rearLeft.getState(), rearRight.getState());
+    }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds chassisSpeeds, DriveFeedforwards driveFeedforwards) {
-       throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds speeds) {
