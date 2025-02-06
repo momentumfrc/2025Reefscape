@@ -28,7 +28,7 @@ public class PathPlannerCommands {
             PathPlannerPath path,
             boolean shouldAssumeRobotIsAtStart) {
         // Manually flip the path ourselves, since we need the starting pose
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red && !path.preventFlipping) {
             path = path.flipPath();
         }
 
