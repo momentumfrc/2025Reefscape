@@ -40,14 +40,4 @@ public class GroundIntakeRollerSubsystem extends SubsystemBase {
         rollerCurrent.mut_replace(current, Units.Amps);
         return rollerCurrent;
     }
-
-    /*public void intakeAlgae() {
-        wristOut();
-        rollerIntake();
-    }
-
-    public void shootAlgae() {
-        wristIn();
-        rollerShoot();
-    } */
 }
