@@ -4,21 +4,18 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.command.intake.IntakeCommands.Direction;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 
-public class MoveIntakeRollersCommand extends Command {
-    public enum Direction {
-        SHOOT,
-        INTAKE
-    };
+public class MoveIntakeRollerCommand extends Command {
 
     private final IntakeRollerSubsystem intake;
     private final Direction direction;
 
     private final Timer rollerCurrentTimer = new Timer();
 
-    public MoveIntakeRollersCommand(IntakeRollerSubsystem intake, Direction direction) {
+    public MoveIntakeRollerCommand(IntakeRollerSubsystem intake, Direction direction) {
         this.intake = intake;
         this.direction = direction;
 
@@ -31,7 +28,7 @@ public class MoveIntakeRollersCommand extends Command {
 
     @Override
     public void execute() {
-        if (direction == Direction.SHOOT) {
+        if (direction == Direction.OUT) {
             intake.rollerShoot();
         } else {
             intake.rollerIntake();

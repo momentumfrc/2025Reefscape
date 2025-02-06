@@ -4,15 +4,11 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.command.intake.IntakeCommands.Direction;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.IntakeWristSubsystem;
 
 public class MoveIntakeWristCommand extends Command {
-    public enum Direction {
-        OUT,
-        IN
-    };
-
     private final IntakeWristSubsystem intake;
     private final Direction direction;
 
