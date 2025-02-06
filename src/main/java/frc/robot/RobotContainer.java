@@ -17,6 +17,7 @@ import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 import frc.robot.subsystem.IntakeWristSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
+import frc.robot.utils.AutoChooser;
 
 public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -39,6 +40,8 @@ public class RobotContainer {
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
+    private AutoChooser autoChooser = new AutoChooser(positioning, drive);
+
     public RobotContainer() {
 
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
@@ -57,8 +60,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // Load the path you want to follow using its name in the GUI
-        return PathPlannerCommands.getFollowPathCommand(drive, positioning, "Example Path", false);
+        return autoChooser.getAutoCommand();
     }
 
     private MoInput getInput() {
