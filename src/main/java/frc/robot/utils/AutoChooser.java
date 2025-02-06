@@ -1,12 +1,15 @@
 package frc.robot.utils;
 
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,7 +33,7 @@ public class AutoChooser {
 
     private enum InitialPosition {
         BLUE_WALL(new Pose2d(7.5, 7.5, Rotation2d.k180deg)),
-        RED_WALL(new Pose2d(7.5, 0.5, Rotation2d.kZero));
+        RED_WALL(new Pose2d(7.5, 0.5, Rotation2d.k180deg));
 
         public final Pose2d pose;
 
@@ -62,11 +65,10 @@ public class AutoChooser {
     }
 
     private Transform2d getLeaveTransform() {
-        Transform2d transform = new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-            return transform;
+            return new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
         } else {
-            return transform.inverse();
+            return new Transform2d(-1 * MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
         }
     }
 
@@ -80,8 +82,11 @@ public class AutoChooser {
                 MoPrefs.autoMaxLinAccel.get(),
                 MoPrefs.autoMaxAngVel.get(),
                 MoPrefs.autoMaxAngAccel.get());
-        PathPlannerPath path =
-                new PathPlannerPath(waypoints, constraints, null, new GoalEndState(0, initialPos.getRotation()));
+        PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                constraints,
+                new IdealStartingState(0, initialPos.getRotation()),
+                new GoalEndState(0, initialPos.getRotation()));
         path.preventFlipping = true;
 
         return PathPlannerCommands.getFollowPathCommand(drive, positioning, path, assumeRobotAtPos);
@@ -97,7 +102,16 @@ public class AutoChooser {
     }
 
     private Command leaveFromInitialPosition(InitialPosition pos) {
-        return leaveFromPose(pos.pose, true);
+        Pose2d pose = pos.pose;
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            pose = new Pose2d(
+                    new Translation2d(
+                            FlippingUtil.fieldSizeX - pose.getTranslation().getX(),
+                            pose.getTranslation().getY()),
+                    pose.getRotation().plus(Rotation2d.k180deg));
+        }
+
+        return leaveFromPose(pose, true);
     }
 
     private Command fallbackLeave() {
