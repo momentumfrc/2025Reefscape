@@ -25,13 +25,11 @@ public class IntakeCommands {
     public static Command intakeDeployCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
         return Commands.parallel(
                 new MoveIntakeWristCommand(wrist, Direction.OUT).andThen(holdIntakeWristCommand(wrist, Direction.OUT)),
-                new MoveIntakeRollerCommand(roller, Direction.IN).andThen(holdIntakeRollerCommand(roller)));
+                new RollerIntakeAlgaeCommand(roller).andThen(holdIntakeRollerCommand(roller)));
     }
 
     public static Command intakeRetractCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
-        return Commands.deadline(
-                        new MoveIntakeRollerCommand(roller, Direction.OUT),
-                        holdIntakeWristCommand(wrist, Direction.OUT))
+        return Commands.deadline(new RollerExtakeAlgaeCommand(roller), holdIntakeWristCommand(wrist, Direction.OUT))
                 .andThen(Commands.parallel(
                         holdIntakeRollerCommand(roller),
                         new MoveIntakeWristCommand(wrist, Direction.IN)

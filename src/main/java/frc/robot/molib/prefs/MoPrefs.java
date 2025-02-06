@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.CurrentUnit;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
@@ -44,8 +45,7 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
-    public static final UnitPref<DimensionlessUnit> intakeRollerPercent =
-            percentPref("Intake Roller Percent Output", Units.Percent.of(66));
+    public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
 
     public static final UnitPref<VoltageUnit> intakeWristHoldPower =
             voltsPref("Intake Hold Wrist Power", Units.Volts.of(1));
@@ -55,10 +55,14 @@ public class MoPrefs {
     public static final UnitPref<TimeUnit> intakeWristCurrentTime =
             secondsPref("Intake Wrist Time", Units.Seconds.one());
 
-    public static final UnitPref<CurrentUnit> intakeRollerCurrentThreshold =
-            ampsPref("Intake Roller Current Thresh", Units.Amps.of(15));
-    public static final UnitPref<TimeUnit> intakeRollerCurrentTime =
-            secondsPref("Intake Roller Time", Units.Seconds.one());
+    public static final UnitPref<TimeUnit> intakeRollerSpinupTime =
+            secondsPref("Intake Roller Spinup Time", Units.Seconds.of(0.25));
+    public static final UnitPref<AngularVelocityUnit> intakeVelocityThreshold =
+            rotationsPerSecPref("Intake Roller Velocity Threshold", Units.RotationsPerSecond.of(5));
+    public static final UnitPref<TimeUnit> intakeRollerThesholdTime =
+            secondsPref("Intake Roller Threshold Time", Units.Seconds.of(0.5));
+    public static final UnitPref<TimeUnit> intakeRollerExtakeTime =
+            secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
 
     // private final MutableMeasure<U> currValue;
 
