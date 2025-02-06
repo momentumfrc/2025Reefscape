@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -98,36 +99,41 @@ public class DriveSubsystem extends SubsystemBase {
 
         this.kinematics = new SwerveDriveKinematics(fl, fr, rl, rr);
 
-        MoShuffleboard.getInstance().ifPresent(board -> {
-            forEachSwerveModule((module) -> {
-                var group = board.driveTab
-                        .getLayout(module.getKey(), BuiltInLayouts.kList)
-                        .withSize(2, 2)
-                        .withProperties(Map.of("Label Position", "RIGHT"));
-                group.addDouble(
-                                "Drive Position (raw)",
-                                () -> module.driveMotor.getRotorPosition().getValueAsDouble())
-                        .withWidget(BuiltInWidgets.kTextView);
-                group.addDouble(
-                                "Drive Position (m)",
-                                () -> module.distEncoder.getPosition().in(Units.Meters))
-                        .withWidget(BuiltInWidgets.kTextView);
-                group.addDouble(
-                                "Drive Velocity (m_s)",
-                                () -> module.distEncoder.getVelocity().in(Units.MetersPerSecond))
-                        .withWidget(BuiltInWidgets.kTextView);
-                group.addDouble(
-                                "Turn Relative (R)",
-                                () -> module.relativeEncoder.getPosition().in(Units.Rotations))
-                        .withWidget(BuiltInWidgets.kTextView);
-                group.addDouble(
-                                "Turn Absolute (R)",
-                                () -> module.absoluteEncoder.getPosition().in(Units.Rotations))
-                        .withWidget(BuiltInWidgets.kTextView);
-            });
-
-            board.driveTab.add(this);
+        forEachSwerveModule((module) -> {
+            var group = MoShuffleboard.getInstance()
+                    .driveTab
+                    .getLayout(module.getKey(), BuiltInLayouts.kList)
+                    .withSize(2, 2)
+                    .withProperties(Map.of("Label Position", "RIGHT"));
+            group.addDouble(
+                            "Drive Position (raw)",
+                            () -> module.driveMotor.getRotorPosition().getValueAsDouble())
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Drive Position (m)",
+                            () -> module.distEncoder.getPosition().in(Units.Meters))
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Drive Velocity (m_s)",
+                            () -> module.distEncoder.getVelocity().in(Units.MetersPerSecond))
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Turn Relative (R)",
+                            () -> module.relativeEncoder.getPosition().in(Units.Rotations))
+                    .withWidget(BuiltInWidgets.kTextView);
+            group.addDouble(
+                            "Turn Absolute (R)",
+                            () -> module.absoluteEncoder.getPosition().in(Units.Rotations))
+                    .withWidget(BuiltInWidgets.kTextView);
         });
+
+        MoShuffleboard.getInstance().driveTab.add(this);
+    }
+
+    public SwerveModulePosition[] getWheelPositions() {
+        return new SwerveModulePosition[] {
+            frontLeft.getPosition(), frontRight.getPosition(), rearLeft.getPosition(), rearRight.getPosition()
+        };
     }
 
     private void forEachSwerveModule(Consumer<SwerveModule> forBody) {
