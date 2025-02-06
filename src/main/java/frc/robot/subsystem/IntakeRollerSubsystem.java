@@ -11,16 +11,16 @@ import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 
-public class GroundIntakeRollerSubsystem extends SubsystemBase {
+public class IntakeRollerSubsystem extends SubsystemBase {
     private final VictorSPX roller;
     private MutCurrent rollerCurrent = Units.Amps.mutable(0);
 
-    public GroundIntakeRollerSubsystem() {
+    public IntakeRollerSubsystem() {
         super("Ground Intake Rollers");
         this.roller = new VictorSPX(Constants.INTAKE_ROLLER.address());
         this.roller.setNeutralMode(NeutralMode.Brake);
 
-        MoShuffleboard.getInstance().groundIntakeTab.add(this);
+        MoShuffleboard.getInstance().intakeTab.add(this);
     }
 
     public void rollerIntake() {

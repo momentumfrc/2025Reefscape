@@ -1,24 +1,24 @@
-package frc.robot.command.groundintake;
+package frc.robot.command.intake;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.molib.prefs.MoPrefs;
-import frc.robot.subsystem.GroundIntakeRollerSubsystem;
+import frc.robot.subsystem.IntakeRollerSubsystem;
 
-public class MoveGroundIntakeRollersCommand extends Command {
+public class MoveIntakeRollersCommand extends Command {
     public enum Direction {
         SHOOT,
         INTAKE
     };
 
-    private final GroundIntakeRollerSubsystem intake;
+    private final IntakeRollerSubsystem intake;
     private final Direction direction;
 
     private final Timer rollerCurrentTimer = new Timer();
 
-    public MoveGroundIntakeRollersCommand(GroundIntakeRollerSubsystem intake, Direction direction) {
+    public MoveIntakeRollersCommand(IntakeRollerSubsystem intake, Direction direction) {
         this.intake = intake;
         this.direction = direction;
 

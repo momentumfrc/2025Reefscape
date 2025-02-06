@@ -1,18 +1,18 @@
-package frc.robot.command.groundintake;
+package frc.robot.command.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystem.GroundIntakeWristSubsystem;
+import frc.robot.subsystem.IntakeWristSubsystem;
 
-public class HoldGroundIntakeWristCommand extends Command {
+public class HoldIntakeWristCommand extends Command {
     public enum Direction {
         IN,
         OUT
     };
 
-    private final GroundIntakeWristSubsystem intakeSubsystem;
+    private final IntakeWristSubsystem intakeSubsystem;
     private final Direction direction;
 
-    public HoldGroundIntakeWristCommand(GroundIntakeWristSubsystem intakeSubsystem, Direction direction) {
+    public HoldIntakeWristCommand(IntakeWristSubsystem intakeSubsystem, Direction direction) {
         this.intakeSubsystem = intakeSubsystem;
         this.direction = direction;
 

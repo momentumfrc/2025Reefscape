@@ -11,15 +11,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
-import frc.robot.command.groundintake.HoldGroundIntakeRollerCommand;
-import frc.robot.command.groundintake.HoldGroundIntakeWristCommand;
-import frc.robot.command.groundintake.MoveGroundIntakeRollersCommand;
-import frc.robot.command.groundintake.MoveGroundWristCommand;
+import frc.robot.command.intake.HoldIntakeRollerCommand;
+import frc.robot.command.intake.HoldIntakeWristCommand;
+import frc.robot.command.intake.MoveIntakeRollersCommand;
+import frc.robot.command.intake.MoveIntakeWristCommand;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
-import frc.robot.subsystem.GroundIntakeRollerSubsystem;
-import frc.robot.subsystem.GroundIntakeWristSubsystem;
+import frc.robot.subsystem.IntakeRollerSubsystem;
+import frc.robot.subsystem.IntakeWristSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
@@ -30,16 +30,16 @@ public class RobotContainer {
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
 
-    private final GroundIntakeRollerSubsystem intakeRoller = new GroundIntakeRollerSubsystem();
-    private final GroundIntakeWristSubsystem intakeWrist = new GroundIntakeWristSubsystem();
+    private final IntakeRollerSubsystem intakeRoller = new IntakeRollerSubsystem();
+    private final IntakeWristSubsystem intakeWrist = new IntakeWristSubsystem();
 
-    private final Command teleopGroundIntakeDeployCommand = getGroundIntakeDeployCommand();
-    private final Command teleopGroundIntakeRetractCommand = getGroundIntakeRetractCommand();
+    private final Command teleopIntakeDeployCommand = getGroundIntakeDeployCommand();
+    private final Command teleopIntakeRetractCommand = getGroundIntakeRetractCommand();
 
-    private final Command groundIntakeRollersDefaultCommand = new HoldGroundIntakeRollerCommand(intakeRoller);
-    private final Command groundIntakeWristDefaultCommand = new MoveGroundWristCommand(
-                    intakeWrist, MoveGroundWristCommand.Direction.IN)
-            .andThen(new HoldGroundIntakeWristCommand(intakeWrist, HoldGroundIntakeWristCommand.Direction.IN));
+    private final Command intakeRollersDefaultCommand = new HoldIntakeRollerCommand(intakeRoller);
+    private final Command intakeWristDefaultCommand = new MoveIntakeWristCommand(
+                    intakeWrist, MoveIntakeWristCommand.Direction.IN)
+            .andThen(new HoldIntakeWristCommand(intakeWrist, HoldIntakeWristCommand.Direction.IN));
 
     private final Trigger intakeDeployTrigger;
 
@@ -50,37 +50,35 @@ public class RobotContainer {
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
 
         drive.setDefaultCommand(driveCommand);
-        intakeRoller.setDefaultCommand(groundIntakeRollersDefaultCommand);
-        intakeWrist.setDefaultCommand(groundIntakeWristDefaultCommand);
+        intakeRoller.setDefaultCommand(intakeRollersDefaultCommand);
+        intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
 
         intakeDeployTrigger = new Trigger(() -> getInput().getIntake());
         configureBindings();
     }
 
     private void configureBindings() {
-        intakeDeployTrigger.onTrue(teleopGroundIntakeDeployCommand);
-        intakeDeployTrigger.onFalse(teleopGroundIntakeRetractCommand);
+        intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
+        intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
     }
 
     private Command getGroundIntakeDeployCommand() {
         return Commands.parallel(
-                new MoveGroundWristCommand(intakeWrist, MoveGroundWristCommand.Direction.OUT)
-                        .andThen(new HoldGroundIntakeWristCommand(
-                                intakeWrist, HoldGroundIntakeWristCommand.Direction.OUT)),
-                new MoveGroundIntakeRollersCommand(intakeRoller, MoveGroundIntakeRollersCommand.Direction.INTAKE)
-                        .andThen(new HoldGroundIntakeRollerCommand(intakeRoller)));
+                new MoveIntakeWristCommand(intakeWrist, MoveIntakeWristCommand.Direction.OUT)
+                        .andThen(new HoldIntakeWristCommand(intakeWrist, HoldIntakeWristCommand.Direction.OUT)),
+                new MoveIntakeRollersCommand(intakeRoller, MoveIntakeRollersCommand.Direction.INTAKE)
+                        .andThen(new HoldIntakeRollerCommand(intakeRoller)));
     }
 
     private Command getGroundIntakeRetractCommand() {
         return Commands.parallel(
-                        new MoveGroundIntakeRollersCommand(
-                                intakeRoller, MoveGroundIntakeRollersCommand.Direction.SHOOT),
-                        new HoldGroundIntakeWristCommand(intakeWrist, HoldGroundIntakeWristCommand.Direction.OUT))
+                        new MoveIntakeRollersCommand(intakeRoller, MoveIntakeRollersCommand.Direction.SHOOT),
+                        new HoldIntakeWristCommand(intakeWrist, HoldIntakeWristCommand.Direction.OUT))
                 .andThen(Commands.parallel(
-                        new HoldGroundIntakeRollerCommand(intakeRoller),
-                        new MoveGroundWristCommand(intakeWrist, MoveGroundWristCommand.Direction.IN)
-                                .andThen(new HoldGroundIntakeWristCommand(
-                                        intakeWrist, HoldGroundIntakeWristCommand.Direction.IN))));
+                        new HoldIntakeRollerCommand(intakeRoller),
+                        new MoveIntakeWristCommand(intakeWrist, MoveIntakeWristCommand.Direction.IN)
+                                .andThen(
+                                        new HoldIntakeWristCommand(intakeWrist, HoldIntakeWristCommand.Direction.IN))));
     }
 
     private MoInput getInput() {

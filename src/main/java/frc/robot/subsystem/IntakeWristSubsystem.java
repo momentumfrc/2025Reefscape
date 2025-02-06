@@ -10,15 +10,15 @@ import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 
-public class GroundIntakeWristSubsystem extends SubsystemBase {
+public class IntakeWristSubsystem extends SubsystemBase {
     private final SparkMax wrist;
     private MutCurrent wristCurrent = Units.Amps.mutable(0);
 
-    public GroundIntakeWristSubsystem() {
+    public IntakeWristSubsystem() {
         super("Ground Intake Wrist");
         this.wrist = new SparkMax(Constants.INTAKE_WRIST.address(), MotorType.kBrushless);
 
-        MoShuffleboard.getInstance().groundIntakeTab.add(this);
+        MoShuffleboard.getInstance().intakeTab.add(this);
     }
 
     public void wristOut() {
