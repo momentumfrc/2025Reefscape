@@ -64,16 +64,10 @@ public class AutoChooser {
         MoShuffleboard.getInstance().autoTab.add("Initial Position", initialPositionChooser);
     }
 
-    private Transform2d getLeaveTransform() {
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-            return new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
-        } else {
-            return new Transform2d(-1 * MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
-        }
-    }
-
     private Command leaveFromPose(Pose2d initialPos, boolean assumeRobotAtPos) {
-        Transform2d transform = getLeaveTransform();
+        // Don't need to flip the tranform because the transform is in the direction of the pose, and the pose
+        // is already flipped
+        Transform2d transform = new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
         Pose2d destPos = initialPos.plus(transform);
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(initialPos, destPos);
