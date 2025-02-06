@@ -113,6 +113,7 @@ public class PositioningSubsystem extends SubsystemBase {
         LimelightHelpers.SetRobotOrientation(
                 "limelight", estimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
         if (llPos != null
                 && Math.abs(gyro.getRate()) < 720
                 && llPos.tagCount > 0

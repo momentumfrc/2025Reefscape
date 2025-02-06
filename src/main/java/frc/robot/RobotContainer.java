@@ -8,7 +8,6 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.intake.IntakeCommands;
@@ -18,6 +17,7 @@ import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 import frc.robot.subsystem.IntakeWristSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
+import frc.robot.utils.AutoChooser;
 
 public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -40,6 +40,8 @@ public class RobotContainer {
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
+    private AutoChooser autoChooser = new AutoChooser(positioning, drive);
+
     public RobotContainer() {
 
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
@@ -57,11 +59,11 @@ public class RobotContainer {
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
     }
 
-    private MoInput getInput() {
-        return inputChooser.getSelected();
+    public Command getAutonomousCommand() {
+        return autoChooser.getAutoCommand();
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+    private MoInput getInput() {
+        return inputChooser.getSelected();
     }
 }
