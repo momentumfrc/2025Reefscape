@@ -193,7 +193,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds chassisSpeeds, DriveFeedforwards driveFeedforwards) {
-        throw new UnsupportedOperationException("Not implemented");
+        driveRobotRelativeSpeeds(chassisSpeeds);
     }
 
     public void driveRobotRelativeSpeeds(ChassisSpeeds speeds) {
