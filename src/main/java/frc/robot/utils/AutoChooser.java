@@ -108,7 +108,7 @@ public class AutoChooser {
     }
 
     public Command getAutoCommand() {
-        if (masterAutoSwitch.getBoolean(true)) {
+        if (!masterAutoSwitch.getBoolean(true)) {
             return Commands.print("Autonomous disabled by master switch");
         }
 
