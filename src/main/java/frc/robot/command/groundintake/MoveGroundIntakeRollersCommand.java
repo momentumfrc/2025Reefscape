@@ -29,7 +29,6 @@ public class MoveGroundIntakeRollersCommand extends Command {
         rollerCurrentTimer.start();
     }
 
-
     @Override
     public void execute() {
         if (direction == Direction.SHOOT) {
@@ -42,14 +41,14 @@ public class MoveGroundIntakeRollersCommand extends Command {
     private boolean isBallHeld() {
         // TODO: figure this out later
 
-        //Possible current sensing?
+        // Possible current sensing?
         Current currAmps = intake.getRollerCurrent();
         if (currAmps.gte(MoPrefs.intakeRollerCurrentThreshold.get())) {
             if (rollerCurrentTimer.hasElapsed(
-                MoPrefs.intakeRollerCurrentTime.get().in(Units.Seconds))) {
-                    return true;
-                }
-            } else {
+                    MoPrefs.intakeRollerCurrentTime.get().in(Units.Seconds))) {
+                return true;
+            }
+        } else {
             rollerCurrentTimer.restart();
         }
 
@@ -61,4 +60,3 @@ public class MoveGroundIntakeRollersCommand extends Command {
         return isBallHeld();
     }
 }
-
