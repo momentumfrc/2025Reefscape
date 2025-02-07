@@ -28,7 +28,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
-// import edu.wpi.first.units.MutableMeasure;
 
 /** Robot preferences, accessible through Shuffleboard */
 public class MoPrefs {
@@ -46,18 +45,8 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
-    public static final LinearVelocityUnitPref autoMaxLinVel =
-            metersPerSecPref("Auto Max Linear Velocity", Units.MetersPerSecond.of(1.5));
-    public static final LinearAccelerationUnitPref autoMaxLinAccel =
-            metersPerSecPerSecPref("Auto Max Linear Acceleration", Units.MetersPerSecondPerSecond.of(2));
-    public static final AngularVelocityUnitPref autoMaxAngVel =
-            rotationsPerSecPref("Auto Max Angular Velocity", Units.RotationsPerSecond.of(2));
-    public static final AngularAccelerationUnitPref autoMaxAngAccel =
-            rotationsPerSecPerSecPref("Auto Max Angular Acceleration", Units.RotationsPerSecondPerSecond.of(2));
-    public static final DistanceUnitPref autoLeaveDist = metersPref("Auto Leave Distance", Units.Meters.of(1.5));
-    public static final UnitPref<DimensionlessUnit> autoFallbackSpd =
-            percentPref("Auto Fallback Power", Units.Percent.of(10));
-    public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
+    public static final TimeUnitPref climberRachetLockoutTime =
+            secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));
 
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
@@ -78,7 +67,18 @@ public class MoPrefs {
     public static final TimeUnitPref intakeRollerExtakeTime =
             secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
 
-    // private final MutableMeasure<U> currValue;
+    public static final LinearVelocityUnitPref autoMaxLinVel =
+            metersPerSecPref("Auto Max Linear Velocity", Units.MetersPerSecond.of(1.5));
+    public static final LinearAccelerationUnitPref autoMaxLinAccel =
+            metersPerSecPerSecPref("Auto Max Linear Acceleration", Units.MetersPerSecondPerSecond.of(2));
+    public static final AngularVelocityUnitPref autoMaxAngVel =
+            rotationsPerSecPref("Auto Max Angular Velocity", Units.RotationsPerSecond.of(2));
+    public static final AngularAccelerationUnitPref autoMaxAngAccel =
+            rotationsPerSecPerSecPref("Auto Max Angular Acceleration", Units.RotationsPerSecondPerSecond.of(2));
+    public static final DistanceUnitPref autoLeaveDist = metersPref("Auto Leave Distance", Units.Meters.of(1.5));
+    public static final UnitPref<DimensionlessUnit> autoFallbackSpd =
+            percentPref("Auto Fallback Power", Units.Percent.of(10));
+    public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
 
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro
