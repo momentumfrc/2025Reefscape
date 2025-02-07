@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,18 +19,30 @@ public class Constants {
 
     public static final CANAddress CLIMBER_LEFT = new CANAddress(0);
     public static final CANAddress CLIMBER_RIGHT = new CANAddress(0);
-
     public static final PWMPort CLIMBER_RACHET = new PWMPort(0);
 
-    public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(0);
+    public static final CANAddress INTAKE_WRIST = new CANAddress(2);
+    public static final CANAddress INTAKE_ROLLER = new CANAddress(0);
+
+    public static final HIDPort JOYSTICK = new HIDPort(0);
+    public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(1);
 
     public static Path DATA_STORE_FILE;
+
+    public static RobotConfig pathPlannerRobotConfig;
 
     static {
         if (RobotBase.isReal()) {
             DATA_STORE_FILE = Paths.get("/home/lvuser/pid_constants.ini");
         } else {
             DATA_STORE_FILE = Paths.get("./pid_constants.ini");
+        }
+
+        try {
+            pathPlannerRobotConfig = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            e.printStackTrace();
+            DriverStation.reportError("Could not load PP robot config", e.getStackTrace());
         }
     }
 

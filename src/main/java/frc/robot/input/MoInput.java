@@ -10,4 +10,6 @@ public interface MoInput {
     public abstract boolean getReZeroGyro();
 
     public abstract double getClimberMoveRequest();
+
+    public abstract boolean getIntake();
 }

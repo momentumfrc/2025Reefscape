@@ -8,15 +8,18 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
+import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
+import frc.robot.subsystem.IntakeRollerSubsystem;
+import frc.robot.subsystem.IntakeWristSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
+import frc.robot.utils.AutoChooser;
 
 public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -27,10 +30,22 @@ public class RobotContainer {
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
 
-    private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
+    private final IntakeRollerSubsystem intakeRoller = new IntakeRollerSubsystem();
+    private final IntakeWristSubsystem intakeWrist = new IntakeWristSubsystem();
+
+    private final Command teleopIntakeDeployCommand = IntakeCommands.intakeDeployCommand(intakeWrist, intakeRoller);
+    private final Command teleopIntakeRetractCommand = IntakeCommands.intakeRetractCommand(intakeWrist, intakeRoller);
+
+    private final Command intakeRollersDefaultCommand = IntakeCommands.intakeRollerDefaultCommand(intakeRoller);
+    private final Command intakeWristDefaultCommand = IntakeCommands.intakeWristDefaultCommand(intakeWrist);
+
+    private Trigger intakeDeployTrigger;
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
+
+    private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
+    private AutoChooser autoChooser = new AutoChooser(positioning, drive);
 
     public RobotContainer() {
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
@@ -39,21 +54,28 @@ public class RobotContainer {
 
         drive.setDefaultCommand(driveCommand);
         climber.setDefaultCommand(ClimberCommands.idleClimber(climber));
+        intakeRoller.setDefaultCommand(intakeRollersDefaultCommand);
+        intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
     }
 
     private void configureBindings() {
+        intakeDeployTrigger = new Trigger(() -> getInput().getIntake());
+
         extendClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() > 0);
         retractClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() < 0);
+
+        intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
+        intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
         extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
     }
 
-    private MoInput getInput() {
-        return inputChooser.getSelected();
+    public Command getAutonomousCommand() {
+        return autoChooser.getAutoCommand();
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+    private MoInput getInput() {
+        return inputChooser.getSelected();
     }
 }
