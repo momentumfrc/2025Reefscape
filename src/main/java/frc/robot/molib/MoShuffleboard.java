@@ -78,8 +78,14 @@ public class MoShuffleboard {
                 .getLayout("Sysid Settings", BuiltInLayouts.kList)
                 .withSize(2, 1)
                 .withProperties(Map.of("Label position", "RIGHT"));
-        voltRampEntry = sysidGroup.add("Volts Ramp", 1.5).getEntry();
-        voltEntry = sysidGroup.add("Volts Step", 2).getEntry();
+        voltRampEntry = sysidGroup
+                .add("Volts Ramp", 1.5)
+                .withWidget(BuiltInWidgets.kTextView)
+                .getEntry();
+        voltEntry = sysidGroup
+                .add("Volts Step", 2)
+                .withWidget(BuiltInWidgets.kTextView)
+                .getEntry();
 
         tuneSetpointSubscriber = settingsTab
                 .add("Tune Setpoints?", false)
