@@ -47,6 +47,10 @@ public class MoPrefs {
 
     public static final TimeUnitPref climberRachetLockoutTime =
             secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));
+    public static final UnitPref<DimensionlessUnit> rachetEngagedServoPosition =
+            percentPref("Climber Rachet Engaged Servo Pos", Units.Percent.zero());
+    public static final UnitPref<DimensionlessUnit> rachetDisengagedServoPosition =
+            percentPref("Climber Rachet Disengaged Servo Pos", Units.Percent.of(100));
 
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
