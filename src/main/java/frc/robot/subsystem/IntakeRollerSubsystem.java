@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +19,8 @@ import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 
 public class IntakeRollerSubsystem extends SubsystemBase {
+    private static final Current SMART_CURRENT_LIMIT = Units.Amps.of(20);
+
     private final SparkMax roller;
     private final RelativeEncoder encoder;
 
@@ -34,11 +37,15 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
         this.roller = new SparkMax(Constants.INTAKE_ROLLER.address(), MotorType.kBrushed);
         this.roller.configure(
-                new SparkMaxConfig().idleMode(IdleMode.kBrake).inverted(false),
+                new SparkMaxConfig().idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit((int)
+                        SMART_CURRENT_LIMIT.in(Units.Amps)),
                 ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
 
         this.encoder = roller.getEncoder();
+
+        MoShuffleboard.getInstance().intakeTab.addDouble("Roller Velocity (RPS)", () -> getIntakeVelocity()
+                .in(Units.RotationsPerSecond));
 
         MoShuffleboard.getInstance().intakeTab.add(this);
     }
