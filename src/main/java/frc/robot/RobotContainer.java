@@ -9,10 +9,15 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.command.EndEffectorExAlgaeInCoral;
+import frc.robot.command.EndEffectorInAlgaeExCoral;
 import frc.robot.command.TeleopDriveCommand;
+import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
+import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
@@ -20,8 +25,14 @@ public class RobotContainer {
 
     private DriveSubsystem drive = new DriveSubsystem();
     private PositioningSubsystem positioning = new PositioningSubsystem(gyro);
+    private ElevatorSubsystem elevator = new ElevatorSubsystem();
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
+    private EndEffectorExAlgaeInCoral algaeOut = new EndEffectorExAlgaeInCoral(elevator);
+    private EndEffectorInAlgaeExCoral algaeIn = new EndEffectorInAlgaeExCoral(elevator);
+
+    private Trigger endEffectorExAlgaeInCoralTrigger;
+    private Trigger endEffectorInAlgaeExCoralTrigger;
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
 
@@ -33,7 +44,13 @@ public class RobotContainer {
         drive.setDefaultCommand(driveCommand);
     }
 
-    private void configureBindings() {}
+    private void configureBindings() {
+        endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
+        endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
+
+        endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOut);
+        endEffectorInAlgaeExCoralTrigger.and(endEffectorExAlgaeInCoralTrigger.whileFalse(algaeIn));
+    }
 
     private MoInput getInput() {
         return inputChooser.getSelected();

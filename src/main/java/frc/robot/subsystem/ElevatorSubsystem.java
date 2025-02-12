@@ -83,6 +83,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void configureMotors() {
         elevatorLimitConfig.reverseSoftLimit(0).reverseSoftLimitEnabled(true);
+        wristLimitConfig.reverseSoftLimit(0).reverseSoftLimitEnabled(true);
         elevatorAConfig
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(ELEVATOR_CURRENT_LIMIT)
@@ -90,8 +91,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorBConfig.apply(elevatorAConfig).follow(elevatorA, true);
         wristConfig
                 .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(WRIST_CURRENT_LIMIT)
-                .apply(wristLimitConfig);
+                .smartCurrentLimit(WRIST_CURRENT_LIMIT);
+        adjustWristReverseLimit();
 
         this.elevatorA.configure(elevatorAConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         this.elevatorB.configure(elevatorBConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -189,6 +190,20 @@ public class ElevatorSubsystem extends SubsystemBase {
                 MoPrefs.wristEncoderScale.get());
     }
 
+    public void adjustWristReverseLimit() {
+        wristConfig.apply(wristLimitConfig);
+    }
+
+    public void disableWristReverseLimit() {
+        wristLimitConfig.reverseSoftLimitEnabled(false);
+        adjustWristReverseLimit();
+    }
+
+    public void enableWristReverseLimit() {
+        wristLimitConfig.reverseSoftLimitEnabled(true);
+        adjustWristReverseLimit();
+    }
+
     private Distance getElevatorDistanceFromBottom() {
         return elevatorRelEncoder.getPosition().minus(MoPrefs.elevatorBottom.get());
     }
@@ -227,7 +242,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void adjustDirectPower(ElevatorMovementRequest request) {
         request = limitElevatorMovementRequest(request);
         elevatorA.set(request.elevatorPower);
-        endEffector.set(ControlMode.PercentOutput, request.wristPower);
+        elevatorWrist.set(request.wristPower);
     }
 
     public void adjustVelocity(ElevatorMovementRequest request) {
@@ -261,5 +276,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void extakeAlgaeCoralIntake() {
         endEffector.set(
                 ControlMode.PercentOutput, -MoPrefs.endEffectorPower.get().in(Units.Volts));
+    }
+
+    public void endEffectorStop() {
+        endEffector.set(ControlMode.PercentOutput, 0);
     }
 }

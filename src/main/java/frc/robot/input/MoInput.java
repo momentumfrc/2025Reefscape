@@ -19,4 +19,8 @@ public interface MoInput {
     public abstract boolean getSaveElevatorSetpoint();
 
     public abstract boolean getReZeroElevator();
+
+    public abstract boolean getEndEffectorIn();
+
+    public abstract boolean getEndEffectorOut();
 }

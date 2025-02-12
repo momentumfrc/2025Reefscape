@@ -1,5 +1,6 @@
 package frc.robot.input;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
@@ -9,53 +10,78 @@ import java.util.Optional;
 
 public class ControllerInput implements MoInput {
 
-    private XboxController controller = new XboxController(Constants.XBOX_CONTROLLER_1.hidport());
+    private Joystick driveController = new Joystick(Constants.JOYSTICK.hidport());
+    private XboxController elevatorController = new XboxController(Constants.XBOX_CONTROLLER_1.hidport());
 
     private Vec2 moveRequest = new Vec2(0, 0);
 
+    private double getThrottle() {
+        return ((-1 * driveController.getThrottle()) + 1) / 2;
+    }
+
     @Override
     public Vec2 getMoveRequest() {
-        moveRequest.update(controller.getLeftX(), controller.getLeftY());
+        moveRequest.update(driveController.getX(), driveController.getY());
+        moveRequest.scale(getThrottle());
         return moveRequest;
     }
 
     @Override
     public double getTurnRequest() {
-        return -1 * controller.getRightX();
+        return -1 * driveController.getZ() * getThrottle();
     }
 
     @Override
     public boolean getReZeroGyro() {
-        return controller.getBackButtonPressed();
+        return driveController.getRawButton(7);
     }
 
     @Override
     public boolean getSaveElevatorSetpoint() {
-        return controller.getStartButtonPressed();
+        return elevatorController.getStartButtonPressed();
     }
 
     @Override
     public ElevatorMovementRequest getElevatorMovementRequest() {
-        if (controller.getLeftBumperButton()) {
-            return new ElevatorMovementRequest(controller.getLeftY(), controller.getRightY());
-        } else return new ElevatorMovementRequest(0, 0);
+        return new ElevatorMovementRequest(elevatorController.getLeftY(), elevatorController.getRightY());
     }
 
     @Override
     public Optional<ElevatorSetpoint> getElevatorSetpoints() {
-        if (controller.getBButton()) {
-            return Optional.of(ElevatorSetpoint.STOW);
-        } else if (controller.getAButton()) {
-            return Optional.of(ElevatorSetpoint.PROCESSOR);
-        } else if (controller.getYButton()) {
-            return Optional.of(ElevatorSetpoint.L3);
+        if (elevatorController.getRightBumperButton()) {
+            if (elevatorController.getYButton()) {
+                return Optional.of(ElevatorSetpoint.L3);
+            } else if (elevatorController.getBButton()) {
+                return Optional.of(ElevatorSetpoint.L2);
+            } else if (elevatorController.getAButton()) {
+                return Optional.of(ElevatorSetpoint.L1);
+            }
+        } else {
+            if (elevatorController.getYButton()) {
+                return Optional.of(ElevatorSetpoint.INTAKE);
+            } else if (elevatorController.getBButton()) {
+                return Optional.of(ElevatorSetpoint.STOW);
+            } else if (elevatorController.getXButton()) {
+                return Optional.of(ElevatorSetpoint.PROCESSOR);
+            } else if (elevatorController.getAButton()) {
+                return Optional.of(ElevatorSetpoint.GROUND);
+            }
         }
-
         return Optional.empty();
     }
 
     @Override
     public boolean getReZeroElevator() {
-        return controller.getStartButton();
+        return elevatorController.getBackButtonPressed();
+    }
+
+    @Override
+    public boolean getEndEffectorIn() {
+        return elevatorController.getLeftBumperButton();
+    }
+
+    @Override
+    public boolean getEndEffectorOut() {
+        return elevatorController.getRightBumperButton();
     }
 }

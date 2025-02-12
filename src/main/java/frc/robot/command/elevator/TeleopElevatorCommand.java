@@ -115,14 +115,12 @@ public class TeleopElevatorCommand extends Command {
             if (elevatorHardStopOverrideTimer.hasElapsed(SHOULDER_HARD_STOP_OVERRIDE_TIMEOUT)) {
                 if (!elevatorLimitOverride) {
                     elevatorLimitOverride = true;
-                    // TODO:
-                    // elevators.setShoulderReverseLimitEnabled(false);
+                    elevators.disableWristReverseLimit();
                 }
             }
         } else {
             if (zeroElevatorPressed) {
-                // TODO:
-                // elevators.setShoulderReverseLimitEnabled(true);
+                elevators.enableWristReverseLimit();
                 elevatorLimitOverride = false;
                 elevators.reZeroElevator();
             }

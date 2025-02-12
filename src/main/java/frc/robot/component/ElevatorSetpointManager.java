@@ -11,10 +11,12 @@ public class ElevatorSetpointManager {
 
     public static enum ElevatorSetpoint {
         STOW,
+        PROCESSOR,
+        INTAKE,
+        GROUND,
         L1,
         L2,
-        L3,
-        PROCESSOR
+        L3
     };
 
     private static ElevatorSetpointManager instance;
