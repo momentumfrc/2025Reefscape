@@ -23,6 +23,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.molib.MoUnits;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -46,6 +47,13 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
     public static final Pref<Double> elevatorRampTime = unitlessDoublePref("Elevator Ramp Time", 0.15);
+
+    public static final UnitPref<VoltageUnit> elevatorWristPower = voltsPref("Elevator Wrist Power", Units.Volts.of(1));
+    public static final UnitPref<VoltageUnit> elevatorWristHoldPower = voltsPref("Elevator Wrist Hold Power", Units.Volts.of(1));
+
+    public static final UnitPref<CurrentUnit> elevatorWristCurrentThreshold =
+            ampsPref("Elevator Wrist Current Thresh", Units.Amps.of(15));
+    public static final TimeUnitPref elevatorWristCurrentTime = secondsPref("Elevator Wrist Time", Units.Seconds.one());
 
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
             encoderTicksPerCentimeterPref(
@@ -184,6 +192,10 @@ public class MoPrefs {
 
     private static AngularVelocityUnitPref rotationsPerSecPref(String key, AngularVelocity defaultValue) {
         return new AngularVelocityUnitPref(key, Units.RotationsPerSecond, defaultValue);
+    }
+
+    private static TimeUnitPref secondsPref(String key, Time defaultValue) {
+        return new TimeUnitPref(key, Units.Seconds, defaultValue);
     }
 
     private static DimensionlessUnitPref percentPref(String key, Dimensionless defaultValue) {

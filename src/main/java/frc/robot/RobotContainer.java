@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.EndEffectorExAlgaeInCoral;
 import frc.robot.command.EndEffectorInAlgaeExCoral;
 import frc.robot.command.TeleopDriveCommand;
-import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
+import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
@@ -28,6 +28,7 @@ public class RobotContainer {
     private ElevatorSubsystem elevator = new ElevatorSubsystem();
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
+    private TeleopElevatorCommand elevatorCommand = new TeleopElevatorCommand(elevator, this::getInput);
     private EndEffectorExAlgaeInCoral algaeOut = new EndEffectorExAlgaeInCoral(elevator);
     private EndEffectorInAlgaeExCoral algaeIn = new EndEffectorInAlgaeExCoral(elevator);
 
@@ -42,6 +43,7 @@ public class RobotContainer {
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
 
         drive.setDefaultCommand(driveCommand);
+        elevator.setDefaultCommand(elevatorCommand);
     }
 
     private void configureBindings() {

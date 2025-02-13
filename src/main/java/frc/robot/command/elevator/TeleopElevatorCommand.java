@@ -13,13 +13,16 @@ import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorControlMode;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorPosition;
+import frc.robot.subsystem.ElevatorSubsystem.WristState;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TeleopElevatorCommand extends Command {
-    private static final double SHOULDER_HARD_STOP_OVERRIDE_TIMEOUT = 1;
+    private static final double ELEVATOR_HARD_STOP_OVERRIDE_TIMEOUT = 1;
 
     private static final ElevatorSetpoint DEFAULT_SETPOINT = ElevatorSetpoint.STOW;
+    private WristState state;
 
     private final ElevatorSubsystem elevators;
     private final Supplier<MoInput> inputSupplier;
@@ -34,6 +37,8 @@ public class TeleopElevatorCommand extends Command {
     private boolean zeroElevatorPressed = false;
     private boolean elevatorLimitOverride = false;
     private Timer elevatorHardStopOverrideTimer = new Timer();
+
+    private TiltBackElevatorWristCommand tiltback;
 
     public TeleopElevatorCommand(ElevatorSubsystem elevators, Supplier<MoInput> inputSupplier) {
         this.elevators = elevators;
@@ -53,6 +58,8 @@ public class TeleopElevatorCommand extends Command {
                 .add("Setpoint", "UNKNOWN")
                 .getEntry();
 
+        tiltback = new TiltBackElevatorWristCommand(elevators);
+
         addRequirements(elevators);
     }
 
@@ -62,6 +69,7 @@ public class TeleopElevatorCommand extends Command {
         elevatorLimitOverride = false;
         elevatorHardStopOverrideTimer.restart();
         elevators.reZeroElevator();
+        state = WristState.NORMAL;
     }
 
     private ElevatorMovementRequest getMovementRequest(MoInput input) {
@@ -72,15 +80,17 @@ public class TeleopElevatorCommand extends Command {
     }
 
     private void moveSmartMotion(MoInput input) {
-        Optional<ElevatorSetpoint> requestedSetpoint = input.getElevatorSetpoints();
+        Optional<ElevatorSetpoint> newSetpoint = input.getElevatorSetpoints();
+        ElevatorSetpoint requestedSetpoint = DEFAULT_SETPOINT;
         ElevatorMovementRequest requestedMovement = getMovementRequest(input);
         boolean shouldSaveSetpoint = input.getSaveElevatorSetpoint();
 
-        if (requestedSetpoint.isPresent()) {
+        if (newSetpoint.isPresent()) {
+            requestedSetpoint = newSetpoint.get();
             if (shouldSaveSetpoint
                     && MoShuffleboard.getInstance().tuneSetpointSubscriber.getBoolean(false)) {
                 ElevatorSetpointManager.getInstance()
-                        .setSetpoint(requestedSetpoint.get(), elevators.getElevatorPosition());
+                        .setSetpoint(newSetpoint.get(), elevators.getElevatorPosition());
             } else {
                 smartMotionOverride = false;
             }
@@ -90,7 +100,7 @@ public class TeleopElevatorCommand extends Command {
             smartMotionOverride = true;
         }
 
-        ElevatorSetpoint setpoint = requestedSetpoint.orElse(DEFAULT_SETPOINT);
+        ElevatorSetpoint setpoint = requestedSetpoint;
         ElevatorPosition requestedPosition =
                 ElevatorSetpointManager.getInstance().getSetpoint(setpoint);
         if (smartMotionOverride) {
@@ -98,7 +108,23 @@ public class TeleopElevatorCommand extends Command {
             elevators.adjustVelocity(requestedMovement);
         } else {
             setpointPublisher.setString(setpoint.toString());
-            elevators.adjustSmartPosition(requestedPosition);
+            switch(state) {
+                case NORMAL:
+                default:
+                    if (setpoint.equals(ElevatorSetpoint.INTAKE) && elevators.atPosition(requestedPosition))
+                            state = WristState.HOLDING;
+                    else if (!elevators.atHeight(requestedPosition) && !elevators.stowedWrist(requestedPosition))
+                            elevators.stowWrist();
+                    else if (elevators.stowedWrist(requestedPosition))
+                             elevators.adjustElevatorSmartPosition(requestedPosition);
+                    else elevators.adjustWristSmartPosition(requestedPosition);
+                    break;
+                case HOLDING:
+                    
+                    break;
+                case RETURNING:
+                    break;
+            }
         }
     }
 
@@ -112,17 +138,17 @@ public class TeleopElevatorCommand extends Command {
         // Then, when re-zero is released, the zeroing actually happens.
         if (input.getReZeroElevator()) {
             zeroElevatorPressed = true;
-            if (elevatorHardStopOverrideTimer.hasElapsed(SHOULDER_HARD_STOP_OVERRIDE_TIMEOUT)) {
+            if (elevatorHardStopOverrideTimer.hasElapsed(ELEVATOR_HARD_STOP_OVERRIDE_TIMEOUT)) {
                 if (!elevatorLimitOverride) {
                     elevatorLimitOverride = true;
-                    elevators.disableWristReverseLimit();
+                    //elevators.disableWristReverseLimit();
                 }
             }
         } else {
             if (zeroElevatorPressed) {
                 elevators.enableWristReverseLimit();
                 elevatorLimitOverride = false;
-                elevators.reZeroElevator();
+                //elevators.reZeroElevator();
             }
             zeroElevatorPressed = false;
             elevatorHardStopOverrideTimer.restart();

@@ -16,7 +16,9 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -34,11 +36,21 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final int ELEVATOR_CURRENT_LIMIT = 50;
     private static final int WRIST_CURRENT_LIMIT = 50;
 
+    private MutCurrent wristCurrent = Units.Amps.mutable(0);
+
     public static enum ElevatorControlMode {
         SMARTMOTION,
         DIRECT_VELOCITY,
         FALLBACK_DIRECT_POWER
     };
+
+    public static enum WristState {
+        NORMAL,
+        HOLDING,
+        RETURNING
+    }
+
+    public WristState state = WristState.NORMAL;
 
     private final SparkMax elevatorA;
     private final SparkMax elevatorB;
@@ -256,16 +268,50 @@ public class ElevatorSubsystem extends SubsystemBase {
         wristVelocityPid.setVelocityReference(wristVelocity);
     }
 
-    public void adjustSmartPosition(ElevatorPosition position) {
+    public void adjustElevatorSmartPosition(ElevatorPosition position) {
         elevatorSmartMotionPid.setPositionReference(position.elevatorDistance);
+    }
+
+    public void adjustWristSmartPosition(ElevatorPosition position) {
         wristSmartMotionPid.setPositionReference(position.wristAngle);
     }
 
-    public boolean atPosition(ElevatorPosition position) {
+    public void stowWrist() {
+        wristSmartMotionPid.setPositionReference(Units.Rotations.zero());
+    }
 
+    public void tiltBack() {
+        elevatorWrist.setVoltage(-MoPrefs.elevatorWristPower.get().in(Units.Volts));
+    }
+
+    public void holdWristIn() {
+        elevatorWrist.setVoltage(MoPrefs.elevatorWristHoldPower.get().in(Units.Volts));
+    }
+
+    public boolean atPosition(ElevatorPosition position) {
         double thresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
         return elevatorRelEncoder.getPosition().isNear(position.elevatorDistance(), thresh)
                 && wristRelEncoder.getPosition().isNear(position.wristAngle(), thresh);
+    }
+
+    public boolean atHeight(ElevatorPosition position) {
+        double thresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        return elevatorRelEncoder.getPosition().isNear(position.elevatorDistance(), thresh);
+    }
+
+    public boolean stowedWrist(ElevatorPosition position) {
+        double thresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        return wristRelEncoder.getPosition().isNear(Units.Inches.of(0), thresh);
+    }
+
+    public double getElevatorDirection() {
+        return elevatorSmartMotionPid.getSetpoint();
+    }
+
+    public Current getWristCurrent() {
+        double current = elevatorWrist.getOutputCurrent();
+        wristCurrent.mut_replace(current, Units.Amps);
+        return wristCurrent;
     }
 
     public void intakeAlgaeCoralExtake() {
