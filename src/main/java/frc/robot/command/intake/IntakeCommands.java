@@ -24,8 +24,10 @@ public class IntakeCommands {
 
     public static Command intakeDeployCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
         return Commands.parallel(
-                new MoveIntakeWristCommand(wrist, Direction.OUT).andThen(holdIntakeWristCommand(wrist, Direction.OUT)),
-                new RollerIntakeAlgaeCommand(roller).andThen(holdIntakeRollerCommand(roller)));
+                        new MoveIntakeWristCommand(wrist, Direction.OUT)
+                                .andThen(holdIntakeWristCommand(wrist, Direction.OUT)),
+                        new RollerIntakeAlgaeCommand(roller).andThen(holdIntakeRollerCommand(roller)))
+                .withName("IntakeWristDeployCommand");
     }
 
     public static Command intakeRetractCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
@@ -33,7 +35,8 @@ public class IntakeCommands {
                 .andThen(Commands.parallel(
                         holdIntakeRollerCommand(roller),
                         new MoveIntakeWristCommand(wrist, Direction.IN)
-                                .andThen(holdIntakeWristCommand(wrist, Direction.IN))));
+                                .andThen(holdIntakeWristCommand(wrist, Direction.IN))))
+                .withName("IntakeWristRetractCommand");
     }
 
     public static Command intakeRollerDefaultCommand(IntakeRollerSubsystem roller) {
@@ -42,7 +45,8 @@ public class IntakeCommands {
 
     public static Command intakeWristDefaultCommand(IntakeWristSubsystem wrist) {
         return new MoveIntakeWristCommand(wrist, Direction.IN)
-                .andThen(IntakeCommands.holdIntakeWristCommand(wrist, Direction.IN));
+                .andThen(IntakeCommands.holdIntakeWristCommand(wrist, Direction.IN))
+                .withName("RetractThenHoldIntakeWristCommand");
     }
 
     private IntakeCommands() {
