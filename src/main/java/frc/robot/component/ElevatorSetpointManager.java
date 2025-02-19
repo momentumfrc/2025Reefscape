@@ -13,7 +13,6 @@ public class ElevatorSetpointManager {
         STOW,
         PROCESSOR,
         INTAKE,
-        GROUND,
         L1,
         L2,
         L3

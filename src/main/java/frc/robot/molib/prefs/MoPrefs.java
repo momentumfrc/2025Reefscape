@@ -49,7 +49,8 @@ public class MoPrefs {
     public static final Pref<Double> elevatorRampTime = unitlessDoublePref("Elevator Ramp Time", 0.15);
 
     public static final UnitPref<VoltageUnit> elevatorWristPower = voltsPref("Elevator Wrist Power", Units.Volts.of(1));
-    public static final UnitPref<VoltageUnit> elevatorWristHoldPower = voltsPref("Elevator Wrist Hold Power", Units.Volts.of(1));
+    public static final UnitPref<VoltageUnit> elevatorWristHoldPower =
+            voltsPref("Elevator Wrist Hold Power", Units.Volts.of(1));
 
     public static final UnitPref<CurrentUnit> elevatorWristCurrentThreshold =
             ampsPref("Elevator Wrist Current Thresh", Units.Amps.of(15));

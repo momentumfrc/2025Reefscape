@@ -48,7 +48,8 @@ public class ControllerInput implements MoInput {
 
     @Override
     public Optional<ElevatorSetpoint> getElevatorSetpoints() {
-        if (elevatorController.getRightBumperButton()) {
+        double pov = elevatorController.getPOV();
+        if (pov == 0) {
             if (elevatorController.getYButton()) {
                 return Optional.of(ElevatorSetpoint.L3);
             } else if (elevatorController.getBButton()) {
@@ -61,10 +62,8 @@ public class ControllerInput implements MoInput {
                 return Optional.of(ElevatorSetpoint.INTAKE);
             } else if (elevatorController.getBButton()) {
                 return Optional.of(ElevatorSetpoint.STOW);
-            } else if (elevatorController.getXButton()) {
-                return Optional.of(ElevatorSetpoint.PROCESSOR);
             } else if (elevatorController.getAButton()) {
-                return Optional.of(ElevatorSetpoint.GROUND);
+                return Optional.of(ElevatorSetpoint.PROCESSOR);
             }
         }
         return Optional.empty();

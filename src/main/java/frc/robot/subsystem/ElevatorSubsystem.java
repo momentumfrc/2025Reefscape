@@ -20,8 +20,12 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.command.elevator.TiltBackElevatorWristCommand;
+import frc.robot.component.ElevatorSetpointManager;
+import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.encoder.MoDistanceEncoder;
 import frc.robot.molib.encoder.MoRotationEncoder;
@@ -78,6 +82,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final PIDTuner elevatorPosTuner;
     private final PIDTuner wristPosTuner;
 
+    private TiltBackElevatorWristCommand tiltback;
+
     public final SendableChooser<ElevatorControlMode> controlMode;
 
     public static record ElevatorPosition(Distance elevatorDistance, Angle wristAngle) {}
@@ -101,9 +107,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .smartCurrentLimit(ELEVATOR_CURRENT_LIMIT)
                 .apply(elevatorLimitConfig);
         elevatorBConfig.apply(elevatorAConfig).follow(elevatorA, true);
-        wristConfig
-                .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(WRIST_CURRENT_LIMIT);
+        wristConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(WRIST_CURRENT_LIMIT);
         adjustWristReverseLimit();
 
         this.elevatorA.configure(elevatorAConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -187,6 +191,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         MoShuffleboard.getInstance().settingsTab.add("Elevator Control Mode", controlMode);
 
         MoShuffleboard.getInstance().elevatorTab.add(this);
+
+        tiltback = new TiltBackElevatorWristCommand(this);
     }
 
     public void reZeroElevator() {
@@ -274,6 +280,36 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void adjustWristSmartPosition(ElevatorPosition position) {
         wristSmartMotionPid.setPositionReference(position.wristAngle);
+    }
+
+    public void adjustSmartPosition(ElevatorPosition position) {
+        switch (state) {
+            case NORMAL:
+            default:
+                if (position.equals(ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.INTAKE))
+                        && atPosition(position)) {
+                    disableWristReverseLimit();
+                    new ScheduleCommand(tiltback);
+                    state = WristState.HOLDING;
+                } else if (!atHeight(position) && !stowedWrist(position)) stowWrist();
+                else if (stowedWrist(position)) adjustElevatorSmartPosition(position);
+                else adjustWristSmartPosition(position);
+                break;
+            case HOLDING:
+                if (!tiltback.isScheduled()) holdWristIn();
+                if (!atHeight(position)) {
+                    if (tiltback.isScheduled()) tiltback.cancel();
+                    state = WristState.RETURNING;
+                }
+                break;
+            case RETURNING:
+                stowWrist();
+                if (stowedWrist(position)) {
+                    enableWristReverseLimit();
+                    state = WristState.NORMAL;
+                }
+                break;
+        }
     }
 
     public void stowWrist() {
