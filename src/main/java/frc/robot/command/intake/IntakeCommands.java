@@ -17,8 +17,8 @@ public class IntakeCommands {
 
     public static Command holdIntakeWristCommand(IntakeWristSubsystem wrist, Direction direction) {
         return switch (direction) {
-            case IN -> Commands.run(wrist::holdWristOut, wrist).withName("HoldIntakeWristOutCommand");
-            case OUT -> Commands.run(wrist::holdWristIn, wrist).withName("HoldIntakeWristInCommand");
+            case IN -> Commands.run(wrist::holdWristIn, wrist).withName("HoldIntakeWristOutCommand");
+            case OUT -> Commands.run(wrist::holdWristOut, wrist).withName("HoldIntakeWristInCommand");
         };
     }
 
