@@ -12,6 +12,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -31,6 +32,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
             .getEntry();
 
     private MutAngularVelocity encoderVelocity = Units.RotationsPerSecond.mutable(0);
+    private MutCurrent rollerCurrent = Units.Amps.mutable(0);
 
     public IntakeRollerSubsystem() {
         super("Ground Intake Rollers");
@@ -46,6 +48,9 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
         MoShuffleboard.getInstance().intakeTab.addDouble("Roller Velocity (RPS)", () -> getIntakeVelocity()
                 .in(Units.RotationsPerSecond));
+
+        MoShuffleboard.getInstance().intakeTab.addDouble("Roller Current", () -> getRollerCurrent()
+                .in(Units.Amps));
 
         MoShuffleboard.getInstance().intakeTab.add(this);
     }
@@ -72,5 +77,9 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     public AngularVelocity getIntakeVelocity() {
         return encoderVelocity.mut_replace(encoder.getVelocity(), Units.RPM);
+    }
+
+    public Current getRollerCurrent() {
+        return rollerCurrent.mut_replace(roller.getOutputCurrent(), Units.Amps);
     }
 }

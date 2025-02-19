@@ -31,6 +31,8 @@ public class IntakeWristSubsystem extends SubsystemBase {
                 ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
 
+        MoShuffleboard.getInstance().intakeTab.addDouble("Wrist Current", () -> getWristCurrent()
+                .in(Units.Amps));
         MoShuffleboard.getInstance().intakeTab.add(this);
     }
 
