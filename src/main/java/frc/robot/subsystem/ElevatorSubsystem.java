@@ -78,9 +78,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             .add("Elevator Zeroed", false)
             .getEntry();
 
-    private final GenericEntry wristLimitsEnabled = MoShuffleboard.getInstance()
+    private final GenericEntry nominalReverseLimitEnabled = MoShuffleboard.getInstance()
             .elevatorTab
-            .add("Wrist Limit Enabled", true)
+            .add("Wrist Nominal Reverse Limit Enabled", true)
             .getEntry();
 
     public static record ElevatorPosition(Distance elevatorDistance, Angle wristAngle) {}
@@ -133,7 +133,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         wristConfig
                 .softLimit
-                .reverseSoftLimit(MoPrefs.wristMinExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
+                .reverseSoftLimit(MoPrefs.wristNominalRevLimit.get().in(wristRelEncoder.getInternalEncoderUnits()))
                 .reverseSoftLimitEnabled(true)
                 .forwardSoftLimit(MoPrefs.wristMaxExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
                 .forwardSoftLimitEnabled(true);
@@ -148,7 +148,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Setup listeners for config values
         MoPrefs.elevatorMaxExtension.subscribe(value -> updateElevatorConfig(
                 config -> config.softLimit.forwardSoftLimit(value.in(elevatorRelEncoder.getInternalEncoderUnits()))));
-        MoPrefs.wristMinExtension.subscribe(value -> updateWristConfig(
+        MoPrefs.wristNominalRevLimit.subscribe(value -> updateWristConfig(
                 config -> config.softLimit.reverseSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
         MoPrefs.wristMaxExtension.subscribe(value -> updateWristConfig(
                 config -> config.softLimit.forwardSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
@@ -213,14 +213,23 @@ public class ElevatorSubsystem extends SubsystemBase {
                 MoPrefs.wristEncoderScale.get());
     }
 
-    public void disableWristLimit() {
-        wristLimitsEnabled.setBoolean(false);
-        updateWristConfig(config -> config.softLimit.reverseSoftLimitEnabled(false));
+    public boolean isWristNominalReverseLimitEnabled() {
+        return nominalReverseLimitEnabled.getBoolean(true);
     }
 
-    public void enableWristLimit() {
-        wristLimitsEnabled.setBoolean(true);
-        updateWristConfig(config -> config.softLimit.reverseSoftLimitEnabled(true));
+    public boolean isWristInDanger() {
+        return wristRelEncoder.getPosition().lt(MoPrefs.wristNominalRevLimit.get());
+    }
+
+    public void disableWristNominalReverseLimit() {
+        nominalReverseLimitEnabled.setBoolean(false);
+        updateWristConfig(config -> config.softLimit.reverseSoftLimit(0));
+    }
+
+    public void enableWristNominalReverseLimit() {
+        nominalReverseLimitEnabled.setBoolean(true);
+        updateWristConfig(config -> config.softLimit.reverseSoftLimit(
+                MoPrefs.wristNominalRevLimit.get().in(wristRelEncoder.getInternalEncoderUnits())));
     }
 
     public Distance getElevatorHeight() {

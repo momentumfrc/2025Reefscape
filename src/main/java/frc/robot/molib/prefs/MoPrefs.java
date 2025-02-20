@@ -71,8 +71,7 @@ public class MoPrefs {
     public static final DimensionlessUnitPref elevatorSetpointVarianceThreshold =
             percentPref("Elevator Setpoint Variance Threshold", Units.Percent.of(3));
 
-    public static final AngleUnitPref wristAbsZero =
-            rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0)); // Temp
+    public static final AngleUnitPref wristAbsZero = rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0));
 
     public static final UnitPref<VoltageUnit> elevatorZeroPower =
             voltsPref("Elevator Zero Power", Units.Volts.of(0.25));
@@ -81,21 +80,21 @@ public class MoPrefs {
     public static final TimeUnitPref elevatorZeroCurrentTime = secondsPref("Elevator Zero Time", Units.Seconds.of(0.5));
 
     public static final DistanceUnitPref elevatorMaxExtension =
-            centimetersPref("Elevator Max Extension", Units.Centimeters.of(0)); // Temp
+            centimetersPref("Elevator Max Extension", Units.Centimeters.of(73.66));
     public static final AngleUnitPref wristMaxExtension =
-            rotationsPref("Wrist Max Extension", Units.Rotations.of(0.25)); // Temp
+            rotationsPref("Wrist Max Extension", Units.Rotations.of(0.25));
 
-    public static final AngleUnitPref wristMinExtension = rotationsPref("Wrist Min Extension", Units.Rotations.of(0));
-    public static final AngleUnitPref wristHorizontal =
-            rotationsPref("Wrist Horizontal", Units.Rotations.of(0.25)); // Temp
+    public static final AngleUnitPref wristNominalRevLimit =
+            rotationsPref("Wrist Nominal Reverse Limit", Units.Rotations.of(0.2));
+    public static final AngleUnitPref wristHorizontal = rotationsPref("Wrist Horizontal", Units.Rotations.of(0.45));
 
     public static final UnitPref<LinearVelocityUnit> elevatorMaxRps =
-            metersPerSecPref("Elevator Max Spd", Units.MetersPerSecond.of(0.5)); // Temp
+            metersPerSecPref("Elevator Max Spd", Units.MetersPerSecond.of(0.5));
     public static final UnitPref<AngularVelocityUnit> wristMaxRps =
-            rotationsPerSecPref("Wrist Max Speed", Units.RotationsPerSecond.of(0.5)); // Temp
+            rotationsPerSecPref("Wrist Max Speed", Units.RotationsPerSecond.of(0.5));
 
     public static final DimensionlessUnitPref endEffectorPower =
-            percentPref("End Effector Power", Units.Percent.of(20)); // Temp
+            percentPref("End Effector Power", Units.Percent.of(20));
 
     // ---------- Climber ----------
     public static final TimeUnitPref climberRachetLockoutTime =

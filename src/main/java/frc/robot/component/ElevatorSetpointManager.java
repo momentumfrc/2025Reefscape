@@ -15,7 +15,8 @@ public class ElevatorSetpointManager {
         INTAKE,
         L1,
         L2,
-        L3
+        L3,
+        CORAL_STATION
     };
 
     private static ElevatorSetpointManager instance;

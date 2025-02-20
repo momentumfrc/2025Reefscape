@@ -1,11 +1,14 @@
 package frc.robot.command.elevator;
 
 import edu.wpi.first.networktables.GenericPublisher;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorControlMode;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
@@ -14,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TeleopElevatorCommand extends Command {
-    private static final ElevatorSetpoint DEFAULT_SETPOINT = ElevatorSetpoint.STOW;
+    private ElevatorSetpoint lastSetpoint = ElevatorSetpoint.STOW;
 
     private final ElevatorSubsystem elevator;
     private final Supplier<MoInput> inputSupplier;
@@ -59,9 +62,39 @@ public class TeleopElevatorCommand extends Command {
             smartMotionOverride = true;
         }
 
-        ElevatorSetpoint setpoint = requestedSetpoint.orElse(DEFAULT_SETPOINT);
+        ElevatorSetpoint setpoint = requestedSetpoint.orElse(lastSetpoint);
+        lastSetpoint = setpoint;
         ElevatorPosition requestedPosition =
                 ElevatorSetpointManager.getInstance().getSetpoint(setpoint);
+
+        double varianceThresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+
+        ElevatorPosition coralStationPosition =
+                ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.CORAL_STATION);
+        ElevatorPosition stowPosition = ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW);
+
+        if (setpoint == ElevatorSetpoint.CORAL_STATION) {
+            if (!elevator.getElevatorHeight().isNear(coralStationPosition.elevatorDistance(), varianceThresh)) {
+                requestedPosition =
+                        new ElevatorPosition(coralStationPosition.elevatorDistance(), stowPosition.wristAngle());
+            } else if (elevator.isWristNominalReverseLimitEnabled()) {
+                elevator.disableWristNominalReverseLimit();
+            }
+        } else {
+            if (elevator.isWristInDanger()) {
+                if (elevator.getElevatorHeight().isNear(coralStationPosition.elevatorDistance(), varianceThresh)) {
+                    requestedPosition =
+                            new ElevatorPosition(coralStationPosition.elevatorDistance(), stowPosition.wristAngle());
+                } else {
+                    DriverStation.reportError("Wrist in danger yet elevator is not at coral station height!", false);
+                    requestedPosition = new ElevatorPosition(elevator.getElevatorHeight(), stowPosition.wristAngle());
+                }
+            }
+            if (!elevator.isWristNominalReverseLimitEnabled()) {
+                elevator.enableWristNominalReverseLimit();
+            }
+        }
+
         if (smartMotionOverride) {
             setpointPublisher.setString("OVERRIDE");
             elevator.adjustVelocity(requestedMovement);
@@ -69,6 +102,27 @@ public class TeleopElevatorCommand extends Command {
             setpointPublisher.setString(setpoint.toString());
             elevator.adjustSmartPosition(requestedPosition);
         }
+    }
+
+    public ElevatorMovementRequest checkLimits(ElevatorMovementRequest request) {
+        double varianceThresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+
+        ElevatorPosition coralStationPosition =
+                ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.CORAL_STATION);
+        if (elevator.getElevatorHeight().isNear(coralStationPosition.elevatorDistance(), varianceThresh)) {
+            if (elevator.isWristNominalReverseLimitEnabled()) {
+                elevator.disableWristNominalReverseLimit();
+            }
+        } else {
+            if (!elevator.isWristNominalReverseLimitEnabled()) {
+                elevator.enableWristNominalReverseLimit();
+            }
+            if (elevator.isWristInDanger()) {
+                return new ElevatorMovementRequest(0, request.wristPower());
+            }
+        }
+
+        return request;
     }
 
     @Override
@@ -86,10 +140,10 @@ public class TeleopElevatorCommand extends Command {
 
         switch (controlMode) {
             case FALLBACK_DIRECT_POWER:
-                elevator.adjustDirectPower(input.getElevatorMovementRequest());
+                elevator.adjustDirectPower(checkLimits(input.getElevatorMovementRequest()));
                 return;
             case DIRECT_VELOCITY:
-                elevator.adjustVelocity(input.getElevatorMovementRequest());
+                elevator.adjustVelocity(checkLimits(input.getElevatorMovementRequest()));
                 return;
             case SMARTMOTION:
                 moveSmartMotion(input);
