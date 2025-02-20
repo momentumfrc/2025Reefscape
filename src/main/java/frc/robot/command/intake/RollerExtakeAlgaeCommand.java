@@ -19,7 +19,7 @@ public class RollerExtakeAlgaeCommand extends Command {
 
     @Override
     public void initialize() {
-        this.timer.reset();
+        this.timer.restart();
     }
 
     @Override
@@ -35,6 +35,7 @@ public class RollerExtakeAlgaeCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println("Roller extake algae command finished");
         if (!interrupted) {
             this.roller.setBallHeld(false);
         }

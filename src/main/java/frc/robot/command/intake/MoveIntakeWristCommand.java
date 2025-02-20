@@ -23,7 +23,7 @@ public class MoveIntakeWristCommand extends Command {
 
     @Override
     public void initialize() {
-        wristCurrentTimer.start();
+        wristCurrentTimer.restart();
     }
 
     @Override

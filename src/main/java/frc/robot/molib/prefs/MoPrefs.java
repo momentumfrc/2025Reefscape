@@ -54,9 +54,13 @@ public class MoPrefs {
 
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
+    public static final UnitPref<VoltageUnit> intakeRollerHoldPower =
+            voltsPref("Intake Roller Hold Power", Units.Volts.of(0.25));
 
     public static final UnitPref<VoltageUnit> intakeWristHoldPower =
             voltsPref("Intake Hold Wrist Power", Units.Volts.of(1));
+    public static final UnitPref<VoltageUnit> intakeWristSoftHoldForIntakePower =
+            voltsPref("Intake Wrist Soft Hold For Intake Power", Units.Volts.of(0.01));
 
     public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold =
             ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));

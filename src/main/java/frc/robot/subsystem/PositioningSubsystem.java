@@ -68,6 +68,7 @@ public class PositioningSubsystem extends SubsystemBase {
         posGroup.addDouble("X", () -> robotPose.getX());
         posGroup.addDouble("Y", () -> robotPose.getY());
         posGroup.addDouble("Rot", () -> robotPose.getRotation().getDegrees());
+
     }
 
     public Rotation2d getFieldOrientedDriveHeading() {

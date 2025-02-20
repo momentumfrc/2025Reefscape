@@ -52,6 +52,10 @@ public class IntakeWristSubsystem extends SubsystemBase {
         wrist.setVoltage(-MoPrefs.intakeWristHoldPower.get().in(Units.Volts));
     }
 
+    public void softHoldWristForAlgaeIntake() {
+        wrist.setVoltage(MoPrefs.intakeWristSoftHoldForIntakePower.get().in(Units.Volts));
+    }
+
     public void stopWristMotors() {
         wrist.set(0);
     }
