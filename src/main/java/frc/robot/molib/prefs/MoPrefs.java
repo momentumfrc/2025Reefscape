@@ -52,6 +52,11 @@ public class MoPrefs {
     public static final UnitPref<DimensionlessUnit> rachetDisengagedServoPosition =
             percentPref("Climber Rachet Disengaged Servo Pos", Units.Percent.of(100));
 
+    public static final Pref<Double> climberFwdSoftLimit = unitlessDoublePref("Climber FWD Soft Limit", 10);
+    public static final Pref<Double> climberRvsSoftLimit = unitlessDoublePref("Climber RVS Soft Limit", 0.1);
+    public static final UnitPref<DimensionlessUnit> climberZeroPwr =
+            percentPref("Climber Zero Power", Units.Percent.of(10));
+
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
 
