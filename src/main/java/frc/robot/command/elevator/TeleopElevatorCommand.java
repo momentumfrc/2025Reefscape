@@ -2,7 +2,6 @@ package frc.robot.command.elevator;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericPublisher;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
@@ -17,8 +16,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TeleopElevatorCommand extends Command {
-    private static final double ELEVATOR_HARD_STOP_OVERRIDE_TIMEOUT = 1;
-
     private static final ElevatorSetpoint DEFAULT_SETPOINT = ElevatorSetpoint.STOW;
 
     private final ElevatorSubsystem elevator;
@@ -30,10 +27,6 @@ public class TeleopElevatorCommand extends Command {
     private SlewRateLimiter wristLimiter;
 
     private GenericPublisher setpointPublisher;
-
-    private boolean zeroElevatorPressed = false;
-    private boolean elevatorLimitOverride = false;
-    private Timer elevatorHardStopOverrideTimer = new Timer();
 
     public TeleopElevatorCommand(ElevatorSubsystem elevator, Supplier<MoInput> inputSupplier) {
         this.elevator = elevator;
@@ -58,9 +51,6 @@ public class TeleopElevatorCommand extends Command {
 
     @Override
     public void initialize() {
-        zeroElevatorPressed = false;
-        elevatorLimitOverride = false;
-        elevatorHardStopOverrideTimer.restart();
         elevator.reZeroWrist();
     }
 
@@ -107,25 +97,8 @@ public class TeleopElevatorCommand extends Command {
         MoInput input = inputSupplier.get();
         var controlMode = elevator.controlMode.getSelected();
 
-        // When re-zero is held, we disable the reverse limit. This is to account for if the robot was turned on with
-        // the elevator up, so the driver can force it down to its proper zeroing position.
-        // Then, when re-zero is released, the zeroing actually happens.
         if (input.getReZeroElevator()) {
-            zeroElevatorPressed = true;
-            if (elevatorHardStopOverrideTimer.hasElapsed(ELEVATOR_HARD_STOP_OVERRIDE_TIMEOUT)) {
-                if (!elevatorLimitOverride) {
-                    elevatorLimitOverride = true;
-                    elevator.disableWristReverseLimit();
-                }
-            }
-        } else {
-            if (zeroElevatorPressed) {
-                elevator.enableWristReverseLimit();
-                elevatorLimitOverride = false;
-                elevator.reZeroWrist();
-            }
-            zeroElevatorPressed = false;
-            elevatorHardStopOverrideTimer.restart();
+            elevator.reZeroWrist();
         }
 
         if (controlMode != ElevatorControlMode.SMARTMOTION) {
