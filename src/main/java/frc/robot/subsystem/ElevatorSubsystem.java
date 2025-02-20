@@ -9,6 +9,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
@@ -33,6 +35,7 @@ import frc.robot.molib.pid.MoSparkMaxPID;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.utils.MoUtils;
 import frc.robot.utils.TunerUtils;
+import java.util.EnumSet;
 import java.util.function.Consumer;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -142,6 +145,27 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorA.configure(elevatorAConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         this.elevatorB.configure(elevatorBConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         this.elevatorWrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        // TODO: this syntax sucks. Make a nice MoTables wrapper
+        var coastMotorsEntry = NetworkTableInstance.getDefault()
+                .getTable("Shuffleboard/Elevator")
+                .getEntry("Coast Motors");
+        coastMotorsEntry.setBoolean(false);
+        coastMotorsEntry
+                .getInstance()
+                .addListener(coastMotorsEntry, EnumSet.of(NetworkTableEvent.Kind.kValueAll), coast -> {
+                    System.out.println(coast.valueData.value.getBoolean());
+                    var idleMode = coast.valueData.value.getBoolean() ? IdleMode.kCoast : IdleMode.kBrake;
+                    elevatorAConfig.idleMode(idleMode);
+                    elevatorBConfig.idleMode(idleMode);
+                    wristConfig.idleMode(idleMode);
+                    elevatorA.configure(
+                            elevatorAConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                    elevatorB.configure(
+                            elevatorBConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                    elevatorWrist.configure(
+                            wristConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                });
 
         reZeroWrist();
 
