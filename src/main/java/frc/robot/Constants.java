@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,21 +17,38 @@ public class Constants {
     public static final CANAddress SWERVE_DRIVE_LEFT_REAR = new CANAddress(3);
     public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
     public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
+
     public static final CANAddress ELEVATORA = new CANAddress(4);
     public static final CANAddress ELEVATORB = new CANAddress(9);
     public static final CANAddress ELEVATOR_WRIST = new CANAddress(2);
     public static final CANAddress END_EFFECTOR = new CANAddress(0);
+
+    public static final CANAddress CLIMBER_LEFT = new CANAddress(21);
+    public static final CANAddress CLIMBER_RIGHT = new CANAddress(3);
+    public static final PWMPort CLIMBER_RACHET = new PWMPort(0);
+
+    public static final CANAddress INTAKE_WRIST = new CANAddress(7);
+    public static final CANAddress INTAKE_ROLLER = new CANAddress(14);
 
     public static final HIDPort JOYSTICK = new HIDPort(0);
     public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(1);
 
     public static Path DATA_STORE_FILE;
 
+    public static RobotConfig pathPlannerRobotConfig;
+
     static {
         if (RobotBase.isReal()) {
             DATA_STORE_FILE = Paths.get("/home/lvuser/pid_constants.ini");
         } else {
             DATA_STORE_FILE = Paths.get("./pid_constants.ini");
+        }
+
+        try {
+            pathPlannerRobotConfig = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            e.printStackTrace();
+            DriverStation.reportError("Could not load PP robot config", e.getStackTrace());
         }
     }
 
@@ -46,6 +65,8 @@ public class Constants {
      * adding "PORT" to the constant's name.
      */
     public static record HIDPort(int hidport) {}
+
+    public static record PWMPort(int port) {}
 
     private Constants() {
         throw new UnsupportedOperationException("Constants is a static class");

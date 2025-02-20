@@ -83,4 +83,13 @@ public class ControllerInput implements MoInput {
     public boolean getEndEffectorOut() {
         return elevatorController.getRightBumperButton();
     }
+
+    public boolean getIntake() {
+        return driveController.getRawButton(1);
+    }
+
+    @Override
+    public double getClimberMoveRequest() {
+        return (-1 * elevatorController.getLeftTriggerAxis()) + elevatorController.getRightTriggerAxis();
+    }
 }

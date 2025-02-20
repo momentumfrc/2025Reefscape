@@ -23,4 +23,8 @@ public interface MoInput {
     public abstract boolean getEndEffectorIn();
 
     public abstract boolean getEndEffectorOut();
+
+    public abstract double getClimberMoveRequest();
+
+    public abstract boolean getIntake();
 }
