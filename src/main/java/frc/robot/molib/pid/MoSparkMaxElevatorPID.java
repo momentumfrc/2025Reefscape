@@ -3,13 +3,16 @@ package frc.robot.molib.pid;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import frc.robot.molib.encoder.MoDistanceEncoder;
+import frc.robot.utils.MoUtils;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class MoSparkMaxElevatorPID extends MoSparkMaxPID<DistanceUnit, LinearVelocityUnit> {
     private Optional<ElevatorFeedforward> elevatorFF = Optional.empty();
@@ -21,8 +24,17 @@ public class MoSparkMaxElevatorPID extends MoSparkMaxPID<DistanceUnit, LinearVel
     private double lastFF;
 
     public MoSparkMaxElevatorPID(
+            MoSparkMaxPID.Type type,
+            SparkBase spark,
+            ClosedLoopSlot pidSlot,
+            MoDistanceEncoder encoder,
+            Supplier<SparkBaseConfig> configSupplier) {
+        super(type, spark, pidSlot, encoder, configSupplier);
+    }
+
+    public MoSparkMaxElevatorPID(
             MoSparkMaxPID.Type type, SparkBase spark, ClosedLoopSlot pidSlot, MoDistanceEncoder encoder) {
-        super(type, spark, pidSlot, encoder);
+        this(type, spark, pidSlot, encoder, () -> MoUtils.getSparkConfig(spark));
     }
 
     public void setKS(double kS) {

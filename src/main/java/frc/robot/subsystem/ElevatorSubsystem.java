@@ -53,9 +53,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkMax elevatorB;
     private final SparkMax elevatorWrist;
 
-    private final SparkMaxConfig elevatorAConfig;
-    private final SparkMaxConfig elevatorBConfig;
-    private final SparkMaxConfig wristConfig;
+    private final SparkMaxConfig elevatorAConfig = new SparkMaxConfig();
+    private final SparkMaxConfig elevatorBConfig = new SparkMaxConfig();
+    private final SparkMaxConfig wristConfig = new SparkMaxConfig();
 
     public final MoRotationEncoder wristAbsEncoder;
     public final MoDistanceEncoder elevatorRelEncoder;
@@ -113,12 +113,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorB = new SparkMax(Constants.ELEVATORB.address(), MotorType.kBrushless);
         this.elevatorWrist = new SparkMax(Constants.ELEVATOR_WRIST.address(), MotorType.kBrushless);
 
-        wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorWrist, Units.Rotations);
+        wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorWrist, Units.Rotations, () -> wristConfig);
 
-        elevatorRelEncoder = MoDistanceEncoder.forSparkRelative(elevatorA, Units.Centimeters);
-        wristRelEncoder = MoRotationEncoder.forSparkRelative(elevatorWrist, Units.Rotations);
+        elevatorRelEncoder = MoDistanceEncoder.forSparkRelative(elevatorA, Units.Centimeters, () -> elevatorAConfig);
+        wristRelEncoder = MoRotationEncoder.forSparkRelative(elevatorWrist, Units.Rotations, () -> wristConfig);
 
-        elevatorAConfig = new SparkMaxConfig();
         elevatorAConfig
                 .softLimit
                 .reverseSoftLimit(0)
@@ -127,13 +126,11 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .forwardSoftLimitEnabled(false);
         elevatorAConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(ELEVATOR_CURRENT_LIMIT);
 
-        elevatorBConfig = new SparkMaxConfig();
         elevatorBConfig
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(ELEVATOR_CURRENT_LIMIT)
                 .follow(elevatorA, true);
 
-        wristConfig = new SparkMaxConfig();
         wristConfig
                 .softLimit
                 .reverseSoftLimit(MoPrefs.wristMinExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
@@ -156,9 +153,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         MoPrefs.wristMaxExtension.subscribe(value -> updateWristConfig(
                 config -> config.softLimit.forwardSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
 
-        // TODO: Right now encoder scales are configured separately through the MoEncoder framework. It'd be nice
-        // if there was some way to configure the MoEncoder to update the persistent elevatorAConfig instead of creating
-        // its own config.
         MoPrefs.elevatorEncoderScale.subscribe(value -> elevatorRelEncoder.setConversionFactor(value), true);
 
         MoPrefs.wristAbsZero.subscribe(value -> MoUtils.setupRelativeEncoder(
@@ -167,25 +161,32 @@ public class ElevatorSubsystem extends SubsystemBase {
                 wristRelEncoder, wristAbsEncoder.getPosition(), MoPrefs.wristAbsZero.get(), value));
 
         elevatorVelocityPid = new MoSparkMaxElevatorPID(
-                MoSparkMaxPID.Type.VELOCITY, elevatorA, ClosedLoopSlot.kSlot0, elevatorRelEncoder);
+                MoSparkMaxPID.Type.VELOCITY,
+                elevatorA,
+                ClosedLoopSlot.kSlot0,
+                elevatorRelEncoder,
+                () -> elevatorAConfig);
         wristVelocityPid = new MoSparkMaxArmPID(
                 MoSparkMaxPID.Type.VELOCITY,
                 elevatorWrist,
                 ClosedLoopSlot.kSlot0,
                 wristRelEncoder,
-                this::getWristAngleFromHorizontal);
+                this::getWristAngleFromHorizontal,
+                () -> wristConfig);
         elevatorSmartMotionPid = new MoSparkMaxElevatorPID(
-                MoSparkMaxPID.Type.SMARTMOTION, elevatorA, ClosedLoopSlot.kSlot1, elevatorRelEncoder);
+                MoSparkMaxPID.Type.SMARTMOTION,
+                elevatorA,
+                ClosedLoopSlot.kSlot1,
+                elevatorRelEncoder,
+                () -> elevatorAConfig);
         wristSmartMotionPid = new MoSparkMaxArmPID(
                 MoSparkMaxPID.Type.SMARTMOTION,
                 elevatorWrist,
                 ClosedLoopSlot.kSlot1,
                 wristRelEncoder,
-                this::getWristAngleFromHorizontal);
+                this::getWristAngleFromHorizontal,
+                () -> wristConfig);
 
-        // TODO: Right now PID constants are configured separately through the PIDTuner framework. It'd be nice
-        // if there was some way to configure the PIDTuner to update the persistent elevatorAConfig instead of
-        // creating its own config.
         elevatorVelTuner = TunerUtils.forMoSparkElevator(elevatorVelocityPid, "Elevator Vel.");
         wristVelTuner = TunerUtils.forMoSparkArm(wristVelocityPid, "Wrist Vel.");
         elevatorPosTuner = TunerUtils.forMoSparkElevator(elevatorSmartMotionPid, "Elevator Pos.");
@@ -344,11 +345,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
             elevatorAConfig.softLimit.reverseSoftLimitEnabled(false).forwardSoftLimitEnabled(false);
             elevatorA.configure(elevatorAConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-            elevatorRelEncoder.setConversionFactor(MoPrefs.elevatorEncoderScale.get());
-
-            elevatorVelTuner.populatePIDValues();
-            elevatorPosTuner.populatePIDValues();
         }
 
         var elevatorBWarnings = elevatorB.getStickyWarnings();
@@ -366,9 +362,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
             elevatorWrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
             reZeroWrist();
-
-            wristVelTuner.populatePIDValues();
-            wristPosTuner.populatePIDValues();
         }
     }
 }

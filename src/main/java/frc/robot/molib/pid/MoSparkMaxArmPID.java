@@ -3,12 +3,14 @@ package frc.robot.molib.pid;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import frc.robot.molib.encoder.MoRotationEncoder;
+import frc.robot.utils.MoUtils;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -42,9 +44,19 @@ public class MoSparkMaxArmPID extends MoSparkMaxPID<AngleUnit, AngularVelocityUn
             SparkBase controller,
             ClosedLoopSlot pidSlot,
             MoRotationEncoder encoder,
-            Supplier<Measure<AngleUnit>> getAngleFromHorizontal) {
-        super(type, controller, pidSlot, encoder);
+            Supplier<Measure<AngleUnit>> getAngleFromHorizontal,
+            Supplier<SparkBaseConfig> configSupplier) {
+        super(type, controller, pidSlot, encoder, configSupplier);
         this.getAngleFromHorizontal = getAngleFromHorizontal;
+    }
+
+    public MoSparkMaxArmPID(
+            Type type,
+            SparkBase controller,
+            ClosedLoopSlot pidSlot,
+            MoRotationEncoder encoder,
+            Supplier<Measure<AngleUnit>> getAngleFromHorizontal) {
+        this(type, controller, pidSlot, encoder, getAngleFromHorizontal, () -> MoUtils.getSparkConfig(controller));
     }
 
     public void setKS(double kS) {
