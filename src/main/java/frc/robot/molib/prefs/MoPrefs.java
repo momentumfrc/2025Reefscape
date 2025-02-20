@@ -34,6 +34,7 @@ import java.util.Set;
 /** Robot preferences, accessible through Shuffleboard */
 public class MoPrefs {
 
+    // ---------- Drive ----------
     public static final Pref<Double> inputDeadzone = unitlessDoublePref("Input Deadzone", 0.05);
     public static final Pref<Double> inputCurve = unitlessDoublePref("Input Curve", 1.5);
     public static final Pref<Double> driveRampTime = unitlessDoublePref("Input Ramp Time", 0.1);
@@ -47,15 +48,18 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
+    /**
+     * The yaw offset between "forward" on the robot and "angle zero" on the gyro
+     */
+    public static final AngleUnitPref navxYawOffset = rotationsPref("NavX Yaw Offset", Units.Rotations.zero());
+
+    public static final LinearVelocityUnitPref swerveMaxLinearSpeed =
+            metersPerSecPref("SWRV Max Linear Speed", Units.MetersPerSecond.of(5));
+    public static final AngularVelocityUnitPref swerveMaxAngularSpeed =
+            rotationsPerSecPref("SWRV Max Angular Speed", Units.RotationsPerSecond.of(1));
+
+    // ---------- Elevator ----------
     public static final Pref<Double> elevatorRampTime = unitlessDoublePref("Elevator Ramp Time", 0.15);
-
-    public static final UnitPref<VoltageUnit> elevatorWristPower = voltsPref("Elevator Wrist Power", Units.Volts.of(1));
-    public static final UnitPref<VoltageUnit> elevatorWristHoldPower =
-            voltsPref("Elevator Wrist Hold Power", Units.Volts.of(1));
-
-    public static final UnitPref<CurrentUnit> elevatorWristCurrentThreshold =
-            ampsPref("Elevator Wrist Current Thresh", Units.Amps.of(15));
-    public static final TimeUnitPref elevatorWristCurrentTime = secondsPref("Elevator Wrist Time", Units.Seconds.one());
 
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
             encoderTicksPerCentimeterPref(
@@ -93,6 +97,7 @@ public class MoPrefs {
     public static final DimensionlessUnitPref endEffectorPower =
             percentPref("End Effector Power", Units.Percent.of(20)); // Temp
 
+    // ---------- Climber ----------
     public static final TimeUnitPref climberRachetLockoutTime =
             secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));
     public static final DimensionlessUnitPref rachetEngagedServoPosition =
@@ -104,6 +109,7 @@ public class MoPrefs {
     public static final Pref<Double> climberRvsSoftLimit = unitlessDoublePref("Climber RVS Soft Limit", 0.1);
     public static final DimensionlessUnitPref climberZeroPwr = percentPref("Climber Zero Power", Units.Percent.of(10));
 
+    // ---------- Intake ----------
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
 
@@ -128,6 +134,7 @@ public class MoPrefs {
     public static final TimeUnitPref intakeRollerExtakeTime =
             secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
 
+    // ---------- Auto ----------
     public static final LinearVelocityUnitPref autoMaxLinVel =
             metersPerSecPref("Auto Max Linear Velocity", Units.MetersPerSecond.of(1.5));
     public static final LinearAccelerationUnitPref autoMaxLinAccel =
@@ -140,16 +147,6 @@ public class MoPrefs {
     public static final DimensionlessUnitPref autoFallbackSpd =
             percentPref("Auto Fallback Power", Units.Percent.of(10));
     public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
-
-    /**
-     * The yaw offset between "forward" on the robot and "angle zero" on the gyro
-     */
-    public static final AngleUnitPref navxYawOffset = rotationsPref("NavX Yaw Offset", Units.Rotations.zero());
-
-    public static final LinearVelocityUnitPref swerveMaxLinearSpeed =
-            metersPerSecPref("SWRV Max Linear Speed", Units.MetersPerSecond.of(5));
-    public static final AngularVelocityUnitPref swerveMaxAngularSpeed =
-            rotationsPerSecPref("SWRV Max Angular Speed", Units.RotationsPerSecond.of(1));
 
     NetworkTable backingTable;
 
