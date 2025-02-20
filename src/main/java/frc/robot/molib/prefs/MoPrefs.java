@@ -59,10 +59,10 @@ public class MoPrefs {
 
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
             encoderTicksPerCentimeterPref(
-                    "Elevator Encoder Scale", MoUnits.EncoderTicksPerCentimeter.ofNative(144)); // Temp
+                    "Elevator Encoder Scale", MoUnits.EncoderTicksPerCentimeter.ofNative(1.785446));
 
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> wristEncoderScale =
-            encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(1)); // Temp
+            encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(150));
 
     public static final DimensionlessUnitPref elevatorSetpointVarianceThreshold =
             percentPref("Elevator Setpoint Variance Threshold", Units.Percent.of(3));

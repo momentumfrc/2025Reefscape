@@ -144,11 +144,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorB.configure(elevatorBConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         this.elevatorWrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        MoUtils.setupRelativeEncoder(
-                wristRelEncoder,
-                wristAbsEncoder.getPosition(),
-                MoPrefs.wristAbsZero.get(),
-                MoPrefs.wristEncoderScale.get());
+        reZeroWrist();
 
         // Setup listeners for config values
         MoPrefs.elevatorMaxExtension.subscribe(value -> updateElevatorConfig(
@@ -339,11 +335,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             DriverStation.reportWarning("Elevator Wrist Brownout", false);
 
             elevatorWrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-            MoUtils.setupRelativeEncoder(
-                    wristRelEncoder,
-                    wristAbsEncoder.getPosition(),
-                    MoPrefs.wristAbsZero.get(),
-                    MoPrefs.wristEncoderScale.get());
+            reZeroWrist();
 
             wristVelTuner.populatePIDValues();
             wristPosTuner.populatePIDValues();
