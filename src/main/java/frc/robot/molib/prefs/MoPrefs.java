@@ -67,6 +67,11 @@ public class MoPrefs {
             ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
     public static final TimeUnitPref intakeWristCurrentTime = secondsPref("Intake Wrist Time", Units.Seconds.one());
 
+    public static final UnitPref<CurrentUnit> intakeRollersSmartCurrentLimit =
+            ampsPref("Intake Rollers Smart Current Limit", Units.Amps.of(20));
+    public static final UnitPref<CurrentUnit> intakeWristSmartCurrentLimit =
+            ampsPref("Intake Wrist Smart Current Limit", Units.Amps.of(20));
+
     public static final TimeUnitPref intakeRollerSpinupTime =
             secondsPref("Intake Roller Spinup Time", Units.Seconds.of(0.25));
     public static final UnitPref<AngularVelocityUnit> intakeVelocityThreshold =
