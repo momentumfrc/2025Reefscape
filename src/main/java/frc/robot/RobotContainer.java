@@ -25,6 +25,7 @@ import frc.robot.subsystem.IntakeRollerSubsystem;
 import frc.robot.subsystem.IntakeWristSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 import frc.robot.utils.AutoChooser;
+import frc.robot.utils.MoInputTransforms;
 
 public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -63,8 +64,12 @@ public class RobotContainer {
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
 
+    private final MoInput input;
+
     public RobotContainer() {
         inputChooser.setDefaultOption("Single F310", new ControllerInput());
+
+        input = new MoInputTransforms(inputChooser::getSelected);
 
         configureBindings();
 
@@ -100,6 +105,6 @@ public class RobotContainer {
     }
 
     private MoInput getInput() {
-        return inputChooser.getSelected();
+        return input;
     }
 }

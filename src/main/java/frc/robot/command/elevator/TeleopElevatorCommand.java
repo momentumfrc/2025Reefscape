@@ -1,13 +1,11 @@
 package frc.robot.command.elevator;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.GenericPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorControlMode;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
@@ -23,23 +21,11 @@ public class TeleopElevatorCommand extends Command {
 
     private boolean smartMotionOverride = false;
 
-    private SlewRateLimiter elevatorLimiter;
-    private SlewRateLimiter wristLimiter;
-
     private GenericPublisher setpointPublisher;
 
     public TeleopElevatorCommand(ElevatorSubsystem elevator, Supplier<MoInput> inputSupplier) {
         this.elevator = elevator;
         this.inputSupplier = inputSupplier;
-
-        MoPrefs.elevatorRampTime.subscribe(
-                rampTime -> {
-                    double slewRate = 1.0 / rampTime;
-
-                    elevatorLimiter = new SlewRateLimiter(slewRate);
-                    wristLimiter = new SlewRateLimiter(slewRate);
-                },
-                true);
 
         setpointPublisher = MoShuffleboard.getInstance()
                 .elevatorTab
@@ -54,16 +40,9 @@ public class TeleopElevatorCommand extends Command {
         elevator.reZeroWrist();
     }
 
-    private ElevatorMovementRequest getMovementRequest(MoInput input) {
-        ElevatorMovementRequest requestedMovement = input.getElevatorMovementRequest();
-        return new ElevatorMovementRequest(
-                elevatorLimiter.calculate(requestedMovement.elevatorPower()),
-                wristLimiter.calculate(requestedMovement.wristPower()));
-    }
-
     private void moveSmartMotion(MoInput input) {
         Optional<ElevatorSetpoint> requestedSetpoint = input.getElevatorSetpoints();
-        ElevatorMovementRequest requestedMovement = getMovementRequest(input);
+        ElevatorMovementRequest requestedMovement = input.getElevatorMovementRequest();
         boolean shouldSaveSetpoint = input.getSaveElevatorSetpoint();
 
         if (requestedSetpoint.isPresent()) {
@@ -107,10 +86,10 @@ public class TeleopElevatorCommand extends Command {
 
         switch (controlMode) {
             case FALLBACK_DIRECT_POWER:
-                elevator.adjustDirectPower(getMovementRequest(input));
+                elevator.adjustDirectPower(input.getElevatorMovementRequest());
                 return;
             case DIRECT_VELOCITY:
-                elevator.adjustVelocity(getMovementRequest(input));
+                elevator.adjustVelocity(input.getElevatorMovementRequest());
                 return;
             case SMARTMOTION:
                 moveSmartMotion(input);

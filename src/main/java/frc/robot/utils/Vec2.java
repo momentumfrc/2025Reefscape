@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import frc.robot.Constants;
+
 public class Vec2 {
     private double x;
     private double y;
@@ -26,7 +28,7 @@ public class Vec2 {
      */
     public double normalize() {
         double mag = magnitude();
-        if (mag >= 1e-6) {
+        if (mag >= Constants.FLOAT_EPSILON) {
             this.x /= mag;
             this.y /= mag;
         }
