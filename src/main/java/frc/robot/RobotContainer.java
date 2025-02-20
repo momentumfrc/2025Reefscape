@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.command.EndEffectorExAlgaeInCoral;
-import frc.robot.command.EndEffectorInAlgaeExCoral;
+import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
+import frc.robot.subsystem.EndEffectorSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 
 public class RobotContainer {
@@ -26,11 +26,13 @@ public class RobotContainer {
     private DriveSubsystem drive = new DriveSubsystem();
     private PositioningSubsystem positioning = new PositioningSubsystem(gyro);
     private ElevatorSubsystem elevator = new ElevatorSubsystem();
+    private EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
     private TeleopElevatorCommand elevatorCommand = new TeleopElevatorCommand(elevator, this::getInput);
-    private EndEffectorExAlgaeInCoral algaeOut = new EndEffectorExAlgaeInCoral(elevator);
-    private EndEffectorInAlgaeExCoral algaeIn = new EndEffectorInAlgaeExCoral(elevator);
+    private final Command algaeOutCommand = EndEffectorCommands.ExAlgaeInCoral(endEffector);
+    private final Command algaeInCommand = EndEffectorCommands.InAlgaeExCoral(endEffector);
+    private final Command endEffectorIdle = EndEffectorCommands.IdleEndEffector(endEffector);
 
     private Trigger endEffectorExAlgaeInCoralTrigger;
     private Trigger endEffectorInAlgaeExCoralTrigger;
@@ -44,14 +46,15 @@ public class RobotContainer {
 
         drive.setDefaultCommand(driveCommand);
         elevator.setDefaultCommand(elevatorCommand);
+        endEffector.setDefaultCommand(endEffectorIdle);
     }
 
     private void configureBindings() {
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
-        endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOut);
-        endEffectorInAlgaeExCoralTrigger.whileTrue(algaeIn);
+        endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
+        endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
     }
 
     private MoInput getInput() {

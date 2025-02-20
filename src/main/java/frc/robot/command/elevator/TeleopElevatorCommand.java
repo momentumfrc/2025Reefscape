@@ -35,8 +35,8 @@ public class TeleopElevatorCommand extends Command {
     private boolean elevatorLimitOverride = false;
     private Timer elevatorHardStopOverrideTimer = new Timer();
 
-    public TeleopElevatorCommand(ElevatorSubsystem elevators, Supplier<MoInput> inputSupplier) {
-        this.elevators = elevators;
+    public TeleopElevatorCommand(ElevatorSubsystem elevator, Supplier<MoInput> inputSupplier) {
+        this.elevator = elevator;
         this.inputSupplier = inputSupplier;
 
         MoPrefs.elevatorRampTime.subscribe(
@@ -53,7 +53,7 @@ public class TeleopElevatorCommand extends Command {
                 .add("Setpoint", "UNKNOWN")
                 .getEntry();
 
-        addRequirements(elevators);
+        addRequirements(elevator);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TeleopElevatorCommand extends Command {
         zeroElevatorPressed = false;
         elevatorLimitOverride = false;
         elevatorHardStopOverrideTimer.restart();
-        elevators.reZeroElevator();
+        elevator.reZeroElevator();
     }
 
     private ElevatorMovementRequest getMovementRequest(MoInput input) {
@@ -80,7 +80,7 @@ public class TeleopElevatorCommand extends Command {
             if (shouldSaveSetpoint
                     && MoShuffleboard.getInstance().tuneSetpointSubscriber.getBoolean(false)) {
                 ElevatorSetpointManager.getInstance()
-                        .setSetpoint(requestedSetpoint.get(), elevators.getElevatorPosition());
+                        .setSetpoint(requestedSetpoint.get(), elevator.getElevatorPosition());
             } else {
                 smartMotionOverride = false;
             }
@@ -95,17 +95,17 @@ public class TeleopElevatorCommand extends Command {
                 ElevatorSetpointManager.getInstance().getSetpoint(setpoint);
         if (smartMotionOverride) {
             setpointPublisher.setString("OVERRIDE");
-            elevators.adjustVelocity(requestedMovement);
+            elevator.adjustVelocity(requestedMovement);
         } else {
             setpointPublisher.setString(setpoint.toString());
-            elevators.adjustSmartPosition(requestedPosition);
+            elevator.adjustSmartPosition(requestedPosition);
         }
     }
 
     @Override
     public void execute() {
         MoInput input = inputSupplier.get();
-        var controlMode = elevators.controlMode.getSelected();
+        var controlMode = elevator.controlMode.getSelected();
 
         // When re-zero is held, we disable the reverse limit. This is to account for if the robot was turned on with
         // the elevator up, so the driver can force it down to its proper zeroing position.
@@ -115,14 +115,14 @@ public class TeleopElevatorCommand extends Command {
             if (elevatorHardStopOverrideTimer.hasElapsed(ELEVATOR_HARD_STOP_OVERRIDE_TIMEOUT)) {
                 if (!elevatorLimitOverride) {
                     elevatorLimitOverride = true;
-                    elevators.disableWristReverseLimit();
+                    elevator.disableWristReverseLimit();
                 }
             }
         } else {
             if (zeroElevatorPressed) {
-                elevators.enableWristReverseLimit();
+                elevator.enableWristReverseLimit();
                 elevatorLimitOverride = false;
-                elevators.reZeroElevator();
+                elevator.reZeroElevator();
             }
             zeroElevatorPressed = false;
             elevatorHardStopOverrideTimer.restart();
@@ -134,10 +134,10 @@ public class TeleopElevatorCommand extends Command {
 
         switch (controlMode) {
             case FALLBACK_DIRECT_POWER:
-                elevators.adjustDirectPower(getMovementRequest(input));
+                elevator.adjustDirectPower(getMovementRequest(input));
                 return;
             case DIRECT_VELOCITY:
-                elevators.adjustVelocity(getMovementRequest(input));
+                elevator.adjustVelocity(getMovementRequest(input));
                 return;
             case SMARTMOTION:
                 moveSmartMotion(input);

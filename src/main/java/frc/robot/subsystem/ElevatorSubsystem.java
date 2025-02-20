@@ -1,7 +1,5 @@
 package frc.robot.subsystem;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.momentum4999.motune.PIDTuner;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -41,6 +39,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final int WRIST_CURRENT_LIMIT = 50;
 
     private MutCurrent wristCurrent = Units.Amps.mutable(0);
+    private MutCurrent elevatorCurrent = Units.Amps.mutable(0);
 
     public static enum ElevatorControlMode {
         SMARTMOTION,
@@ -59,7 +58,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkMax elevatorA;
     private final SparkMax elevatorB;
     private final SparkMax elevatorWrist;
-    private final VictorSPX endEffector;
 
     private SparkMaxConfig elevatorAConfig = new SparkMaxConfig();
     private SparkMaxConfig elevatorBConfig = new SparkMaxConfig();
@@ -140,7 +138,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorA = new SparkMax(Constants.ELEVATORA.address(), MotorType.kBrushless);
         this.elevatorB = new SparkMax(Constants.ELEVATORB.address(), MotorType.kBrushless);
         this.elevatorWrist = new SparkMax(Constants.ELEVATOR_WRIST.address(), MotorType.kBrushless);
-        this.endEffector = new VictorSPX(Constants.END_EFFECTOR.address());
 
         elevatorAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorA, Units.Rotations);
         wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorWrist, Units.Rotations);
@@ -160,7 +157,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         MoPrefs.wristAbsZero.subscribe(zero -> MoUtils.setupRelativeEncoder(
                 wristRelEncoder, wristAbsEncoder.getPosition(), zero, MoPrefs.wristEncoderScale.get()));
 
-        MoPrefs.elevatorMaxExtension.subscribe(limit ->  configureMotors());
+        MoPrefs.elevatorMaxExtension.subscribe(limit -> configureMotors());
         MoPrefs.wristMaxExtension.subscribe(limit -> configureMotors());
 
         elevatorVelocityPid = new MoSparkMaxElevatorPID(
@@ -311,7 +308,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void stowWrist() {
-        wristSmartMotionPid.setPositionReference(Units.Rotations.zero());
+        wristSmartMotionPid.setPositionReference(
+                ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW).wristAngle);
     }
 
     public void tiltBack() {
@@ -338,25 +336,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         return wristRelEncoder.getPosition().isNear(Units.Inches.of(0), thresh);
     }
 
-    public double getElevatorDirection() {
-        return elevatorSmartMotionPid.getSetpoint();
-    }
-
     public Current getWristCurrent() {
         return wristCurrent.mut_replace(elevatorWrist.getOutputCurrent(), Units.Amps);
     }
 
-    public void intakeAlgaeCoralExtake() {
-        endEffector.set(
-                ControlMode.PercentOutput, MoPrefs.endEffectorPower.get().in(Units.Volts));
-    }
-
-    public void extakeAlgaeCoralIntake() {
-        endEffector.set(
-                ControlMode.PercentOutput, -MoPrefs.endEffectorPower.get().in(Units.Volts));
-    }
-
-    public void endEffectorStop() {
-        endEffector.set(ControlMode.PercentOutput, 0);
+    public Current getElevatorCurrent() {
+        return elevatorCurrent.mut_replace(elevatorA.getOutputCurrent(), Units.Amps);
     }
 }
