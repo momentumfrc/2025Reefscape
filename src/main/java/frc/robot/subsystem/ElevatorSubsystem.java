@@ -160,10 +160,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         MoPrefs.wristAbsZero.subscribe(zero -> MoUtils.setupRelativeEncoder(
                 wristRelEncoder, wristAbsEncoder.getPosition(), zero, MoPrefs.wristEncoderScale.get()));
 
-        MoPrefs.elevatorMaxExtension.subscribe(limit ->
-                elevatorLimitConfig.forwardSoftLimit((float) limit.in(elevatorRelEncoder.getInternalEncoderUnits())));
-        MoPrefs.wristMaxExtension.subscribe(limit ->
-                wristLimitConfig.forwardSoftLimit((float) limit.in(wristRelEncoder.getInternalEncoderUnits())));
+        MoPrefs.elevatorMaxExtension.subscribe(limit ->  configureMotors());
+        MoPrefs.wristMaxExtension.subscribe(limit -> configureMotors());
 
         elevatorVelocityPid = new MoSparkMaxElevatorPID(
                 MoSparkMaxPID.Type.VELOCITY, elevatorA, ClosedLoopSlot.kSlot0, elevatorRelEncoder);
@@ -186,7 +184,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         wristVelTuner = TunerUtils.forMoSparkArm(wristVelocityPid, "Wrist Vel.");
         elevatorPosTuner = TunerUtils.forMoSparkElevator(elevatorSmartMotionPid, "Elevator Pos.");
         wristPosTuner = TunerUtils.forMoSparkArm(wristSmartMotionPid, "Wrist Pos.");
-
+        configureMotors();
         controlMode = MoShuffleboard.enumToChooser(ElevatorControlMode.class);
         MoShuffleboard.getInstance().settingsTab.add("Elevator Control Mode", controlMode);
 
@@ -345,9 +343,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Current getWristCurrent() {
-        double current = elevatorWrist.getOutputCurrent();
-        wristCurrent.mut_replace(current, Units.Amps);
-        return wristCurrent;
+        return wristCurrent.mut_replace(elevatorWrist.getOutputCurrent(), Units.Amps);
     }
 
     public void intakeAlgaeCoralExtake() {
