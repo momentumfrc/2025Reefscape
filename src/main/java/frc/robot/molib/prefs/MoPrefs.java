@@ -90,8 +90,8 @@ public class MoPrefs {
     public static final UnitPref<AngularVelocityUnit> wristMaxRps =
             rotationsPerSecPref("Wrist Max Speed", Units.RotationsPerSecond.of(0.5)); // Temp
 
-    public static final UnitPref<VoltageUnit> endEffectorPower =
-            voltsPref("End Effector Power", Units.Volts.of(5)); // Temp
+    public static final DimensionlessUnitPref endEffectorPower =
+            percentPref("End Effector Power", Units.Percent.of(20)); // Temp
 
     public static final TimeUnitPref climberRachetLockoutTime =
             secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));

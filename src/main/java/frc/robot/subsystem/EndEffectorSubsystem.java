@@ -16,12 +16,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public void intakeAlgaeCoralExtake() {
         endEffector.set(
-                ControlMode.PercentOutput, MoPrefs.endEffectorPower.get().in(Units.Volts));
+                ControlMode.PercentOutput, MoPrefs.endEffectorPower.get().in(Units.Value));
     }
 
     public void extakeAlgaeCoralIntake() {
         endEffector.set(
-                ControlMode.PercentOutput, -MoPrefs.endEffectorPower.get().in(Units.Volts));
+                ControlMode.PercentOutput, -MoPrefs.endEffectorPower.get().in(Units.Value));
     }
 
     public void endEffectorStop() {
