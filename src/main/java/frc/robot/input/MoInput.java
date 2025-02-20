@@ -27,4 +27,6 @@ public interface MoInput {
     public abstract double getClimberMoveRequest();
 
     public abstract boolean getIntake();
+
+    public abstract boolean getRunSysid();
 }

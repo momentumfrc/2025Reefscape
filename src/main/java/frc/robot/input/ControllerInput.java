@@ -75,6 +75,11 @@ public class ControllerInput implements MoInput {
     }
 
     @Override
+    public boolean getRunSysid() {
+        return elevatorController.getStartButton();
+    }
+
+    @Override
     public boolean getEndEffectorIn() {
         return elevatorController.getLeftBumperButton();
     }

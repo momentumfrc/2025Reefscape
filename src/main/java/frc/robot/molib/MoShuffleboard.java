@@ -16,10 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class MoShuffleboard {
@@ -104,25 +102,28 @@ public class MoShuffleboard {
                 Units.Seconds.of(45));
     }
 
-    public Command getSysidCommand(Supplier<SysIdRoutine> routineSupplier, Subsystem... subsystems) {
-        return Commands.defer(
-                () -> {
-                    var routine = routineSupplier.get();
-                    switch (sysidMode.getSelected()) {
-                        case QUASISTATIC_FORWARD:
-                            return routine.quasistatic(SysIdRoutine.Direction.kForward);
-                        case QUASISTATIC_REVERSE:
-                            return routine.quasistatic(SysIdRoutine.Direction.kReverse);
-                        case DYNAMIC_FORWARD:
-                            return routine.dynamic(SysIdRoutine.Direction.kForward);
-                        case DYNAMIC_REVERSE:
-                            return routine.dynamic(SysIdRoutine.Direction.kReverse);
-                        case NONE:
-                        default:
-                            return Commands.none();
-                    }
-                },
-                Set.of(subsystems));
+    public Command getSysidCommand(Supplier<SysIdRoutine.Mechanism> mechanismSupplier) {
+        return Commands.deferredProxy(() -> {
+            if (DriverStation.isFMSAttached()) {
+                return Commands.print("Refusing to run SysId because the FMS is attached!");
+            }
+
+            var mechanism = mechanismSupplier.get();
+            var routine = new SysIdRoutine(getSysidConfig(), mechanism);
+            switch (sysidMode.getSelected()) {
+                case QUASISTATIC_FORWARD:
+                    return routine.quasistatic(SysIdRoutine.Direction.kForward);
+                case QUASISTATIC_REVERSE:
+                    return routine.quasistatic(SysIdRoutine.Direction.kReverse);
+                case DYNAMIC_FORWARD:
+                    return routine.dynamic(SysIdRoutine.Direction.kForward);
+                case DYNAMIC_REVERSE:
+                    return routine.dynamic(SysIdRoutine.Direction.kReverse);
+                case NONE:
+                default:
+                    return Commands.none();
+            }
+        });
     }
 
     public static <T extends Enum<?>> SendableChooser<T> enumToChooser(Class<T> toConvert) {

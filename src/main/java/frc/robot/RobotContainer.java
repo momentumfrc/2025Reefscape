@@ -8,6 +8,7 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.TeleopDriveCommand;
@@ -17,6 +18,7 @@ import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
+import frc.robot.molib.MoShuffleboard;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
@@ -61,13 +63,23 @@ public class RobotContainer {
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
 
+    private Trigger sysidTrigger;
+
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
+    private SendableChooser<Command> sysidChooser = new SendableChooser<>();
 
     private final MoInput input;
 
     public RobotContainer() {
-        inputChooser.setDefaultOption("Single F310", new ControllerInput());
+        inputChooser.setDefaultOption("Joystick + F310", new ControllerInput());
+
+        sysidChooser.setDefaultOption(
+                "Elevator", MoShuffleboard.getInstance().getSysidCommand(elevator::getElevatorSysidMechanism));
+        sysidChooser.addOption("Wrist", MoShuffleboard.getInstance().getSysidCommand(elevator::getWristSysidMechanism));
+
+        MoShuffleboard.getInstance().settingsTab.add("Input", inputChooser);
+        MoShuffleboard.getInstance().settingsTab.add("Sysid Mechanism", sysidChooser);
 
         input = new MoInputTransforms(inputChooser::getSelected);
 
@@ -90,6 +102,8 @@ public class RobotContainer {
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
+        sysidTrigger = new Trigger(() -> getInput().getRunSysid());
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
@@ -98,6 +112,9 @@ public class RobotContainer {
 
         endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
         endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
+
+        sysidTrigger.whileTrue(
+                Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
     }
 
     public Command getAutonomousCommand() {

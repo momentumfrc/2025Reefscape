@@ -86,6 +86,11 @@ public class MoInputTransforms implements MoInput {
     }
 
     @Override
+    public boolean getRunSysid() {
+        return inputSupplier.get().getRunSysid();
+    }
+
+    @Override
     public boolean getReZeroElevator() {
         return inputSupplier.get().getReZeroElevator();
     }

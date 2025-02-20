@@ -20,9 +20,11 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutCurrent;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
@@ -366,6 +368,42 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public boolean hasZero() {
         return this.hasZero.getBoolean(false);
+    }
+
+    public SysIdRoutine.Mechanism getElevatorSysidMechanism() {
+        final MutVoltage mut_volt = Units.Volts.mutable(0);
+
+        return new SysIdRoutine.Mechanism(
+                v -> {
+                    elevatorA.setVoltage(v.in(Units.Volts));
+                    elevatorWrist.stopMotor();
+                },
+                log -> {
+                    log.motor("elevatorAMtr")
+                            .voltage(mut_volt.mut_replace(
+                                    elevatorA.getAppliedOutput() * elevatorA.getBusVoltage(), Units.Volts))
+                            .linearPosition(elevatorRelEncoder.getPosition())
+                            .linearVelocity(elevatorRelEncoder.getVelocity());
+                },
+                this);
+    }
+
+    public SysIdRoutine.Mechanism getWristSysidMechanism() {
+        final MutVoltage mut_volt = Units.Volts.mutable(0);
+
+        return new SysIdRoutine.Mechanism(
+                v -> {
+                    elevatorA.stopMotor();
+                    elevatorWrist.setVoltage(v);
+                },
+                log -> {
+                    log.motor("wristMtr")
+                            .voltage(mut_volt.mut_replace(
+                                    elevatorWrist.getAppliedOutput() * elevatorWrist.getBusVoltage(), Units.Volts))
+                            .angularPosition(wristRelEncoder.getPosition())
+                            .angularVelocity(wristRelEncoder.getVelocity());
+                },
+                this);
     }
 
     @Override
