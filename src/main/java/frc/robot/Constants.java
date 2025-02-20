@@ -15,9 +15,9 @@ public class Constants {
     public static final CANAddress SWERVE_DRIVE_LEFT_REAR = new CANAddress(3);
     public static final CANAddress SWERVE_DRIVE_RIGHT_FRONT = new CANAddress(1);
     public static final CANAddress SWERVE_DRIVE_RIGHT_REAR = new CANAddress(4);
-    public static final CANAddress ELEVATORA = new CANAddress(0);
-    public static final CANAddress ELEVATORB = new CANAddress(0);
-    public static final CANAddress ELEVATOR_WRIST = new CANAddress(0);
+    public static final CANAddress ELEVATORA = new CANAddress(4);
+    public static final CANAddress ELEVATORB = new CANAddress(9);
+    public static final CANAddress ELEVATOR_WRIST = new CANAddress(2);
     public static final CANAddress END_EFFECTOR = new CANAddress(0);
 
     public static final HIDPort JOYSTICK = new HIDPort(0);

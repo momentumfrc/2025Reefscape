@@ -51,7 +51,7 @@ public class RobotContainer {
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
         endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOut);
-        endEffectorInAlgaeExCoralTrigger.and(endEffectorExAlgaeInCoralTrigger.whileFalse(algaeIn));
+        endEffectorInAlgaeExCoralTrigger.whileTrue(algaeIn);
     }
 
     private MoInput getInput() {

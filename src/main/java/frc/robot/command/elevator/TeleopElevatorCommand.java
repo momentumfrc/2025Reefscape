@@ -21,7 +21,7 @@ public class TeleopElevatorCommand extends Command {
 
     private static final ElevatorSetpoint DEFAULT_SETPOINT = ElevatorSetpoint.STOW;
 
-    private final ElevatorSubsystem elevators;
+    private final ElevatorSubsystem elevator;
     private final Supplier<MoInput> inputSupplier;
 
     private boolean smartMotionOverride = false;
