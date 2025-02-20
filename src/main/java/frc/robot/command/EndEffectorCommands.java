@@ -5,15 +5,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystem.EndEffectorSubsystem;
 
 public class EndEffectorCommands {
-    public static Command ExAlgaeInCoral(EndEffectorSubsystem endEffector) {
+    public static Command exAlgaeInCoral(EndEffectorSubsystem endEffector) {
         return Commands.run(endEffector::extakeAlgaeCoralIntake, endEffector);
     }
 
-    public static Command InAlgaeExCoral(EndEffectorSubsystem endEffector) {
+    public static Command inAlgaeExCoral(EndEffectorSubsystem endEffector) {
         return Commands.run(endEffector::intakeAlgaeCoralExtake, endEffector);
     }
 
-    public static Command IdleEndEffector(EndEffectorSubsystem endEffector) {
+    public static Command idleEndEffector(EndEffectorSubsystem endEffector) {
         return Commands.run(endEffector::endEffectorStop, endEffector);
     }
 }

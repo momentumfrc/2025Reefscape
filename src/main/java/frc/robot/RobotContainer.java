@@ -39,9 +39,9 @@ public class RobotContainer {
     private final Command elevatorCommand = new ZeroElevatorCommand(elevator)
             .andThen(new TeleopElevatorCommand(elevator, this::getInput))
             .withName("ZeroThenTeleopElevatorCommand");
-    private final Command algaeOutCommand = EndEffectorCommands.ExAlgaeInCoral(endEffector);
-    private final Command algaeInCommand = EndEffectorCommands.InAlgaeExCoral(endEffector);
-    private final Command endEffectorIdle = EndEffectorCommands.IdleEndEffector(endEffector);
+    private final Command algaeOutCommand = EndEffectorCommands.exAlgaeInCoral(endEffector);
+    private final Command algaeInCommand = EndEffectorCommands.inAlgaeExCoral(endEffector);
+    private final Command endEffectorIdle = EndEffectorCommands.idleEndEffector(endEffector);
 
     private Trigger endEffectorExAlgaeInCoralTrigger;
     private Trigger endEffectorInAlgaeExCoralTrigger;
