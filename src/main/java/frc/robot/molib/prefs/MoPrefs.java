@@ -70,6 +70,12 @@ public class MoPrefs {
     public static final AngleUnitPref wristAbsZero =
             rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0)); // Temp
 
+    public static final UnitPref<VoltageUnit> elevatorZeroPower =
+            voltsPref("Elevator Zero Power", Units.Volts.of(0.25));
+    public static final UnitPref<CurrentUnit> elevatorZeroCurrentThresh =
+            ampsPref("Elevator Zero Current Thresh", Units.Amps.of(10));
+    public static final TimeUnitPref elevatorZeroCurrentTime = secondsPref("Elevator Zero Time", Units.Seconds.of(0.5));
+
     public static final DistanceUnitPref elevatorMaxExtension =
             centimetersPref("Elevator Max Extension", Units.Centimeters.of(0)); // Temp
     public static final AngleUnitPref wristMaxExtension =

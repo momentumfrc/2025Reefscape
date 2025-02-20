@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.component.ElevatorSetpointManager;
+import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.encoder.MoDistanceEncoder;
 import frc.robot.molib.encoder.MoRotationEncoder;
@@ -268,6 +270,30 @@ public class ElevatorSubsystem extends SubsystemBase {
         return new ElevatorPosition(elevatorRelEncoder.getPosition(), wristRelEncoder.getPosition());
     }
 
+    public void moveForElevatorZeroing() {
+        elevatorA.setVoltage(-1 * MoPrefs.elevatorZeroPower.get().in(Units.Volts));
+
+        switch (controlMode.getSelected()) {
+            case SMARTMOTION:
+                var stowPos = ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW);
+                wristSmartMotionPid.setPositionReference(stowPos.wristAngle());
+                break;
+            case DIRECT_VELOCITY:
+                wristVelocityPid.setVelocityReference(Units.RotationsPerSecond.zero());
+                break;
+            case FALLBACK_DIRECT_POWER:
+                elevatorWrist.setVoltage(0);
+                break;
+        }
+    }
+
+    public void zeroElevator() {
+        hasZero.setBoolean(true);
+        elevatorRelEncoder.setPosition(Units.Centimeters.zero());
+        updateElevatorConfig(
+                config -> config.softLimit.reverseSoftLimitEnabled(true).forwardSoftLimitEnabled(true));
+    }
+
     public void adjustDirectPower(ElevatorMovementRequest request) {
         request = limitElevatorMovementRequest(request);
         elevatorA.set(request.elevatorPower);
@@ -302,6 +328,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Current getElevatorCurrent() {
         return elevatorCurrent.mut_replace(elevatorA.getOutputCurrent(), Units.Amps);
+    }
+
+    public boolean hasZero() {
+        return this.hasZero.getBoolean(false);
     }
 
     @Override

@@ -13,6 +13,7 @@ import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
 import frc.robot.command.elevator.TeleopElevatorCommand;
+import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
@@ -35,7 +36,9 @@ public class RobotContainer {
     private EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
 
     private TeleopDriveCommand driveCommand = new TeleopDriveCommand(drive, positioning, this::getInput);
-    private TeleopElevatorCommand elevatorCommand = new TeleopElevatorCommand(elevator, this::getInput);
+    private final Command elevatorCommand = new ZeroElevatorCommand(elevator)
+            .andThen(new TeleopElevatorCommand(elevator, this::getInput))
+            .withName("ZeroThenTeleopElevatorCommand");
     private final Command algaeOutCommand = EndEffectorCommands.ExAlgaeInCoral(endEffector);
     private final Command algaeInCommand = EndEffectorCommands.InAlgaeExCoral(endEffector);
     private final Command endEffectorIdle = EndEffectorCommands.IdleEndEffector(endEffector);
