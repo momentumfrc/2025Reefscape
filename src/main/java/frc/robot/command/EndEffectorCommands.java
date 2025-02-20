@@ -6,14 +6,14 @@ import frc.robot.subsystem.EndEffectorSubsystem;
 
 public class EndEffectorCommands {
     public static Command exAlgaeInCoral(EndEffectorSubsystem endEffector) {
-        return Commands.run(endEffector::extakeAlgaeCoralIntake, endEffector);
+        return Commands.run(endEffector::extakeAlgaeCoralIntake, endEffector).withName("ExtakeAlgaeCommand");
     }
 
     public static Command inAlgaeExCoral(EndEffectorSubsystem endEffector) {
-        return Commands.run(endEffector::intakeAlgaeCoralExtake, endEffector);
+        return Commands.run(endEffector::intakeAlgaeCoralExtake, endEffector).withName("IntakeAlgaeCommand");
     }
 
     public static Command idleEndEffector(EndEffectorSubsystem endEffector) {
-        return Commands.run(endEffector::endEffectorStop, endEffector);
+        return Commands.run(endEffector::endEffectorStop, endEffector).withName("IdleEndEffectorCommand");
     }
 }

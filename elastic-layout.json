@@ -823,7 +823,7 @@
           {
             "title": "List Layout",
             "x": 0.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 256.0,
             "type": "List Layout",
@@ -909,7 +909,7 @@
           {
             "title": "Setpoint",
             "x": 256.0,
-            "y": 128.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -923,7 +923,7 @@
           {
             "title": "Elevator Control Mode",
             "x": 256.0,
-            "y": 256.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "ComboBox Chooser",
@@ -935,8 +935,8 @@
           },
           {
             "title": "Wrist Nominal Reverse Limit Enabled",
-            "x": 512.0,
-            "y": 0.0,
+            "x": 384.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -953,7 +953,7 @@
           {
             "title": "Coast Motors",
             "x": 512.0,
-            "y": 128.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Switch",
@@ -961,6 +961,18 @@
               "topic": "/Shuffleboard/Elevator/Coast Motors",
               "period": 0.06,
               "data_type": "boolean"
+            }
+          },
+          {
+            "title": "End Effector",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Subsystem",
+            "properties": {
+              "topic": "/Shuffleboard/Elevator/End Effector",
+              "period": 0.06
             }
           }
         ]
