@@ -61,7 +61,7 @@ public class TeleopElevatorCommand extends Command {
         zeroElevatorPressed = false;
         elevatorLimitOverride = false;
         elevatorHardStopOverrideTimer.restart();
-        elevator.reZeroElevator();
+        elevator.reZeroWrist();
     }
 
     private ElevatorMovementRequest getMovementRequest(MoInput input) {
@@ -122,7 +122,7 @@ public class TeleopElevatorCommand extends Command {
             if (zeroElevatorPressed) {
                 elevator.enableWristReverseLimit();
                 elevatorLimitOverride = false;
-                elevator.reZeroElevator();
+                elevator.reZeroWrist();
             }
             zeroElevatorPressed = false;
             elevatorHardStopOverrideTimer.restart();

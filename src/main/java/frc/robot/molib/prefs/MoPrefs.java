@@ -60,9 +60,7 @@ public class MoPrefs {
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
             encoderTicksPerCentimeterPref(
                     "Elevator Encoder Scale", MoUnits.EncoderTicksPerCentimeter.ofNative(144)); // Temp
-    public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> elevatorAbsEncoderScale =
-            encoderTicksPerRotationPref(
-                    "Elevator Absolute Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(2.4)); // Temp
+
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> wristEncoderScale =
             encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(1)); // Temp
 

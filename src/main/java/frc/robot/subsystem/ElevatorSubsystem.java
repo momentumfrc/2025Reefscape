@@ -65,7 +65,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SoftLimitConfig elevatorLimitConfig = new SoftLimitConfig();
     private SoftLimitConfig wristLimitConfig = new SoftLimitConfig();
 
-    public final MoRotationEncoder elevatorAbsEncoder;
     public final MoRotationEncoder wristAbsEncoder;
     public final MoDistanceEncoder elevatorRelEncoder;
     public final MoRotationEncoder wristRelEncoder;
@@ -113,18 +112,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorWrist.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         MoUtils.setupRelativeEncoder(
-                elevatorRelEncoder,
-                elevatorAbsEncoder.getPosition(),
-                MoPrefs.elevatorAbsZero.get(),
-                MoPrefs.elevatorEncoderScale.get());
-
-        MoUtils.setupRelativeEncoder(
                 wristRelEncoder,
                 wristAbsEncoder.getPosition(),
                 MoPrefs.wristAbsZero.get(),
                 MoPrefs.wristEncoderScale.get());
-
-        elevatorAbsEncoder.setConversionFactor(MoPrefs.elevatorAbsEncoderScale.get());
 
         elevatorVelTuner.populatePIDValues();
         wristVelTuner.populatePIDValues();
@@ -139,7 +130,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorB = new SparkMax(Constants.ELEVATORB.address(), MotorType.kBrushless);
         this.elevatorWrist = new SparkMax(Constants.ELEVATOR_WRIST.address(), MotorType.kBrushless);
 
-        elevatorAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorA, Units.Rotations);
         wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorWrist, Units.Rotations);
 
         elevatorRelEncoder = MoDistanceEncoder.forSparkRelative(elevatorA, Units.Centimeters);
@@ -147,13 +137,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // Setup listeners for encoder scales and absolute zeros. Use notifyImmediately on zero listeners to set the
         // values now.
-        MoPrefs.elevatorEncoderScale.subscribe(scale -> MoUtils.setupRelativeEncoder(
-                elevatorRelEncoder, elevatorAbsEncoder.getPosition(), MoPrefs.elevatorAbsZero.get(), scale));
-        MoPrefs.elevatorAbsEncoderScale.subscribe(elevatorAbsEncoder::setConversionFactor, true);
         MoPrefs.wristEncoderScale.subscribe(scale -> MoUtils.setupRelativeEncoder(
                 wristRelEncoder, wristAbsEncoder.getPosition(), MoPrefs.wristAbsZero.get(), scale));
-        MoPrefs.elevatorAbsZero.subscribe(zero -> MoUtils.setupRelativeEncoder(
-                elevatorRelEncoder, elevatorAbsEncoder.getPosition(), zero, MoPrefs.elevatorEncoderScale.get()));
         MoPrefs.wristAbsZero.subscribe(zero -> MoUtils.setupRelativeEncoder(
                 wristRelEncoder, wristAbsEncoder.getPosition(), zero, MoPrefs.wristEncoderScale.get()));
 
@@ -190,12 +175,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         tiltback = new TiltBackElevatorWristCommand(this);
     }
 
-    public void reZeroElevator() {
-        MoUtils.setupRelativeEncoder(
-                elevatorRelEncoder,
-                elevatorAbsEncoder.getPosition(),
-                MoPrefs.elevatorAbsZero.get(),
-                MoPrefs.elevatorEncoderScale.get());
+    public void reZeroWrist() {
         MoUtils.setupRelativeEncoder(
                 wristRelEncoder,
                 wristAbsEncoder.getPosition(),
