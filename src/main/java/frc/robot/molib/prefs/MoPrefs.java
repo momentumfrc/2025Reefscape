@@ -67,19 +67,16 @@ public class MoPrefs {
     public static final DimensionlessUnitPref elevatorSetpointVarianceThreshold =
             percentPref("Elevator Setpoint Variance Threshold", Units.Percent.of(3));
 
-    public static final UnitPref<AngleUnit> elevatorAbsZero =
-            rotationsPref("Elevator Absolute Zero", Units.Rotations.of(0)); // Temp
-    public static final UnitPref<AngleUnit> wristAbsZero =
+    public static final AngleUnitPref wristAbsZero =
             rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0)); // Temp
 
-    public static final UnitPref<DistanceUnit> elevatorMaxExtension =
-            centimetersPref("Elevator Absolute Zero", Units.Centimeters.of(0)); // Temp
-    public static final UnitPref<AngleUnit> wristMaxExtension =
-            rotationsPref("Wrist Absolute Zero", Units.Degrees.of(0)); // Temp
+    public static final DistanceUnitPref elevatorMaxExtension =
+            centimetersPref("Elevator Max Extension", Units.Centimeters.of(0)); // Temp
+    public static final AngleUnitPref wristMaxExtension =
+            rotationsPref("Wrist Max Extension", Units.Rotations.of(0.25)); // Temp
 
-    public static final UnitPref<DistanceUnit> elevatorBottom =
-            centimetersPref("Elevator Bottom", Units.Centimeters.of(0.25)); // Temp
-    public static final UnitPref<AngleUnit> wristHorizontal =
+    public static final AngleUnitPref wristMinExtension = rotationsPref("Wrist Min Extension", Units.Rotations.of(0));
+    public static final AngleUnitPref wristHorizontal =
             rotationsPref("Wrist Horizontal", Units.Rotations.of(0.25)); // Temp
 
     public static final UnitPref<LinearVelocityUnit> elevatorMaxRps =
