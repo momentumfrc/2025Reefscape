@@ -8,12 +8,10 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.DimensionlessUnit;
-import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.molib.encoder.MoDistanceEncoder;
 import frc.robot.molib.encoder.MoRotationEncoder;
 
 public class MoUtils {
@@ -34,21 +32,6 @@ public class MoUtils {
         encoder.setPosition(Units.Rotations.of(pos));
     }
 
-    public static void setupRelativeEncoder(
-            MoDistanceEncoder encoder,
-            Angle absPos,
-            Measure<AngleUnit> absZero,
-            Measure<PerUnit<DimensionlessUnit, DistanceUnit>> ratio) {
-        encoder.setConversionFactor(ratio);
-
-        double pos = absPos.in(Units.Rotations);
-        pos = (pos + 1 - absZero.in(Units.Rotations)) % 1;
-        if (pos > (1 - ENCODER_ZERO_ZONE)) {
-            pos -= 1;
-        }
-        encoder.setPosition(Units.Centimeters.of(pos));
-    }
-
     public static SparkBaseConfig getSparkConfig(SparkBase spark) {
         if (spark instanceof SparkMax) {
             return new SparkMaxConfig();
@@ -57,10 +40,6 @@ public class MoUtils {
         } else {
             throw new IllegalArgumentException("Unsupported SparkBase subclass");
         }
-    }
-
-    public static double clamp(double value, double min, double max) {
-        return Math.min(Math.max(value, min), max);
     }
 
     public static double curve(double val, double curve) {

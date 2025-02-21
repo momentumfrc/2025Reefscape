@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -92,8 +93,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public static record ElevatorMovementRequest(double elevatorPower, double wristPower) {
         public ElevatorMovementRequest(double elevatorPower, double wristPower) {
-            this.elevatorPower = MoUtils.clamp(elevatorPower, -1, 1);
-            this.wristPower = MoUtils.clamp(wristPower, -1, 1);
+            this.elevatorPower = MathUtil.clamp(elevatorPower, -1, 1);
+            this.wristPower = MathUtil.clamp(wristPower, -1, 1);
         }
 
         public boolean isZero() {
