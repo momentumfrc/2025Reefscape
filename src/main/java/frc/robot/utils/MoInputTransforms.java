@@ -12,24 +12,18 @@ import java.util.function.Supplier;
 public class MoInputTransforms implements MoInput {
     private final Supplier<MoInput> inputSupplier;
 
-    private SlewRateLimiter driveTranslationLimiter;
-    private SlewRateLimiter driveRotationLimiter;
+    private VariableSlewRateLimiter driveTranslationLimiter;
+    private VariableSlewRateLimiter driveRotationLimiter;
     private SlewRateLimiter elevatorLimiter;
     private SlewRateLimiter wristLimiter;
 
     private Vec2 mutMoveRequest = new Vec2(0, 0);
 
-    public MoInputTransforms(Supplier<MoInput> inputSupplier) {
+    public MoInputTransforms(Supplier<MoInput> inputSupplier, Supplier<Double> driveSlewRateSupplier) {
         this.inputSupplier = inputSupplier;
 
-        MoPrefs.driveRampTime.subscribe(
-                rampTime -> {
-                    double slewRate = 1.0 / rampTime;
-
-                    driveTranslationLimiter = new SlewRateLimiter(slewRate);
-                    driveRotationLimiter = new SlewRateLimiter(slewRate);
-                },
-                true);
+        driveTranslationLimiter = new VariableSlewRateLimiter(driveSlewRateSupplier);
+        driveRotationLimiter = new VariableSlewRateLimiter(driveSlewRateSupplier);
 
         MoPrefs.elevatorRampTime.subscribe(
                 rampTime -> {

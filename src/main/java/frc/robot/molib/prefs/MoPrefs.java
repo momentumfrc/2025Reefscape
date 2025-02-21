@@ -37,7 +37,9 @@ public class MoPrefs {
     // ---------- Drive ----------
     public static final Pref<Double> inputDeadzone = unitlessDoublePref("Input Deadzone", 0.05);
     public static final Pref<Double> inputCurve = unitlessDoublePref("Input Curve", 1.5);
-    public static final Pref<Double> driveRampTime = unitlessDoublePref("Input Ramp Time", 0.1);
+    public static final TimeUnitPref driveRampTime = secondsPref("Drive Normal Ramp Time", Units.Seconds.of(0.1));
+    public static final TimeUnitPref driveRampTimeElevatorExtended =
+            secondsPref("Drive Elevator Extended Ramp Time", Units.Seconds.of(1.5));
 
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> swerveRotScale =
             encoderTicksPerRotationPref("SWRV ROT Scale", MoUnits.EncoderTicksPerRotation.ofNative(12.8));

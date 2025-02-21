@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,6 +21,7 @@ import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
@@ -81,7 +84,7 @@ public class RobotContainer {
         MoShuffleboard.getInstance().settingsTab.add("Input", inputChooser);
         MoShuffleboard.getInstance().settingsTab.add("Sysid Mechanism", sysidChooser);
 
-        input = new MoInputTransforms(inputChooser::getSelected);
+        input = new MoInputTransforms(inputChooser::getSelected, this::getDriveSlewRate);
 
         configureBindings();
 
@@ -115,6 +118,16 @@ public class RobotContainer {
 
         sysidTrigger.whileTrue(
                 Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
+    }
+
+    private double getDriveSlewRate() {
+        double elevatorExtensionPercent = elevator.getElevatorHeight().in(Units.Centimeters)
+                / MoPrefs.elevatorMaxExtension.get().in(Units.Centimeters);
+        double rampTime = MathUtil.interpolate(
+                MoPrefs.driveRampTime.get().in(Units.Seconds),
+                MoPrefs.driveRampTimeElevatorExtended.get().in(Units.Seconds),
+                elevatorExtensionPercent);
+        return 1.0 / rampTime;
     }
 
     public Command getAutonomousCommand() {
