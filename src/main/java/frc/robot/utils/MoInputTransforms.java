@@ -35,7 +35,7 @@ public class MoInputTransforms implements MoInput {
                 true);
     }
 
-    private double applyDriveInputTransforms(double value) {
+    private double applyInputTransforms(double value) {
         return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputCurve.get());
     }
 
@@ -49,8 +49,8 @@ public class MoInputTransforms implements MoInput {
         mutMoveRequest.update(inputSupplier.get().getMoveRequest());
 
         double norm = mutMoveRequest.normalize();
+        norm = applyInputTransforms(norm);
         norm = driveTranslationLimiter.calculate(norm);
-        norm = applyDriveInputTransforms(norm);
         mutMoveRequest.scale(norm);
 
         return mutMoveRequest;
@@ -58,7 +58,7 @@ public class MoInputTransforms implements MoInput {
 
     @Override
     public double getTurnRequest() {
-        return applyDriveInputTransforms(
+        return applyInputTransforms(
                 driveRotationLimiter.calculate(inputSupplier.get().getTurnRequest()));
     }
 
@@ -71,7 +71,8 @@ public class MoInputTransforms implements MoInput {
     public ElevatorMovementRequest getElevatorMovementRequest() {
         var requested = inputSupplier.get().getElevatorMovementRequest();
         return new ElevatorMovementRequest(
-                elevatorLimiter.calculate(requested.elevatorPower()), wristLimiter.calculate(requested.wristPower()));
+                elevatorLimiter.calculate(applyInputTransforms(requested.elevatorPower())),
+                wristLimiter.calculate(applyInputTransforms(requested.wristPower())));
     }
 
     @Override
