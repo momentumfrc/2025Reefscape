@@ -8,6 +8,7 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
@@ -18,6 +19,7 @@ import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 import frc.robot.subsystem.IntakeWristSubsystem;
+import frc.robot.subsystem.LEDsSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 import frc.robot.utils.AutoChooser;
 
@@ -44,6 +46,8 @@ public class RobotContainer {
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
 
+    private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
+
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
 
@@ -56,6 +60,8 @@ public class RobotContainer {
         climber.setDefaultCommand(ClimberCommands.idleClimber(climber));
         intakeRoller.setDefaultCommand(intakeRollersDefaultCommand);
         intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
+
+        ledsSubsystem.setDefaultCommand(new RunCommand(ledsSubsystem::periodic, ledsSubsystem));
     }
 
     private void configureBindings() {
