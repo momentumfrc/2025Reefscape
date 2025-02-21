@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.nio.file.Path;
@@ -26,6 +27,8 @@ public class Constants {
 
     public static final HIDPort JOYSTICK = new HIDPort(0);
     public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(1);
+
+    public static final PWMPort leds = new PWMPort(1);
 
     public static Path DATA_STORE_FILE;
 
