@@ -12,6 +12,7 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.CurrentUnit;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.Units;
@@ -19,6 +20,7 @@ import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -32,9 +34,12 @@ import java.util.Set;
 /** Robot preferences, accessible through Shuffleboard */
 public class MoPrefs {
 
+    // ---------- Drive ----------
     public static final Pref<Double> inputDeadzone = unitlessDoublePref("Input Deadzone", 0.05);
     public static final Pref<Double> inputCurve = unitlessDoublePref("Input Curve", 1.5);
-    public static final Pref<Double> driveRampTime = unitlessDoublePref("Input Ramp Time", 0.1);
+    public static final TimeUnitPref driveRampTime = secondsPref("Drive Normal Ramp Time", Units.Seconds.of(0.1));
+    public static final TimeUnitPref driveRampTimeElevatorExtended =
+            secondsPref("Drive Elevator Extended Ramp Time", Units.Seconds.of(1.5));
 
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> swerveRotScale =
             encoderTicksPerRotationPref("SWRV ROT Scale", MoUnits.EncoderTicksPerRotation.ofNative(12.8));
@@ -45,18 +50,67 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
+    /**
+     * The yaw offset between "forward" on the robot and "angle zero" on the gyro
+     */
+    public static final AngleUnitPref navxYawOffset = rotationsPref("NavX Yaw Offset", Units.Rotations.zero());
+
+    public static final LinearVelocityUnitPref swerveMaxLinearSpeed =
+            metersPerSecPref("SWRV Max Linear Speed", Units.MetersPerSecond.of(5));
+    public static final AngularVelocityUnitPref swerveMaxAngularSpeed =
+            rotationsPerSecPref("SWRV Max Angular Speed", Units.RotationsPerSecond.of(1));
+
+    // ---------- Elevator ----------
+    public static final Pref<Double> elevatorRampTime = unitlessDoublePref("Elevator Ramp Time", 0.15);
+
+    public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> elevatorEncoderScale =
+            encoderTicksPerCentimeterPref(
+                    "Elevator Encoder Scale", MoUnits.EncoderTicksPerCentimeter.ofNative(1.785446));
+
+    public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> wristEncoderScale =
+            encoderTicksPerRotationPref("Wrist Encoder Scale", MoUnits.EncoderTicksPerRotation.ofNative(150));
+
+    public static final DimensionlessUnitPref elevatorSetpointVarianceThreshold =
+            percentPref("Elevator Setpoint Variance Threshold", Units.Percent.of(3));
+
+    public static final AngleUnitPref wristAbsZero = rotationsPref("Wrist Absolute Zero", Units.Rotations.of(0));
+
+    public static final UnitPref<VoltageUnit> elevatorZeroPower =
+            voltsPref("Elevator Zero Power", Units.Volts.of(0.25));
+    public static final UnitPref<CurrentUnit> elevatorZeroCurrentThresh =
+            ampsPref("Elevator Zero Current Thresh", Units.Amps.of(10));
+    public static final TimeUnitPref elevatorZeroCurrentTime = secondsPref("Elevator Zero Time", Units.Seconds.of(0.5));
+
+    public static final DistanceUnitPref elevatorMaxExtension =
+            centimetersPref("Elevator Max Extension", Units.Centimeters.of(73.66));
+    public static final AngleUnitPref wristMaxExtension =
+            rotationsPref("Wrist Max Extension", Units.Rotations.of(0.25));
+
+    public static final AngleUnitPref wristNominalRevLimit =
+            rotationsPref("Wrist Nominal Reverse Limit", Units.Rotations.of(0.2));
+    public static final AngleUnitPref wristHorizontal = rotationsPref("Wrist Horizontal", Units.Rotations.of(0.45));
+
+    public static final UnitPref<LinearVelocityUnit> elevatorMaxRps =
+            metersPerSecPref("Elevator Max Spd", Units.MetersPerSecond.of(0.5));
+    public static final UnitPref<AngularVelocityUnit> wristMaxRps =
+            rotationsPerSecPref("Wrist Max Speed", Units.RotationsPerSecond.of(0.5));
+
+    public static final DimensionlessUnitPref endEffectorPower =
+            percentPref("End Effector Power", Units.Percent.of(20));
+
+    // ---------- Climber ----------
     public static final TimeUnitPref climberRachetLockoutTime =
             secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));
-    public static final UnitPref<DimensionlessUnit> rachetEngagedServoPosition =
+    public static final DimensionlessUnitPref rachetEngagedServoPosition =
             percentPref("Climber Rachet Engaged Servo Pos", Units.Percent.zero());
-    public static final UnitPref<DimensionlessUnit> rachetDisengagedServoPosition =
+    public static final DimensionlessUnitPref rachetDisengagedServoPosition =
             percentPref("Climber Rachet Disengaged Servo Pos", Units.Percent.of(100));
 
     public static final Pref<Double> climberFwdSoftLimit = unitlessDoublePref("Climber FWD Soft Limit", 10);
     public static final Pref<Double> climberRvsSoftLimit = unitlessDoublePref("Climber RVS Soft Limit", 0.1);
-    public static final UnitPref<DimensionlessUnit> climberZeroPwr =
-            percentPref("Climber Zero Power", Units.Percent.of(10));
+    public static final DimensionlessUnitPref climberZeroPwr = percentPref("Climber Zero Power", Units.Percent.of(10));
 
+    // ---------- Intake ----------
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
 
@@ -81,6 +135,7 @@ public class MoPrefs {
     public static final TimeUnitPref intakeRollerExtakeTime =
             secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
 
+    // ---------- Auto ----------
     public static final LinearVelocityUnitPref autoMaxLinVel =
             metersPerSecPref("Auto Max Linear Velocity", Units.MetersPerSecond.of(1.5));
     public static final LinearAccelerationUnitPref autoMaxLinAccel =
@@ -90,19 +145,9 @@ public class MoPrefs {
     public static final AngularAccelerationUnitPref autoMaxAngAccel =
             rotationsPerSecPerSecPref("Auto Max Angular Acceleration", Units.RotationsPerSecondPerSecond.of(2));
     public static final DistanceUnitPref autoLeaveDist = metersPref("Auto Leave Distance", Units.Meters.of(1.5));
-    public static final UnitPref<DimensionlessUnit> autoFallbackSpd =
+    public static final DimensionlessUnitPref autoFallbackSpd =
             percentPref("Auto Fallback Power", Units.Percent.of(10));
     public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
-
-    /**
-     * The yaw offset between "forward" on the robot and "angle zero" on the gyro
-     */
-    public static final AngleUnitPref navxYawOffset = rotationsPref("NavX Yaw Offset", Units.Rotations.zero());
-
-    public static final LinearVelocityUnitPref swerveMaxLinearSpeed =
-            metersPerSecPref("SWRV Max Linear Speed", Units.MetersPerSecond.of(5));
-    public static final AngularVelocityUnitPref swerveMaxAngularSpeed =
-            rotationsPerSecPref("SWRV Max Angular Speed", Units.RotationsPerSecond.of(1));
 
     NetworkTable backingTable;
 
@@ -198,6 +243,14 @@ public class MoPrefs {
         return new AngularVelocityUnitPref(key, Units.RotationsPerSecond, defaultValue);
     }
 
+    private static TimeUnitPref secondsPref(String key, Time defaultValue) {
+        return new TimeUnitPref(key, Units.Seconds, defaultValue);
+    }
+
+    private static DimensionlessUnitPref percentPref(String key, Dimensionless defaultValue) {
+        return new DimensionlessUnitPref(key, Units.Percent, defaultValue);
+    }
+
     private static LinearAccelerationUnitPref metersPerSecPerSecPref(String key, LinearAcceleration defaultValue) {
         return new LinearAccelerationUnitPref(key, Units.MetersPerSecondPerSecond, defaultValue);
     }
@@ -221,19 +274,11 @@ public class MoPrefs {
         return new UnitPref<>(key, MoUnits.EncoderTicksPerRotation, defaultValue);
     }
 
-    private static TimeUnitPref secondsPref(String key, Time defaultValue) {
-        return new TimeUnitPref(key, Units.Seconds, defaultValue);
-    }
-
     private static UnitPref<CurrentUnit> ampsPref(String key, Measure<CurrentUnit> defaultValue) {
         return new UnitPref<>(key, Units.Amps, defaultValue);
     }
 
     private static UnitPref<VoltageUnit> voltsPref(String key, Measure<VoltageUnit> defaultValue) {
         return new UnitPref<>(key, Units.Volts, defaultValue);
-    }
-
-    private static UnitPref<DimensionlessUnit> percentPref(String key, Measure<DimensionlessUnit> defaultValue) {
-        return new UnitPref<>(key, Units.Percent, defaultValue);
     }
 }

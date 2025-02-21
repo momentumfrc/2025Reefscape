@@ -13,12 +13,14 @@ import edu.wpi.first.units.Unit;
 import frc.robot.molib.encoder.MoEncoder;
 import frc.robot.utils.MoUtils;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
     protected final Type type;
     protected final SparkBase motorController;
     protected final ClosedLoopSlot pidSlot;
     protected final SparkClosedLoopController pidController;
+    protected final Supplier<SparkBaseConfig> configSupplier;
 
     protected final MoEncoder<Dim, VDim> internalEncoder;
 
@@ -40,12 +42,22 @@ public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>
      * @param pidSlot the slot in which to save the PID constants
      */
     public MoSparkMaxPID(
-            Type type, SparkBase controller, ClosedLoopSlot pidSlot, MoEncoder<Dim, VDim> internalEncoder) {
+            Type type,
+            SparkBase controller,
+            ClosedLoopSlot pidSlot,
+            MoEncoder<Dim, VDim> internalEncoder,
+            Supplier<SparkBaseConfig> configSupplier) {
         this.type = type;
         this.motorController = controller;
         this.pidSlot = pidSlot;
         this.pidController = motorController.getClosedLoopController();
         this.internalEncoder = internalEncoder;
+        this.configSupplier = configSupplier;
+    }
+
+    public MoSparkMaxPID(
+            Type type, SparkBase controller, ClosedLoopSlot pidSlot, MoEncoder<Dim, VDim> internalEncoder) {
+        this(type, controller, pidSlot, internalEncoder, () -> MoUtils.getSparkConfig(controller));
     }
 
     public Type getType() {
@@ -57,37 +69,27 @@ public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>
     }
 
     public void setP(double kP) {
-        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
-        config.closedLoop.p(kP, pidSlot);
-        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        setConfigOption(config -> config.closedLoop.p(kP, pidSlot));
     }
 
     public void setI(double kI) {
-        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
-        config.closedLoop.i(kI, pidSlot);
-        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        setConfigOption(config -> config.closedLoop.i(kI, pidSlot));
     }
 
     public void setD(double kD) {
-        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
-        config.closedLoop.d(kD, pidSlot);
-        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        setConfigOption(config -> config.closedLoop.d(kD, pidSlot));
     }
 
     public void setFF(double kFF) {
-        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
-        config.closedLoop.velocityFF(kFF, pidSlot);
-        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        setConfigOption(config -> config.closedLoop.velocityFF(kFF, pidSlot));
     }
 
     public void setIZone(double iZone) {
-        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
-        config.closedLoop.iZone(iZone, pidSlot);
-        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        setConfigOption(config -> config.closedLoop.iZone(iZone, pidSlot));
     }
 
     public void setConfigOption(Consumer<SparkBaseConfig> op) {
-        SparkBaseConfig config = MoUtils.getSparkConfig(motorController);
+        SparkBaseConfig config = configSupplier.get();
         op.accept(config);
         motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
