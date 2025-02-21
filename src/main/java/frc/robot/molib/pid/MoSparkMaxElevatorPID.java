@@ -71,7 +71,7 @@ public class MoSparkMaxElevatorPID extends MoSparkMaxPID<DistanceUnit, LinearVel
                     "Cannot set position reference on PID controller of type " + this.type.name());
         }
 
-        // When we're in smartmotion, the velocity component of the FF calcuation is handled by the kFF set on the motor
+        // The velocity component of the FF calcuation is handled by the kFF set on the motor
         // controller, and the arbitrary FF we're adding here is only to linearize the motor response against gravity.
         double ff = getFF(Units.MetersPerSecond.zero());
         double value = desiredPosition.in(internalEncoder.getInternalEncoderUnits());
@@ -89,7 +89,9 @@ public class MoSparkMaxElevatorPID extends MoSparkMaxPID<DistanceUnit, LinearVel
                     "Cannot set velocity reference on PID controller of type " + this.type.name());
         }
 
-        double ff = getFF(desiredVelocity);
+        // The velocity component of the FF calcuation is handled by the kFF set on the motor
+        // controller, and the arbitrary FF we're adding here is only to linearize the motor response against gravity.
+        double ff = getFF(Units.MetersPerSecond.zero());
         double value = desiredVelocity.in(internalEncoder.getInternalEncoderVelocityUnits());
 
         this.pidController.setReference(
