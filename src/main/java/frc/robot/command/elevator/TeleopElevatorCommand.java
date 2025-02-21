@@ -117,9 +117,10 @@ public class TeleopElevatorCommand extends Command {
             if (!elevator.isWristNominalReverseLimitEnabled()) {
                 elevator.enableWristNominalReverseLimit();
             }
-            if (elevator.isWristInDanger()) {
-                return new ElevatorMovementRequest(0, request.wristPower());
-            }
+        }
+
+        if (elevator.isWristInDanger()) {
+            return new ElevatorMovementRequest(0, request.wristPower());
         }
 
         return request;
