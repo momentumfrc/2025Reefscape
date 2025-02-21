@@ -135,6 +135,11 @@ public class TeleopElevatorCommand extends Command {
             elevator.reZeroWrist();
         }
 
+        if (controlMode == ElevatorControlMode.SMARTMOTION && !elevator.hasZero()) {
+            DriverStation.reportWarning("Disabling smartmotion because the elevator is not reliably zeroed", false);
+            controlMode = ElevatorControlMode.DIRECT_VELOCITY;
+        }
+
         if (controlMode != ElevatorControlMode.SMARTMOTION) {
             setpointPublisher.setString(controlMode.toString());
         }
