@@ -97,7 +97,7 @@ public class TeleopElevatorCommand extends Command {
 
         if (smartMotionOverride) {
             setpointPublisher.setString("OVERRIDE");
-            elevator.adjustVelocity(requestedMovement);
+            elevator.adjustVelocity(checkLimits(requestedMovement));
         } else {
             setpointPublisher.setString(setpoint.toString());
             elevator.adjustSmartPosition(requestedPosition);
