@@ -348,7 +348,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void adjustSmartPosition(ElevatorPosition position) {
-        elevatorSmartMotionPid.setPositionReference(position.elevatorDistance);
+        double varianceThreshold =
+                MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        if (position.elevatorDistance.isNear(Units.Centimeters.zero(), varianceThreshold)
+                && getElevatorHeight().isNear(Units.Centimeters.zero(), varianceThreshold)) {
+            elevatorA.setVoltage(0);
+        } else {
+            elevatorSmartMotionPid.setPositionReference(position.elevatorDistance);
+        }
+
         wristSmartMotionPid.setPositionReference(position.wristAngle);
     }
 
