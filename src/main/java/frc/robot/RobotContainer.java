@@ -45,8 +45,8 @@ public class RobotContainer {
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
+    private LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
-    private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
@@ -60,8 +60,6 @@ public class RobotContainer {
         climber.setDefaultCommand(ClimberCommands.idleClimber(climber));
         intakeRoller.setDefaultCommand(intakeRollersDefaultCommand);
         intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
-
-        ledsSubsystem.setDefaultCommand(new RunCommand(ledsSubsystem::periodic, ledsSubsystem));
     }
 
     private void configureBindings() {
