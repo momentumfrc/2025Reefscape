@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class LEDsSubsystem extends SubsystemBase{
+public class LEDsSubsystem extends SubsystemBase {
     private final AddressableLED led;
     private final AddressableLEDBuffer ledBuffer;
 
@@ -18,8 +18,7 @@ public class LEDsSubsystem extends SubsystemBase{
 
     private final LEDPattern rainbow = LEDPattern.rainbow(255, 128);
     private static final Distance kLedSpacing = Meters.of(1 / 120.0);
-    private final LEDPattern rainbowPattern =
-        rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
+    private final LEDPattern rainbowPattern = rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
     public LEDsSubsystem() {
         this.led = new AddressableLED(Constants.leds.port());

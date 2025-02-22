@@ -54,7 +54,7 @@ public class RevAbsoluteEncoder implements MoEncoder.Encoder {
     @Override
     public void setInverted(boolean inverted) {
         SparkBaseConfig config = configSupplier.get();
-        config.inverted(inverted);
+        config.absoluteEncoder.inverted(inverted);
         spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 }

@@ -111,7 +111,7 @@ public class MoSparkMaxArmPID extends MoSparkMaxPID<AngleUnit, AngularVelocityUn
                     String.format("Cannot set velocity on PID controller of type %s", this.type.name()));
         }
 
-        double ff = getFF(this.getAngleFromHorizontal.get(), desiredVelocity);
+        double ff = -1 * getFF(this.getAngleFromHorizontal.get(), Units.RotationsPerSecond.zero());
 
         double value_internal = desiredVelocity.in(internalEncoder.getInternalEncoderVelocityUnits());
         this.pidController.setReference(
