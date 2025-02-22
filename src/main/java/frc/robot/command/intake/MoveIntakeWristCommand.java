@@ -37,16 +37,6 @@ public class MoveIntakeWristCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        Current currAmps = intake.getWristCurrent();
-        if (currAmps.gte(MoPrefs.intakeWristCurrentThreshold.get())) {
-            if (wristCurrentTimer.hasElapsed(
-                    MoPrefs.intakeWristCurrentTime.get().in(Units.Seconds))) {
-                return true;
-            }
-        } else {
-            wristCurrentTimer.restart();
-        }
-
-        return false;
+        return wristCurrentTimer.hasElapsed(MoPrefs.intakeWristTime.get().in(Units.Seconds));
     }
 }

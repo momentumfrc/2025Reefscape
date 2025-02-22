@@ -37,6 +37,8 @@ public class IntakeWristSubsystem extends SubsystemBase {
         MoShuffleboard.getInstance().intakeTab.addDouble("Wrist Current", () -> getWristCurrent()
                 .in(Units.Amps));
         MoShuffleboard.getInstance().intakeTab.add(this);
+
+        MoShuffleboard.getInstance().intakeTab.addDouble("Wrist Voltage", () -> wrist.getAppliedOutput() * wrist.getBusVoltage());
     }
 
     public void wristOut() {

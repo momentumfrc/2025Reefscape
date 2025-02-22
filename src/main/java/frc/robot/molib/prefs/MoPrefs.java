@@ -121,9 +121,7 @@ public class MoPrefs {
     public static final UnitPref<VoltageUnit> intakeWristSoftHoldForIntakePower =
             voltsPref("Intake Wrist Soft Hold For Intake Power", Units.Volts.of(0.01));
 
-    public static final UnitPref<CurrentUnit> intakeWristCurrentThreshold =
-            ampsPref("Intake Wrist Current Thresh", Units.Amps.of(15));
-    public static final TimeUnitPref intakeWristCurrentTime = secondsPref("Intake Wrist Time", Units.Seconds.one());
+    public static final TimeUnitPref intakeWristTime = secondsPref("Intake Wrist Time", Units.Seconds.one());
 
     public static final UnitPref<CurrentUnit> intakeRollersSmartCurrentLimit =
             ampsPref("Intake Rollers Smart Current Limit", Units.Amps.of(20));

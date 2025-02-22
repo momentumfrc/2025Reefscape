@@ -36,11 +36,11 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         super("Ground Intake Rollers");
 
         this.roller = new SparkMax(Constants.INTAKE_ROLLER.address(), MotorType.kBrushed);
-        this.roller.configure(
-                new SparkMaxConfig().idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit((int)
-                        MoPrefs.intakeRollersSmartCurrentLimit.get().in(Units.Amps)),
-                ResetMode.kResetSafeParameters,
-                PersistMode.kNoPersistParameters);
+        SparkMaxConfig sparkConfig = new SparkMaxConfig();
+        sparkConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit((int)
+                MoPrefs.intakeRollersSmartCurrentLimit.get().in(Units.Amps));
+        sparkConfig.encoder.inverted(true);
+        this.roller.configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         MoPrefs.intakeRollersSmartCurrentLimit.subscribe(limit -> roller.configure(
                 new SparkMaxConfig().smartCurrentLimit((int) limit.in(Units.Amps)),
