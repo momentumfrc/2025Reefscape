@@ -6,10 +6,11 @@ package frc.robot;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.command.LEDsCommand;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
 import frc.robot.command.intake.IntakeCommands;
@@ -45,8 +46,12 @@ public class RobotContainer {
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
-    private LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
+    private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
+
+    private final LEDsCommand rainbowDefault = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.RAINBOW);
+    private final LEDsCommand intakeColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.GROUND_INTAKE);
+    private final LEDsCommand climberColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.CLIMBER);
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
@@ -73,6 +78,14 @@ public class RobotContainer {
 
         extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
+
+        intakeDeployTrigger.onFalse(rainbowDefault);
+        extendClimberTrigger.whileFalse(rainbowDefault);
+        retractClimberTrigger.whileFalse(rainbowDefault);
+
+        intakeDeployTrigger.onTrue(intakeColor);
+        extendClimberTrigger.whileTrue(climberColor);
+        retractClimberTrigger.whileTrue(climberColor);
     }
 
     public Command getAutonomousCommand() {
