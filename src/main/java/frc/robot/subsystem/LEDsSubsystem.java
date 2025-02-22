@@ -21,21 +21,78 @@ public class LEDsSubsystem extends SubsystemBase{
     private final LEDPattern rainbowPattern =
         rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
 
+    private LEDMode currentMode;
+
+    public enum LEDMode {
+        RAINBOW,
+        END_EFFECTOR,
+        ELEVATOR,
+        GROUND_INTAKE,
+        CLIMBER
+    }
+
     public LEDsSubsystem() {
         this.led = new AddressableLED(Constants.leds.port());
         this.ledBuffer = new AddressableLEDBuffer(ledCount);
         led.setLength(ledBuffer.getLength());
         led.setData(ledBuffer);
         led.start();
+
+        currentMode = LEDMode.RAINBOW;
+    }
+
+    public void setMode(LEDMode mode) {
+        this.currentMode = mode;
     }
 
     @Override
     public void periodic() {
+        switch (currentMode) {
+            case RAINBOW:
+                updateRainbowPattern();
+                break;
+            case END_EFFECTOR:
+                endEffectorColor();
+                break;
+            case ELEVATOR:
+                elevatorColor();
+                break;
+            case GROUND_INTAKE:
+                groundIntakeColor();
+                break;
+            case CLIMBER:
+                climbColor();
+                break;
+        }
         led.setData(ledBuffer);
-        updateRainbowPattern();
     }
 
     public void updateRainbowPattern() {
         rainbowPattern.applyTo(ledBuffer);
     }
+
+    public void endEffectorColor() {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 159, 1, 255);
+        }
+    }
+
+    public void elevatorColor() {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 5, 205, 253);
+        }
+    }
+
+    public void groundIntakeColor() {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 0, 255, 0);
+        }
+    }
+
+    public void climbColor() {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 255, 0, 0);
+        }
+    }
+
 }
