@@ -10,8 +10,10 @@ import java.util.function.Supplier;
 public class ClimberCommands {
 
     public static Command idleClimber(ClimberSubsystem climber) {
-        return new MoveRachetCommand(climber, RachetState.ENGAGED)
-                .andThen(Commands.run(climber::idleClimber, climber))
+        return Commands.sequence(
+                        new MoveRachetCommand(climber, RachetState.ENGAGED),
+                        new ZeroEncodersCommand(climber),
+                        Commands.run(climber::idleClimber, climber))
                 .withName("IdleCommand");
     }
 

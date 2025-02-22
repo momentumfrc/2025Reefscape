@@ -3,7 +3,10 @@ package frc.robot.input;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
+import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
+import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import frc.robot.utils.Vec2;
+import java.util.Optional;
 
 public class ControllerInput implements MoInput {
 
@@ -34,6 +37,58 @@ public class ControllerInput implements MoInput {
     }
 
     @Override
+    public boolean getSaveElevatorSetpoint() {
+        return elevatorController.getStartButtonPressed();
+    }
+
+    @Override
+    public ElevatorMovementRequest getElevatorMovementRequest() {
+        return new ElevatorMovementRequest(elevatorController.getLeftY(), elevatorController.getRightY());
+    }
+
+    @Override
+    public Optional<ElevatorSetpoint> getElevatorSetpoints() {
+        double pov = elevatorController.getPOV();
+        if (pov == 0) {
+            if (elevatorController.getYButton()) {
+                return Optional.of(ElevatorSetpoint.L3);
+            } else if (elevatorController.getBButton()) {
+                return Optional.of(ElevatorSetpoint.L2);
+            } else if (elevatorController.getAButton()) {
+                return Optional.of(ElevatorSetpoint.L1);
+            }
+        } else {
+            if (elevatorController.getYButton()) {
+                return Optional.of(ElevatorSetpoint.INTAKE);
+            } else if (elevatorController.getBButton()) {
+                return Optional.of(ElevatorSetpoint.STOW);
+            } else if (elevatorController.getAButton()) {
+                return Optional.of(ElevatorSetpoint.PROCESSOR);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean getReZeroElevator() {
+        return elevatorController.getBackButtonPressed();
+    }
+
+    @Override
+    public boolean getRunSysid() {
+        return elevatorController.getStartButton();
+    }
+
+    @Override
+    public boolean getEndEffectorIn() {
+        return elevatorController.getLeftBumperButton();
+    }
+
+    @Override
+    public boolean getEndEffectorOut() {
+        return elevatorController.getRightBumperButton();
+    }
+
     public boolean getIntake() {
         return driveController.getRawButton(1);
     }

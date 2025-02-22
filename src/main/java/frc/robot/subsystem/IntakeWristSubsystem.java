@@ -15,8 +15,6 @@ import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 
 public class IntakeWristSubsystem extends SubsystemBase {
-    private static final Current SMART_CURRENT_LIMIT = Units.Amps.of(20);
-
     private final SparkMax wrist;
     private MutCurrent wristCurrent = Units.Amps.mutable(0);
 
@@ -26,10 +24,15 @@ public class IntakeWristSubsystem extends SubsystemBase {
 
         this.wrist.configure(
                 new SparkMaxConfig()
-                        .smartCurrentLimit((int) SMART_CURRENT_LIMIT.in(Units.Amps))
+                        .smartCurrentLimit(
+                                (int) MoPrefs.intakeWristSmartCurrentLimit.get().in(Units.Amps))
                         .idleMode(IdleMode.kCoast),
                 ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
+        MoPrefs.intakeWristSmartCurrentLimit.subscribe(limit -> wrist.configure(
+                new SparkMaxConfig().smartCurrentLimit((int) limit.in(Units.Amps)),
+                ResetMode.kNoResetSafeParameters,
+                PersistMode.kNoPersistParameters));
 
         MoShuffleboard.getInstance().intakeTab.addDouble("Wrist Current", () -> getWristCurrent()
                 .in(Units.Amps));
