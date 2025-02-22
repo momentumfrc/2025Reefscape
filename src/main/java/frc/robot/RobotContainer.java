@@ -28,6 +28,7 @@ import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.EndEffectorSubsystem;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 import frc.robot.subsystem.IntakeWristSubsystem;
+import frc.robot.subsystem.LEDsSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 import frc.robot.utils.AutoChooser;
 import frc.robot.utils.MoInputTransforms;
@@ -65,6 +66,8 @@ public class RobotContainer {
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
+    private LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
+
 
     private Trigger sysidTrigger;
 
