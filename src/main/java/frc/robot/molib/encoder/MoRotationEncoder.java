@@ -10,7 +10,7 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.utils.MoUtils;
+import frc.robot.molib.MoSparkConfigurator;
 import java.util.function.Consumer;
 
 public class MoRotationEncoder extends MoEncoder<AngleUnit, AngularVelocityUnit> {
@@ -29,7 +29,7 @@ public class MoRotationEncoder extends MoEncoder<AngleUnit, AngularVelocityUnit>
     }
 
     public static MoRotationEncoder forSparkRelative(SparkBase spark, AngleUnit internalEncoderUnits) {
-        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static MoRotationEncoder forSparkRelative(
@@ -39,7 +39,7 @@ public class MoRotationEncoder extends MoEncoder<AngleUnit, AngularVelocityUnit>
 
     public static MoRotationEncoder forSparkAbsolute(SparkBase spark, AngleUnit internalEncoderUnits) {
         return forSparkAbsolute(
-                spark.getAbsoluteEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+                spark.getAbsoluteEncoder(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static MoRotationEncoder forSparkAbsolute(
@@ -48,7 +48,7 @@ public class MoRotationEncoder extends MoEncoder<AngleUnit, AngularVelocityUnit>
     }
 
     public static MoRotationEncoder forSparkAnalog(SparkBase spark, AngleUnit internalEncoderUnits) {
-        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static MoRotationEncoder forSparkAnalog(

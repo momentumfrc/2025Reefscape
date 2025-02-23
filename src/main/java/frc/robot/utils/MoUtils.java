@@ -1,13 +1,5 @@
 package frc.robot.utils;
 
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.Measure;
@@ -15,7 +7,6 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.molib.encoder.MoRotationEncoder;
-import java.util.function.Consumer;
 
 public class MoUtils {
     private static final double ENCODER_ZERO_ZONE = 0.2;
@@ -33,26 +24,6 @@ public class MoUtils {
             pos -= 1;
         }
         encoder.setPosition(Units.Rotations.of(pos));
-    }
-
-    public static SparkBaseConfig getSparkConfig(SparkBase spark) {
-        if (spark instanceof SparkMax) {
-            return new SparkMaxConfig();
-        } else if (spark instanceof SparkFlex) {
-            return new SparkFlexConfig();
-        } else {
-            throw new IllegalArgumentException("Unsupported SparkBase subclass");
-        }
-    }
-
-    public static void configureSpark(SparkBase spark, Consumer<SparkBaseConfig> configurator) {
-        SparkBaseConfig config = getSparkConfig(spark);
-        configurator.accept(config);
-        spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    }
-
-    public static Consumer<Consumer<SparkBaseConfig>> getDefaultConfigurator(SparkBase spark) {
-        return configurator -> configureSpark(spark, configurator);
     }
 
     public static double curve(double val, double curve) {

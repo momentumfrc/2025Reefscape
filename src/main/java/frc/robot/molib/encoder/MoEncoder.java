@@ -12,8 +12,8 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.MoUnits;
-import frc.robot.utils.MoUtils;
 import java.util.function.Consumer;
 
 /**
@@ -126,7 +126,7 @@ public class MoEncoder<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkRelative(
             SparkBase spark, Dim internalEncoderUnits) {
-        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkRelative(
@@ -137,7 +137,7 @@ public class MoEncoder<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAbsolute(
             SparkBase spark, Dim internalEncoderUnits) {
         return forSparkAbsolute(
-                spark.getAbsoluteEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+                spark.getAbsoluteEncoder(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAbsolute(
@@ -147,7 +147,7 @@ public class MoEncoder<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAnalog(
             SparkBase spark, Dim internalEncoderUnits) {
-        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAnalog(

@@ -34,6 +34,17 @@ public class MoSparkConfigurator implements Consumer<Consumer<SparkBaseConfig>> 
         return instances.computeIfAbsent(spark, s -> new MoSparkConfigurator(s, new SparkFlexConfig()));
     }
 
+    public static MoSparkConfigurator forSparkBase(SparkBase spark) {
+        if (spark instanceof SparkMax s) {
+            return forSparkMax(s);
+        } else if (spark instanceof SparkFlex s) {
+            return forSparkFlex(s);
+        } else {
+            throw new IllegalArgumentException(
+                    "Unknown SparkBase subclass " + spark.getClass().getCanonicalName());
+        }
+    }
+
     @Override
     public void accept(Consumer<SparkBaseConfig> configurator) {
         configurator.accept(config);

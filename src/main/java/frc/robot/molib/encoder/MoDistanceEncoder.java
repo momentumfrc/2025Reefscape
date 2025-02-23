@@ -10,7 +10,7 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.utils.MoUtils;
+import frc.robot.molib.MoSparkConfigurator;
 import java.util.function.Consumer;
 
 public class MoDistanceEncoder extends MoEncoder<DistanceUnit, LinearVelocityUnit> {
@@ -29,7 +29,7 @@ public class MoDistanceEncoder extends MoEncoder<DistanceUnit, LinearVelocityUni
     }
 
     public static MoDistanceEncoder forSparkRelative(SparkBase spark, DistanceUnit internalEncoderUnits) {
-        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static MoDistanceEncoder forSparkRelative(
@@ -41,7 +41,7 @@ public class MoDistanceEncoder extends MoEncoder<DistanceUnit, LinearVelocityUni
 
     public static MoDistanceEncoder forSparkAbsolute(SparkBase spark, DistanceUnit internalEncoderUnits) {
         return forSparkAbsolute(
-                spark.getAbsoluteEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+                spark.getAbsoluteEncoder(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static MoDistanceEncoder forSparkAbsolute(
@@ -52,7 +52,7 @@ public class MoDistanceEncoder extends MoEncoder<DistanceUnit, LinearVelocityUni
     }
 
     public static MoDistanceEncoder forSparkAnalog(SparkBase spark, DistanceUnit internalEncoderUnits) {
-        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
+        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public static MoDistanceEncoder forSparkAnalog(

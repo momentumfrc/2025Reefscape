@@ -8,8 +8,8 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.encoder.MoEncoder;
-import frc.robot.utils.MoUtils;
 import java.util.function.Consumer;
 
 public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
@@ -54,7 +54,7 @@ public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>
 
     public MoSparkMaxPID(
             Type type, SparkBase controller, ClosedLoopSlot pidSlot, MoEncoder<Dim, VDim> internalEncoder) {
-        this(type, controller, pidSlot, internalEncoder, MoUtils.getDefaultConfigurator(controller));
+        this(type, controller, pidSlot, internalEncoder, MoSparkConfigurator.forSparkBase(controller));
     }
 
     public Type getType() {
