@@ -1,5 +1,7 @@
 package frc.robot.subsystem;
 
+import java.util.EnumSet;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -11,6 +13,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -84,8 +88,10 @@ public class ClimberSubsystem extends SubsystemBase {
         });
 
         this.leftSpark.configure(leftSparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        SparkMaxConfig rightSparkConfig = new SparkMaxConfig();
+        rightSparkConfig.idleMode(IdleMode.kBrake).follow(leftSpark, true);
         this.rightSpark.configure(
-                new SparkMaxConfig().idleMode(IdleMode.kBrake).follow(leftSpark, true),
+            rightSparkConfig,
                 ResetMode.kResetSafeParameters,
                 PersistMode.kNoPersistParameters);
 
@@ -96,6 +102,24 @@ public class ClimberSubsystem extends SubsystemBase {
                 .withWidget(BuiltInWidgets.kTextView);
         MoShuffleboard.getInstance().climberTab.addDouble("Encoder", encoder::getPosition);
         MoShuffleboard.getInstance().climberTab.addBoolean("Limit Switch", reverseLimitSwitch::isPressed);
+
+        // TODO: this syntax sucks. Make a nice MoTables wrapper
+        var coastMotorsEntry = NetworkTableInstance.getDefault()
+                .getTable("Shuffleboard/Climber")
+                .getEntry("Coast Motors");
+        coastMotorsEntry.setBoolean(false);
+        coastMotorsEntry
+                .getInstance()
+                .addListener(coastMotorsEntry, EnumSet.of(NetworkTableEvent.Kind.kValueAll), coast -> {
+                    System.out.println(coast.valueData.value.getBoolean());
+                    var idleMode = coast.valueData.value.getBoolean() ? IdleMode.kCoast : IdleMode.kBrake;
+                    SparkMaxConfig leftConfig = new SparkMaxConfig();
+                    leftConfig.idleMode(idleMode);
+                    leftSpark.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                    SparkMaxConfig rightConfig = new SparkMaxConfig();
+                    rightConfig.idleMode(idleMode);
+                    rightSpark.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                });
     }
 
     public void extendClimber(double speed) {
