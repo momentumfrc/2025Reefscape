@@ -1,12 +1,9 @@
 package frc.robot.subsystem;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -17,10 +14,12 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.prefs.MoPrefs;
 
 public class IntakeRollerSubsystem extends SubsystemBase {
     private final SparkMax roller;
+    private final MoSparkConfigurator rollerConfig;
     private final RelativeEncoder encoder;
 
     private GenericEntry isBallHeld = MoShuffleboard.getInstance()
@@ -36,16 +35,15 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         super("Ground Intake Rollers");
 
         this.roller = new SparkMax(Constants.INTAKE_ROLLER.address(), MotorType.kBrushed);
-        SparkMaxConfig sparkConfig = new SparkMaxConfig();
-        sparkConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit((int)
-                MoPrefs.intakeRollersSmartCurrentLimit.get().in(Units.Amps));
-        sparkConfig.encoder.inverted(true);
-        this.roller.configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        this.rollerConfig = MoSparkConfigurator.forSparkMax(roller);
+        rollerConfig.accept(config -> {
+            config.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit((int)
+                    MoPrefs.intakeRollersSmartCurrentLimit.get().in(Units.Amps));
+            config.encoder.inverted(true);
+        });
 
-        MoPrefs.intakeRollersSmartCurrentLimit.subscribe(limit -> roller.configure(
-                new SparkMaxConfig().smartCurrentLimit((int) limit.in(Units.Amps)),
-                ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters));
+        MoPrefs.intakeRollersSmartCurrentLimit.subscribe(
+                limit -> rollerConfig.accept(config -> config.smartCurrentLimit((int) limit.in(Units.Amps))));
 
         this.encoder = roller.getEncoder();
 
@@ -88,5 +86,10 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     public Current getRollerCurrent() {
         return rollerCurrent.mut_replace(roller.getOutputCurrent(), Units.Amps);
+    }
+
+    @Override
+    public void periodic() {
+        rollerConfig.checkForBrownout();
     }
 }

@@ -4,11 +4,8 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -23,6 +20,7 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutLinearVelocity;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.MoUnits;
 import frc.robot.molib.encoder.MoDistanceEncoder;
 import frc.robot.molib.encoder.MoRotationEncoder;
@@ -43,6 +41,8 @@ public class SwerveModule {
     private final String key;
     public final SparkMax turnMotor;
     public final TalonFX driveMotor;
+
+    public final MoSparkConfigurator turnMotorConfig;
 
     public final MoRotationEncoder absoluteEncoder;
     public final MoRotationEncoder relativeEncoder;
@@ -71,10 +71,14 @@ public class SwerveModule {
         this.encoderZero = encoderZero;
         this.encoderRotScale = encoderRotScale;
 
-        SparkMaxConfig sparkConfig = new SparkMaxConfig();
+        this.turnMotorConfig = MoSparkConfigurator.forSparkMax(turnMotor);
 
         this.driveMotor.setNeutralMode(NeutralModeValue.Brake);
-        sparkConfig.idleMode(IdleMode.kBrake);
+
+        turnMotorConfig.accept(config -> {
+            config.idleMode(IdleMode.kBrake);
+            config.closedLoop.positionWrappingInputRange(-Math.PI, Math.PI).positionWrappingEnabled(true);
+        });
 
         this.absoluteEncoder = MoRotationEncoder.forSparkAnalog(turnMotor, Units.Rotations);
         this.absoluteEncoder.setConversionFactor(ABSOLUTE_ENCODER_SCALE);
@@ -89,8 +93,6 @@ public class SwerveModule {
         this.drivePID =
                 new MoTalonFxPID<>(MoTalonFxPID.Type.VELOCITY, driveMotor, distEncoder.getInternalEncoderUnits());
 
-        sparkConfig.closedLoop.positionWrappingInputRange(-Math.PI, Math.PI).positionWrappingEnabled(true);
-
         TunerUtils.forMoSparkMax(turnPID, key + "_turn");
         TunerUtils.forMoTalonFx(drivePID, key + "_drive");
 
@@ -99,8 +101,6 @@ public class SwerveModule {
         encoderRotScale.subscribe(
                 scale -> this.setupRelativeEncoder(absoluteEncoder.getPosition(), encoderZero.get(), scale));
         setupRelativeEncoder();
-
-        turnMotor.configure(sparkConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     private boolean areMotorsPowered() {
