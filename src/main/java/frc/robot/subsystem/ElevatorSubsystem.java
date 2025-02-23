@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
@@ -107,12 +108,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
-    private void updateElevatorConfig(Consumer<SparkMaxConfig> configConsumer) {
+    private void updateElevatorConfig(Consumer<SparkBaseConfig> configConsumer) {
         configConsumer.accept(elevatorAConfig);
         elevatorA.configure(elevatorAConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    private void updateWristConfig(Consumer<SparkMaxConfig> configConsumer) {
+    private void updateWristConfig(Consumer<SparkBaseConfig> configConsumer) {
         configConsumer.accept(wristConfig);
         elevatorWrist.configure(wristConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
@@ -124,10 +125,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.elevatorB = new SparkMax(Constants.ELEVATORB.address(), MotorType.kBrushless);
         this.elevatorWrist = new SparkMax(Constants.ELEVATOR_WRIST.address(), MotorType.kBrushless);
 
-        wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(elevatorWrist, Units.Rotations, () -> wristConfig);
+        wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(
+                elevatorWrist.getAbsoluteEncoder(), Units.Rotations, this::updateWristConfig);
 
-        elevatorRelEncoder = MoDistanceEncoder.forSparkRelative(elevatorA, Units.Centimeters, () -> elevatorAConfig);
-        wristRelEncoder = MoRotationEncoder.forSparkRelative(elevatorWrist, Units.Rotations, () -> wristConfig);
+        elevatorRelEncoder = MoDistanceEncoder.forSparkRelative(
+                elevatorA.getEncoder(), Units.Centimeters, this::updateElevatorConfig);
+        wristRelEncoder = MoRotationEncoder.forSparkRelative(
+                elevatorWrist.getEncoder(), Units.Rotations, this::updateWristConfig);
 
         elevatorAConfig
                 .softLimit
@@ -197,40 +201,40 @@ public class ElevatorSubsystem extends SubsystemBase {
                 elevatorA,
                 ClosedLoopSlot.kSlot0,
                 elevatorRelEncoder,
-                () -> elevatorAConfig);
+                this::updateElevatorConfig);
         wristVelocityPid = new MoSparkMaxArmPID(
                 MoSparkMaxPID.Type.VELOCITY,
                 elevatorWrist,
                 ClosedLoopSlot.kSlot0,
                 wristRelEncoder,
                 this::getWristAngleFromHorizontal,
-                () -> wristConfig);
+                this::updateWristConfig);
         elevatorSmartMotionPid = new MoSparkMaxElevatorPID(
                 MoSparkMaxPID.Type.SMARTMOTION,
                 elevatorA,
                 ClosedLoopSlot.kSlot1,
                 elevatorRelEncoder,
-                () -> elevatorAConfig);
+                this::updateElevatorConfig);
         wristSmartMotionPid = new MoSparkMaxArmPID(
                 MoSparkMaxPID.Type.SMARTMOTION,
                 elevatorWrist,
                 ClosedLoopSlot.kSlot1,
                 wristRelEncoder,
                 this::getWristAngleFromHorizontal,
-                () -> wristConfig);
+                this::updateWristConfig);
         elevatorPositionPid = new MoSparkMaxElevatorPID(
                 MoSparkMaxPID.Type.POSITION,
                 elevatorA,
                 ClosedLoopSlot.kSlot2,
                 elevatorRelEncoder,
-                () -> elevatorAConfig);
+                this::updateElevatorConfig);
         wristPositionPid = new MoSparkMaxArmPID(
                 MoSparkMaxPID.Type.POSITION,
                 elevatorWrist,
                 ClosedLoopSlot.kSlot2,
                 wristRelEncoder,
                 this::getWristAngleFromHorizontal,
-                () -> wristConfig);
+                this::updateWristConfig);
 
         elevatorVelTuner = TunerUtils.forMoSparkElevator(elevatorVelocityPid, "Elevator Vel.");
         wristVelTuner = TunerUtils.forMoSparkArm(wristVelocityPid, "Wrist Vel.");

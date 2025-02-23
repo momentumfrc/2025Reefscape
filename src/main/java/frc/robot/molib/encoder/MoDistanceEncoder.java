@@ -1,6 +1,9 @@
 package frc.robot.molib.encoder;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.units.DistanceUnit;
@@ -8,7 +11,7 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.utils.MoUtils;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 public class MoDistanceEncoder extends MoEncoder<DistanceUnit, LinearVelocityUnit> {
     MoDistanceEncoder(Encoder encoder, DistanceUnit internalEncoderUnits) {
@@ -26,30 +29,37 @@ public class MoDistanceEncoder extends MoEncoder<DistanceUnit, LinearVelocityUni
     }
 
     public static MoDistanceEncoder forSparkRelative(SparkBase spark, DistanceUnit internalEncoderUnits) {
-        return forSparkRelative(spark, internalEncoderUnits, () -> MoUtils.getSparkConfig(spark));
+        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
     }
 
     public static MoDistanceEncoder forSparkRelative(
-            SparkBase spark, DistanceUnit internalEncoderUnits, Supplier<SparkBaseConfig> configSupplier) {
-        return new MoDistanceEncoder(new RevRelativeEncoder(spark, configSupplier), internalEncoderUnits);
+            RelativeEncoder encoder,
+            DistanceUnit internalEncoderUnits,
+            Consumer<Consumer<SparkBaseConfig>> configurator) {
+        return new MoDistanceEncoder(new RevRelativeEncoder(encoder, configurator), internalEncoderUnits);
     }
 
     public static MoDistanceEncoder forSparkAbsolute(SparkBase spark, DistanceUnit internalEncoderUnits) {
-        return forSparkAbsolute(spark, internalEncoderUnits, () -> MoUtils.getSparkConfig(spark));
+        return forSparkAbsolute(
+                spark.getAbsoluteEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
     }
 
     public static MoDistanceEncoder forSparkAbsolute(
-            SparkBase spark, DistanceUnit internalEncoderUnits, Supplier<SparkBaseConfig> configSupplier) {
-        return new MoDistanceEncoder(new RevAbsoluteEncoder(spark, configSupplier), internalEncoderUnits);
+            AbsoluteEncoder encoder,
+            DistanceUnit internalEncoderUnits,
+            Consumer<Consumer<SparkBaseConfig>> configurator) {
+        return new MoDistanceEncoder(new RevAbsoluteEncoder(encoder, configurator), internalEncoderUnits);
     }
 
     public static MoDistanceEncoder forSparkAnalog(SparkBase spark, DistanceUnit internalEncoderUnits) {
-        return forSparkAnalog(spark, internalEncoderUnits, () -> MoUtils.getSparkConfig(spark));
+        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
     }
 
     public static MoDistanceEncoder forSparkAnalog(
-            SparkBase spark, DistanceUnit internalEncoderUnits, Supplier<SparkBaseConfig> configSupplier) {
-        return new MoDistanceEncoder(new RevAnalogSensorEncoder(spark, configSupplier), internalEncoderUnits);
+            SparkAnalogSensor sensor,
+            DistanceUnit internalEncoderUnits,
+            Consumer<Consumer<SparkBaseConfig>> configurator) {
+        return new MoDistanceEncoder(new RevAnalogSensorEncoder(sensor, configurator), internalEncoderUnits);
     }
 
     public static MoDistanceEncoder forTalonFx(TalonFX talon, DistanceUnit internalEncoderUnits) {

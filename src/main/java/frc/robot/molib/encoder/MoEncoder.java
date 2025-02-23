@@ -1,6 +1,9 @@
 package frc.robot.molib.encoder;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.units.DimensionlessUnit;
@@ -11,7 +14,7 @@ import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
 import frc.robot.molib.MoUnits;
 import frc.robot.utils.MoUtils;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 /**
  * Wraps an encoder, keeping track of the encoder's internal units.
@@ -123,32 +126,33 @@ public class MoEncoder<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkRelative(
             SparkBase spark, Dim internalEncoderUnits) {
-        return forSparkRelative(spark, internalEncoderUnits, () -> MoUtils.getSparkConfig(spark));
+        return forSparkRelative(spark.getEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkRelative(
-            SparkBase spark, Dim internalEncoderUnits, Supplier<SparkBaseConfig> configSupplier) {
-        return new MoEncoder<Dim, VDim>(new RevRelativeEncoder(spark, configSupplier), internalEncoderUnits);
+            RelativeEncoder encoder, Dim internalEncoderUnits, Consumer<Consumer<SparkBaseConfig>> configurator) {
+        return new MoEncoder<Dim, VDim>(new RevRelativeEncoder(encoder, configurator), internalEncoderUnits);
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAbsolute(
             SparkBase spark, Dim internalEncoderUnits) {
-        return forSparkAbsolute(spark, internalEncoderUnits, () -> MoUtils.getSparkConfig(spark));
+        return forSparkAbsolute(
+                spark.getAbsoluteEncoder(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAbsolute(
-            SparkBase spark, Dim internalEncoderUnits, Supplier<SparkBaseConfig> configSupplier) {
-        return new MoEncoder<Dim, VDim>(new RevAbsoluteEncoder(spark, configSupplier), internalEncoderUnits);
+            AbsoluteEncoder encoder, Dim internalEncoderUnits, Consumer<Consumer<SparkBaseConfig>> configurator) {
+        return new MoEncoder<Dim, VDim>(new RevAbsoluteEncoder(encoder, configurator), internalEncoderUnits);
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAnalog(
             SparkBase spark, Dim internalEncoderUnits) {
-        return forSparkAnalog(spark, internalEncoderUnits, () -> MoUtils.getSparkConfig(spark));
+        return forSparkAnalog(spark.getAnalog(), internalEncoderUnits, MoUtils.getDefaultConfigurator(spark));
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forSparkAnalog(
-            SparkBase spark, Dim internalEncoderUnits, Supplier<SparkBaseConfig> configSupplier) {
-        return new MoEncoder<Dim, VDim>(new RevAnalogSensorEncoder(spark, configSupplier), internalEncoderUnits);
+            SparkAnalogSensor sensor, Dim internalEncoderUnits, Consumer<Consumer<SparkBaseConfig>> configurator) {
+        return new MoEncoder<Dim, VDim>(new RevAnalogSensorEncoder(sensor, configurator), internalEncoderUnits);
     }
 
     public static <Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> MoEncoder<Dim, VDim> forTalonFx(
