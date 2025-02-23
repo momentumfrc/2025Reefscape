@@ -11,8 +11,12 @@ public class IntakeCommands {
         OUT;
     }
 
+    public static Command idleIntakeRollerCommand(IntakeRollerSubsystem roller) {
+        return Commands.run(roller::stopRollerMotor, roller);
+    }
+
     public static Command holdIntakeRollerCommand(IntakeRollerSubsystem roller) {
-        return Commands.run(roller::stopRollerMotor, roller).withName("HoldIntakeRollerCommand");
+        return Commands.run(roller::holdBall, roller).withName("HoldIntakeRollerCommand");
     }
 
     public static Command holdIntakeWristCommand(IntakeWristSubsystem wrist, Direction direction) {
@@ -22,10 +26,14 @@ public class IntakeCommands {
         };
     }
 
+    public static Command softHoldWristForAlgaeIntakeCommand(IntakeWristSubsystem wrist) {
+        return Commands.run(wrist::softHoldWristForAlgaeIntake, wrist);
+    }
+
     public static Command intakeDeployCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
         return Commands.parallel(
                         new MoveIntakeWristCommand(wrist, Direction.OUT)
-                                .andThen(holdIntakeWristCommand(wrist, Direction.OUT)),
+                                .andThen(softHoldWristForAlgaeIntakeCommand(wrist)),
                         new RollerIntakeAlgaeCommand(roller).andThen(holdIntakeRollerCommand(roller)))
                 .withName("IntakeWristDeployCommand");
     }
@@ -33,14 +41,14 @@ public class IntakeCommands {
     public static Command intakeRetractCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
         return Commands.deadline(new RollerExtakeAlgaeCommand(roller), holdIntakeWristCommand(wrist, Direction.OUT))
                 .andThen(Commands.parallel(
-                        holdIntakeRollerCommand(roller),
+                        idleIntakeRollerCommand(roller),
                         new MoveIntakeWristCommand(wrist, Direction.IN)
                                 .andThen(holdIntakeWristCommand(wrist, Direction.IN))))
                 .withName("IntakeWristRetractCommand");
     }
 
     public static Command intakeRollerDefaultCommand(IntakeRollerSubsystem roller) {
-        return holdIntakeRollerCommand(roller);
+        return idleIntakeRollerCommand(roller);
     }
 
     public static Command intakeWristDefaultCommand(IntakeWristSubsystem wrist) {
