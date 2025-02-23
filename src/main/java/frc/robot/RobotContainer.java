@@ -9,6 +9,7 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.LEDsCommand;
 import frc.robot.command.TeleopDriveCommand;
@@ -52,6 +53,8 @@ public class RobotContainer {
     private final LEDsCommand rainbowDefault = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.RAINBOW);
     private final LEDsCommand intakeColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.GROUND_INTAKE);
     private final LEDsCommand climberColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.CLIMBER);
+    private final LEDsCommand endEffectorColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.END_EFFECTOR);
+    private final LEDsCommand elevatorColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.ELEVATOR);
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
@@ -73,19 +76,35 @@ public class RobotContainer {
         extendClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() > 0);
         retractClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() < 0);
 
+        endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
+        endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
+
+        sysidTrigger = new Trigger(() -> getInput().getRunSysid());
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
         extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
 
+        endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
+        endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
+
+        sysidTrigger.whileTrue(
+                Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
+
         intakeDeployTrigger.onFalse(rainbowDefault);
+        intakeDeployTrigger.onTrue(intakeColor);
+
         extendClimberTrigger.whileFalse(rainbowDefault);
         retractClimberTrigger.whileFalse(rainbowDefault);
-
-        intakeDeployTrigger.onTrue(intakeColor);
         extendClimberTrigger.whileTrue(climberColor);
         retractClimberTrigger.whileTrue(climberColor);
+
+        endEffectorExAlgaeInCoralTrigger.whileFalse(rainbowDefault);
+        endEffectorInAlgaeExCoralTrigger.whileFalse(rainbowDefault);
+        endEffectorExAlgaeInCoralTrigger.whiletrue(endEffectorColor);
+        endEffectorInAlgaeExCoralTrigger.whiletrue(endEffectorColor);
     }
 
     public Command getAutonomousCommand() {
