@@ -16,14 +16,6 @@
     }
   },
   {
-    "name": "/Preferences/Input Ramp Time",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/SWRV ROT Scale (et_R)",
     "type": "double",
     "value": 12.799999999999999,
@@ -90,7 +82,7 @@
   {
     "name": "/Preferences/SWRV Max Angular Speed (R_s)",
     "type": "double",
-    "value": 1.0,
+    "value": 2.0,
     "properties": {
       "persistent": true
     }
@@ -106,7 +98,7 @@
   {
     "name": "/Preferences/Climber Rachet Engaged Servo Pos (%)",
     "type": "double",
-    "value": 0.0,
+    "value": 60.0,
     "properties": {
       "persistent": true
     }
@@ -114,7 +106,7 @@
   {
     "name": "/Preferences/Climber Rachet Disengaged Servo Pos (%)",
     "type": "double",
-    "value": 100.0,
+    "value": 20.0,
     "properties": {
       "persistent": true
     }
@@ -130,7 +122,7 @@
   {
     "name": "/Preferences/Intake Roller Power (V)",
     "type": "double",
-    "value": 10.0,
+    "value": 12.0,
     "properties": {
       "persistent": true
     }
@@ -138,15 +130,7 @@
   {
     "name": "/Preferences/Intake Hold Wrist Power (V)",
     "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Intake Wrist Current Thresh (A)",
-    "type": "double",
-    "value": 15.0,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -154,7 +138,7 @@
   {
     "name": "/Preferences/Intake Wrist Time (s)",
     "type": "double",
-    "value": 1.0,
+    "value": 0.5,
     "properties": {
       "persistent": true
     }
@@ -162,7 +146,7 @@
   {
     "name": "/Preferences/Intake Roller Spinup Time (s)",
     "type": "double",
-    "value": 0.25,
+    "value": 0.5,
     "properties": {
       "persistent": true
     }
@@ -170,7 +154,7 @@
   {
     "name": "/Preferences/Intake Roller Velocity Threshold (R_s)",
     "type": "double",
-    "value": 5.0,
+    "value": 20.0,
     "properties": {
       "persistent": true
     }
@@ -178,7 +162,7 @@
   {
     "name": "/Preferences/Intake Roller Threshold Time (s)",
     "type": "double",
-    "value": 0.5,
+    "value": 0.25,
     "properties": {
       "persistent": true
     }
@@ -186,7 +170,7 @@
   {
     "name": "/Preferences/Intake Roller Extake Time (s)",
     "type": "double",
-    "value": 0.75,
+    "value": 0.25,
     "properties": {
       "persistent": true
     }
@@ -243,6 +227,214 @@
     "name": "/Preferences/Auto Fallback Time (s)",
     "type": "double",
     "value": 4.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Roller Hold Power (V)",
+    "type": "double",
+    "value": 8.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Wrist Soft Hold For Intake Power (V)",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive Normal Ramp Time (s)",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Drive Elevator Extended Ramp Time (s)",
+    "type": "double",
+    "value": 1.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Ramp Time",
+    "type": "double",
+    "value": 0.15,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Encoder Scale (et_cm)",
+    "type": "double",
+    "value": 1.785446,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Encoder Scale (et_R)",
+    "type": "double",
+    "value": 150.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Setpoint Variance Threshold (%)",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Absolute Zero (R)",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Zero Power (V)",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Zero Current Thresh (A)",
+    "type": "double",
+    "value": 10.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Zero Time (s)",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Max Extension (cm)",
+    "type": "double",
+    "value": 73.66,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Max Extension (R)",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Nominal Reverse Limit (R)",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Horizontal (R)",
+    "type": "double",
+    "value": 0.45,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Max Spd (m_s)",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Max Speed (R_s)",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/End Effector Power (%)",
+    "type": "double",
+    "value": 20.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber FWD Soft Limit",
+    "type": "double",
+    "value": 10.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber RVS Soft Limit",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber Zero Power (%)",
+    "type": "double",
+    "value": 10.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Rollers Smart Current Limit (A)",
+    "type": "double",
+    "value": 30.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Wrist Smart Current Limit (A)",
+    "type": "double",
+    "value": 20.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/STOW_elevator",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/STOW_wrist",
+    "type": "double",
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
