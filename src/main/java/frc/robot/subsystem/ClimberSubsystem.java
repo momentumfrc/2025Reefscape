@@ -1,7 +1,5 @@
 package frc.robot.subsystem;
 
-import java.util.EnumSet;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -25,6 +23,7 @@ import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.molib.prefs.UnitPref;
+import java.util.EnumSet;
 
 public class ClimberSubsystem extends SubsystemBase {
     public enum RachetState {
@@ -90,10 +89,7 @@ public class ClimberSubsystem extends SubsystemBase {
         this.leftSpark.configure(leftSparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         SparkMaxConfig rightSparkConfig = new SparkMaxConfig();
         rightSparkConfig.idleMode(IdleMode.kBrake).follow(leftSpark, true);
-        this.rightSpark.configure(
-            rightSparkConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kNoPersistParameters);
+        this.rightSpark.configure(rightSparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         MoShuffleboard.getInstance().climberTab.add(this);
         MoShuffleboard.getInstance()
@@ -118,7 +114,8 @@ public class ClimberSubsystem extends SubsystemBase {
                     leftSpark.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
                     SparkMaxConfig rightConfig = new SparkMaxConfig();
                     rightConfig.idleMode(idleMode);
-                    rightSpark.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                    rightSpark.configure(
+                            rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
                 });
     }
 

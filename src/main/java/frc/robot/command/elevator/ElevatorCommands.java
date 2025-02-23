@@ -15,7 +15,7 @@ public class ElevatorCommands {
 
     public static Command holdSetpoint(ElevatorSubsystem elevator, ElevatorSetpoint setpoint) {
         return Commands.run(
-                        () -> elevator.adjustSmartPosition(
+                        () -> elevator.adjustPosition(
                                 ElevatorSetpointManager.getInstance().getSetpoint(setpoint)),
                         elevator)
                 .withName(String.format("HoldElevatorSetpoint(%s)", setpoint.name()));
