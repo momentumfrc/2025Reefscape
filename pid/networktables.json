@@ -266,7 +266,7 @@
   {
     "name": "/Preferences/Elevator Ramp Time",
     "type": "double",
-    "value": 0.15,
+    "value": 0.5,
     "properties": {
       "persistent": true
     }
@@ -378,7 +378,7 @@
   {
     "name": "/Preferences/End Effector Power (%)",
     "type": "double",
-    "value": 20.0,
+    "value": 100.0,
     "properties": {
       "persistent": true
     }
@@ -426,7 +426,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_elevator",
     "type": "double",
-    "value": 0.0,
+    "value": 0.55,
     "properties": {
       "persistent": true
     }
@@ -434,7 +434,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_wrist",
     "type": "double",
-    "value": 0.0,
+    "value": 0.03,
     "properties": {
       "persistent": true
     }
@@ -451,6 +451,22 @@
     "name": "/Elevator_Setpoints/CORAL_STATION_wrist",
     "type": "double",
     "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/INTAKE_elevator",
+    "type": "double",
+    "value": 15.3,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/INTAKE_wrist",
+    "type": "double",
+    "value": 0.115,
     "properties": {
       "persistent": true
     }

@@ -230,6 +230,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         MoShuffleboard.getInstance().elevatorTab.addDouble("Elevator Current", () -> getElevatorCurrent()
                 .in(Units.Amps));
 
+        MoShuffleboard.getInstance().elevatorTab.addBoolean("Wrist In Danger?", this::isWristInDanger);
+
         controlMode = MoShuffleboard.enumToChooser(ElevatorControlMode.class);
         MoShuffleboard.getInstance().settingsTab.add("Elevator Control Mode", controlMode);
 
