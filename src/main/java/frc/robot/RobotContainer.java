@@ -70,7 +70,6 @@ public class RobotContainer {
     private Trigger retractClimberTrigger;
     private LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
-
     private Trigger sysidTrigger;
 
     private Trigger tuneElevatorPid;

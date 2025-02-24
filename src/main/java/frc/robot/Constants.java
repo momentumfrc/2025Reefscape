@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.nio.file.Path;

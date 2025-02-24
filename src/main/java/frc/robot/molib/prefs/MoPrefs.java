@@ -151,6 +151,8 @@ public class MoPrefs {
             percentPref("Auto Fallback Power", Units.Percent.of(10));
     public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
 
+    public static final DimensionlessUnitPref ledBrightness = percentPref("LED Brightness", Units.Percent.of(20));
+
     NetworkTable backingTable;
 
     private static MoPrefs instance;
