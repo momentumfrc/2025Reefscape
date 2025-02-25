@@ -47,6 +47,6 @@ public class RevAbsoluteEncoder implements MoEncoder.Encoder {
 
     @Override
     public void setInverted(boolean inverted) {
-        configurator.accept(config -> config.inverted(inverted));
+        configurator.accept(config -> config.absoluteEncoder.inverted(inverted));
     }
 }

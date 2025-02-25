@@ -118,11 +118,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         wristAbsEncoder = MoRotationEncoder.forSparkAbsolute(
                 elevatorWrist.getAbsoluteEncoder(), Units.Rotations, elevatorWristConfig);
+        wristAbsEncoder.setInverted(true);
 
         elevatorRelEncoder =
                 MoDistanceEncoder.forSparkRelative(elevatorA.getEncoder(), Units.Centimeters, elevatorAConfig);
         wristRelEncoder =
-                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorAConfig);
+                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorWristConfig);
 
         elevatorAConfig.accept(config -> {
             config.softLimit
@@ -131,7 +132,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .forwardSoftLimit(
                             MoPrefs.elevatorMaxExtension.get().in(elevatorRelEncoder.getInternalEncoderUnits()))
                     .forwardSoftLimitEnabled(false);
-            config.idleMode(IdleMode.kBrake).smartCurrentLimit(ELEVATOR_CURRENT_LIMIT);
+            config.inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(ELEVATOR_CURRENT_LIMIT);
         });
 
         elevatorBConfig.accept(config -> config.idleMode(IdleMode.kBrake)
@@ -144,7 +145,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .reverseSoftLimitEnabled(true)
                     .forwardSoftLimit(MoPrefs.wristMaxExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
                     .forwardSoftLimitEnabled(true);
-            config.idleMode(IdleMode.kBrake).smartCurrentLimit(WRIST_CURRENT_LIMIT);
+            config.inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(WRIST_CURRENT_LIMIT);
         });
 
         // TODO: this syntax sucks. Make a nice MoTables wrapper
@@ -161,8 +162,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                     elevatorBConfig.accept(configurator);
                     elevatorWristConfig.accept(configurator);
                 });
-
-        reZeroWrist();
 
         // Setup listeners for config values
         MoPrefs.elevatorMaxExtension.subscribe(value -> elevatorAConfig.accept(
@@ -220,11 +219,20 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .in(Units.Rotations));
         MoShuffleboard.getInstance().elevatorTab.addDouble("Wrist Abs. Angle (R)", () -> getWristAbsAngle()
                 .in(Units.Rotations));
+        MoShuffleboard.getInstance().elevatorTab.addDouble("Wrist Horiz Angle (R)", () -> getWristAngleFromHorizontal()
+                .in(Units.Rotations));
+
+        MoShuffleboard.getInstance().elevatorTab.addDouble("Elevator Current", () -> getElevatorCurrent()
+                .in(Units.Amps));
+
+        MoShuffleboard.getInstance().elevatorTab.addBoolean("Wrist In Danger?", this::isWristInDanger);
 
         controlMode = MoShuffleboard.enumToChooser(ElevatorControlMode.class);
         MoShuffleboard.getInstance().settingsTab.add("Elevator Control Mode", controlMode);
 
         MoShuffleboard.getInstance().elevatorTab.add(this);
+
+        reZeroWrist();
     }
 
     public void reZeroWrist() {
@@ -267,9 +275,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     private Angle getWristAngleFromHorizontal() {
+
         return wristAngleFromHorizontal
-                .mut_replace(wristRelEncoder.getPosition())
-                .mut_minus(MoPrefs.wristHorizontal.get());
+                .mut_replace(MoPrefs.wristHorizontal.get())
+                .mut_minus(wristRelEncoder.getPosition());
+        // return wristAngleFromHorizontal
+        //         .mut_replace(wristRelEncoder.getPosition())
+        //         .mut_minus(MoPrefs.wristHorizontal.get());
     }
 
     private ElevatorMovementRequest limitElevatorMovementRequest(ElevatorMovementRequest request) {

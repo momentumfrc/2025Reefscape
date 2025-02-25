@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem;
+import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 
 public class ZeroElevatorCommand extends Command {
     private final ElevatorSubsystem elevator;
@@ -24,6 +25,11 @@ public class ZeroElevatorCommand extends Command {
 
     @Override
     public void execute() {
+        if (elevator.hasZero()) {
+            elevator.adjustDirectPower(new ElevatorMovementRequest(0, 0));
+            return;
+        }
+
         elevator.moveForElevatorZeroing();
 
         if (elevator.getElevatorCurrent().gte(MoPrefs.elevatorZeroCurrentThresh.get())) {
