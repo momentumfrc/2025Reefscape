@@ -38,7 +38,7 @@ public class DualXboxControllerInput implements MoInput {
 
     @Override
     public boolean getReZeroGyro() {
-        return driveController.getRawButton(7);
+        return driveController.getLeftBumperButton();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class DualXboxControllerInput implements MoInput {
     }
 
     public boolean getIntake() {
-        return driveController.getRawButton(1);
+        return driveController.getRightBumperButton();
     }
 
     @Override
