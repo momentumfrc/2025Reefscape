@@ -70,6 +70,9 @@ public class RobotContainer {
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
 
+    private Trigger raiseElevatorTrigger;
+    private Trigger lowerElevatorTrigger;
+
     private Trigger sysidTrigger;
 
     private Trigger tuneElevatorPid;
@@ -129,6 +132,9 @@ public class RobotContainer {
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
+        raiseElevatorTrigger = new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() > 0);
+        lowerElevatorTrigger = new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() < 0);
+
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
         tuneElevatorPid = new Trigger(() ->
@@ -159,6 +165,11 @@ public class RobotContainer {
         endEffectorInAlgaeExCoralTrigger.whileFalse(rainbowDefault);
         endEffectorExAlgaeInCoralTrigger.whileTrue(endEffectorColor);
         endEffectorInAlgaeExCoralTrigger.whileTrue(endEffectorColor);
+
+        raiseElevatorTrigger.whileFalse(rainbowDefault);
+        lowerElevatorTrigger.whileFalse(rainbowDefault);
+        raiseElevatorTrigger.whileTrue(elevatorColor);
+        lowerElevatorTrigger.whileTrue(elevatorColor);
 
         sysidTrigger.whileTrue(
                 Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
