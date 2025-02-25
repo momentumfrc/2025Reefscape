@@ -43,7 +43,7 @@ public class TeleopElevatorCommand extends Command {
         elevator.reZeroWrist();
     }
 
-    private void moveSmartMotion(MoInput input) {
+    private void movePosition(MoInput input) {
         Optional<ElevatorSetpoint> requestedSetpoint = input.getElevatorSetpoints();
         ElevatorMovementRequest requestedMovement = input.getElevatorMovementRequest();
         boolean shouldSaveSetpoint = input.getSaveElevatorSetpoint();
@@ -100,7 +100,7 @@ public class TeleopElevatorCommand extends Command {
             elevator.adjustVelocity(checkLimits(requestedMovement));
         } else {
             setpointPublisher.setString(setpoint.toString());
-            elevator.adjustSmartPosition(requestedPosition);
+            elevator.adjustPosition(requestedPosition);
         }
     }
 
@@ -152,7 +152,8 @@ public class TeleopElevatorCommand extends Command {
                 elevator.adjustVelocity(checkLimits(input.getElevatorMovementRequest()));
                 return;
             case SMARTMOTION:
-                moveSmartMotion(input);
+            case RAW_POSITION_PID:
+                movePosition(input);
                 return;
         }
     }

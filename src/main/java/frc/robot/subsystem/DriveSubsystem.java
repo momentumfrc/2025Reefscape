@@ -226,5 +226,7 @@ public class DriveSubsystem extends SubsystemBase {
         if (resetEncoderTimer.advanceIfElapsed(RESET_ENCODER_PERIOD.in(Units.Seconds))) {
             resetRelativeEncoders();
         }
+
+        forEachSwerveModule(module -> module.turnMotorConfig.checkForBrownout());
     }
 }

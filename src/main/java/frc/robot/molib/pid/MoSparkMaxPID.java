@@ -2,25 +2,22 @@ package frc.robot.molib.pid;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.encoder.MoEncoder;
-import frc.robot.utils.MoUtils;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>> {
     protected final Type type;
     protected final SparkBase motorController;
     protected final ClosedLoopSlot pidSlot;
     protected final SparkClosedLoopController pidController;
-    protected final Supplier<SparkBaseConfig> configSupplier;
+    protected final Consumer<Consumer<SparkBaseConfig>> configurator;
 
     protected final MoEncoder<Dim, VDim> internalEncoder;
 
@@ -46,18 +43,18 @@ public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>
             SparkBase controller,
             ClosedLoopSlot pidSlot,
             MoEncoder<Dim, VDim> internalEncoder,
-            Supplier<SparkBaseConfig> configSupplier) {
+            Consumer<Consumer<SparkBaseConfig>> configurator) {
         this.type = type;
         this.motorController = controller;
         this.pidSlot = pidSlot;
         this.pidController = motorController.getClosedLoopController();
         this.internalEncoder = internalEncoder;
-        this.configSupplier = configSupplier;
+        this.configurator = configurator;
     }
 
     public MoSparkMaxPID(
             Type type, SparkBase controller, ClosedLoopSlot pidSlot, MoEncoder<Dim, VDim> internalEncoder) {
-        this(type, controller, pidSlot, internalEncoder, () -> MoUtils.getSparkConfig(controller));
+        this(type, controller, pidSlot, internalEncoder, MoSparkConfigurator.forSparkBase(controller));
     }
 
     public Type getType() {
@@ -89,9 +86,7 @@ public class MoSparkMaxPID<Dim extends Unit, VDim extends PerUnit<Dim, TimeUnit>
     }
 
     public void setConfigOption(Consumer<SparkBaseConfig> op) {
-        SparkBaseConfig config = configSupplier.get();
-        op.accept(config);
-        motorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        configurator.accept(op);
     }
 
     public double getLastOutput() {

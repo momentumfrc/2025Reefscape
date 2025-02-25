@@ -1,38 +1,32 @@
 package frc.robot.subsystem;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.prefs.MoPrefs;
 
 public class IntakeWristSubsystem extends SubsystemBase {
     private final SparkMax wrist;
+    private final MoSparkConfigurator wristConfig;
     private MutCurrent wristCurrent = Units.Amps.mutable(0);
 
     public IntakeWristSubsystem() {
         super("Ground Intake Wrist");
         this.wrist = new SparkMax(Constants.INTAKE_WRIST.address(), MotorType.kBrushless);
+        this.wristConfig = MoSparkConfigurator.forSparkMax(wrist);
 
-        this.wrist.configure(
-                new SparkMaxConfig()
-                        .smartCurrentLimit(
-                                (int) MoPrefs.intakeWristSmartCurrentLimit.get().in(Units.Amps))
-                        .idleMode(IdleMode.kCoast),
-                ResetMode.kResetSafeParameters,
-                PersistMode.kNoPersistParameters);
-        MoPrefs.intakeWristSmartCurrentLimit.subscribe(limit -> wrist.configure(
-                new SparkMaxConfig().smartCurrentLimit((int) limit.in(Units.Amps)),
-                ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters));
+        wristConfig.accept(config -> config.smartCurrentLimit(
+                        (int) MoPrefs.intakeWristSmartCurrentLimit.get().in(Units.Amps))
+                .idleMode(IdleMode.kCoast));
+        MoPrefs.intakeWristSmartCurrentLimit.subscribe(
+                limit -> wristConfig.accept(config -> config.smartCurrentLimit((int) limit.in(Units.Amps))));
 
         MoShuffleboard.getInstance().intakeTab.addDouble("Wrist Current", () -> getWristCurrent()
                 .in(Units.Amps));
@@ -71,5 +65,10 @@ public class IntakeWristSubsystem extends SubsystemBase {
         double current = wrist.getOutputCurrent();
         wristCurrent.mut_replace(current, Units.Amps);
         return wristCurrent;
+    }
+
+    @Override
+    public void periodic() {
+        wristConfig.checkForBrownout();
     }
 }

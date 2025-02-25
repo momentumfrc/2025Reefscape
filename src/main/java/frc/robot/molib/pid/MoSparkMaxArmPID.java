@@ -9,9 +9,10 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.encoder.MoRotationEncoder;
-import frc.robot.utils.MoUtils;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -45,8 +46,8 @@ public class MoSparkMaxArmPID extends MoSparkMaxPID<AngleUnit, AngularVelocityUn
             ClosedLoopSlot pidSlot,
             MoRotationEncoder encoder,
             Supplier<Measure<AngleUnit>> getAngleFromHorizontal,
-            Supplier<SparkBaseConfig> configSupplier) {
-        super(type, controller, pidSlot, encoder, configSupplier);
+            Consumer<Consumer<SparkBaseConfig>> configurator) {
+        super(type, controller, pidSlot, encoder, configurator);
         this.getAngleFromHorizontal = getAngleFromHorizontal;
     }
 
@@ -56,7 +57,7 @@ public class MoSparkMaxArmPID extends MoSparkMaxPID<AngleUnit, AngularVelocityUn
             ClosedLoopSlot pidSlot,
             MoRotationEncoder encoder,
             Supplier<Measure<AngleUnit>> getAngleFromHorizontal) {
-        this(type, controller, pidSlot, encoder, getAngleFromHorizontal, () -> MoUtils.getSparkConfig(controller));
+        this(type, controller, pidSlot, encoder, getAngleFromHorizontal, MoSparkConfigurator.forSparkBase(controller));
     }
 
     public void setKS(double kS) {
