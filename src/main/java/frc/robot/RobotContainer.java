@@ -8,6 +8,7 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -16,6 +17,7 @@ import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.LEDsCommand;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
+import frc.robot.command.elevator.ElevatorCommands;
 import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
@@ -70,6 +72,9 @@ public class RobotContainer {
 
     private Trigger sysidTrigger;
 
+    private Trigger tuneElevatorPid;
+    private Trigger tuneWristPid;
+
     private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
     private final LEDsCommand rainbowDefault = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.RAINBOW);
@@ -77,10 +82,18 @@ public class RobotContainer {
     private final LEDsCommand climberColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.CLIMBER);
     private final LEDsCommand endEffectorColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.END_EFFECTOR);
     private final LEDsCommand elevatorColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.ELEVATOR);
-
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
     private SendableChooser<Command> sysidChooser = new SendableChooser<>();
+
+    private enum PidSubsystemToTune {
+        NONE,
+        ELEVATOR,
+        WRIST;
+    }
+
+    private SendableChooser<PidSubsystemToTune> pidSubsystemChooser =
+            MoShuffleboard.enumToChooser(PidSubsystemToTune.class);
 
     private final MoInput input;
 
@@ -93,6 +106,7 @@ public class RobotContainer {
 
         MoShuffleboard.getInstance().settingsTab.add("Input", inputChooser);
         MoShuffleboard.getInstance().settingsTab.add("Sysid Mechanism", sysidChooser);
+        MoShuffleboard.getInstance().settingsTab.add("Pid Subsystem to Tune", pidSubsystemChooser);
 
         input = new MoInputTransforms(inputChooser::getSelected, this::getDriveSlewRate);
 
@@ -117,6 +131,11 @@ public class RobotContainer {
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
+        tuneElevatorPid = new Trigger(() ->
+                pidSubsystemChooser.getSelected() == PidSubsystemToTune.ELEVATOR && !DriverStation.isFMSAttached());
+        tuneWristPid = new Trigger(
+                () -> pidSubsystemChooser.getSelected() == PidSubsystemToTune.WRIST && !DriverStation.isFMSAttached());
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
@@ -124,6 +143,9 @@ public class RobotContainer {
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
         endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
         endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
+
+        tuneElevatorPid.whileTrue(ElevatorCommands.getTuneElevatorCommand(elevator));
+        tuneWristPid.whileTrue(ElevatorCommands.getTuneWristCommand(elevator));
 
         intakeDeployTrigger.onFalse(rainbowDefault);
         intakeDeployTrigger.onTrue(intakeColor);

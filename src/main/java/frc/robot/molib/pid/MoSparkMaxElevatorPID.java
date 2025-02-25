@@ -9,10 +9,10 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.encoder.MoDistanceEncoder;
-import frc.robot.utils.MoUtils;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 public class MoSparkMaxElevatorPID extends MoSparkMaxPID<DistanceUnit, LinearVelocityUnit> {
     private Optional<ElevatorFeedforward> elevatorFF = Optional.empty();
@@ -28,13 +28,13 @@ public class MoSparkMaxElevatorPID extends MoSparkMaxPID<DistanceUnit, LinearVel
             SparkBase spark,
             ClosedLoopSlot pidSlot,
             MoDistanceEncoder encoder,
-            Supplier<SparkBaseConfig> configSupplier) {
-        super(type, spark, pidSlot, encoder, configSupplier);
+            Consumer<Consumer<SparkBaseConfig>> configurator) {
+        super(type, spark, pidSlot, encoder, configurator);
     }
 
     public MoSparkMaxElevatorPID(
             MoSparkMaxPID.Type type, SparkBase spark, ClosedLoopSlot pidSlot, MoDistanceEncoder encoder) {
-        this(type, spark, pidSlot, encoder, () -> MoUtils.getSparkConfig(spark));
+        this(type, spark, pidSlot, encoder, MoSparkConfigurator.forSparkBase(spark));
     }
 
     public void setKS(double kS) {

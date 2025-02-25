@@ -1,16 +1,12 @@
 package frc.robot.subsystem;
 
-import java.util.EnumSet;
-
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -23,8 +19,11 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.molib.prefs.UnitPref;
+import java.util.EnumSet;
+import java.util.function.Consumer;
 
 public class ClimberSubsystem extends SubsystemBase {
     public enum RachetState {
@@ -41,6 +40,9 @@ public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax leftSpark;
     private final SparkMax rightSpark;
     private final Servo rachet;
+
+    private final MoSparkConfigurator leftSparkConfig;
+    private final MoSparkConfigurator rightSparkConfig;
 
     private final SparkLimitSwitch reverseLimitSwitch;
     private final RelativeEncoder encoder;
@@ -61,39 +63,28 @@ public class ClimberSubsystem extends SubsystemBase {
         this.reverseLimitSwitch = leftSpark.getReverseLimitSwitch();
         this.encoder = leftSpark.getEncoder();
 
-        var leftSparkConfig = new SparkMaxConfig();
-        leftSparkConfig.idleMode(IdleMode.kBrake).inverted(false);
-        leftSparkConfig
-                .limitSwitch
-                .forwardLimitSwitchEnabled(false)
-                .reverseLimitSwitchEnabled(true)
-                .reverseLimitSwitchType(Type.kNormallyOpen);
-        leftSparkConfig
-                .softLimit
-                .forwardSoftLimit(MoPrefs.climberFwdSoftLimit.get())
-                .forwardSoftLimitEnabled(false)
-                .reverseSoftLimit(MoPrefs.climberRvsSoftLimit.get())
-                .reverseSoftLimitEnabled(false);
+        this.leftSparkConfig = MoSparkConfigurator.forSparkMax(leftSpark);
+        this.rightSparkConfig = MoSparkConfigurator.forSparkMax(rightSpark);
 
-        MoPrefs.climberFwdSoftLimit.subscribe(fwdLimit -> {
-            SparkMaxConfig config = new SparkMaxConfig();
-            config.softLimit.forwardSoftLimit(fwdLimit);
-            leftSpark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftSparkConfig.accept(config -> {
+            config.idleMode(IdleMode.kBrake).inverted(false);
+            config.limitSwitch
+                    .forwardLimitSwitchEnabled(false)
+                    .reverseLimitSwitchEnabled(true)
+                    .reverseLimitSwitchType(Type.kNormallyOpen);
+            config.softLimit
+                    .forwardSoftLimit(MoPrefs.climberFwdSoftLimit.get())
+                    .forwardSoftLimitEnabled(false)
+                    .reverseSoftLimit(MoPrefs.climberRvsSoftLimit.get())
+                    .reverseSoftLimitEnabled(false);
         });
 
-        MoPrefs.climberRvsSoftLimit.subscribe(rvsLimit -> {
-            SparkMaxConfig config = new SparkMaxConfig();
-            config.softLimit.reverseSoftLimit(rvsLimit);
-            leftSpark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        });
+        MoPrefs.climberFwdSoftLimit.subscribe(
+                fwdLimit -> leftSparkConfig.accept(config -> config.softLimit.forwardSoftLimit(fwdLimit)));
+        MoPrefs.climberRvsSoftLimit.subscribe(
+                rvsLimit -> leftSparkConfig.accept(config -> config.softLimit.reverseSoftLimit(rvsLimit)));
 
-        this.leftSpark.configure(leftSparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-        SparkMaxConfig rightSparkConfig = new SparkMaxConfig();
-        rightSparkConfig.idleMode(IdleMode.kBrake).follow(leftSpark, true);
-        this.rightSpark.configure(
-            rightSparkConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kNoPersistParameters);
+        rightSparkConfig.accept(config -> config.idleMode(IdleMode.kBrake).follow(leftSpark, true));
 
         MoShuffleboard.getInstance().climberTab.add(this);
         MoShuffleboard.getInstance()
@@ -113,12 +104,9 @@ public class ClimberSubsystem extends SubsystemBase {
                 .addListener(coastMotorsEntry, EnumSet.of(NetworkTableEvent.Kind.kValueAll), coast -> {
                     System.out.println(coast.valueData.value.getBoolean());
                     var idleMode = coast.valueData.value.getBoolean() ? IdleMode.kCoast : IdleMode.kBrake;
-                    SparkMaxConfig leftConfig = new SparkMaxConfig();
-                    leftConfig.idleMode(idleMode);
-                    leftSpark.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-                    SparkMaxConfig rightConfig = new SparkMaxConfig();
-                    rightConfig.idleMode(idleMode);
-                    rightSpark.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+                    Consumer<SparkBaseConfig> configurator = config -> config.idleMode(idleMode);
+                    leftSparkConfig.accept(configurator);
+                    rightSparkConfig.accept(configurator);
                 });
     }
 
@@ -161,9 +149,8 @@ public class ClimberSubsystem extends SubsystemBase {
     public void rezeroEncoder() {
         encodersZeroed.setBoolean(true);
         encoder.setPosition(0);
-        SparkMaxConfig config = new SparkMaxConfig();
-        config.softLimit.forwardSoftLimitEnabled(true).reverseSoftLimitEnabled(true);
-        leftSpark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftSparkConfig.accept(
+                config -> config.softLimit.forwardSoftLimitEnabled(true).reverseSoftLimitEnabled(true));
     }
 
     public boolean isZeroed() {
@@ -179,5 +166,8 @@ public class ClimberSubsystem extends SubsystemBase {
         if (currRachetState != null) {
             rachet.set(currRachetState.posPref.get().in(Units.Value));
         }
+
+        leftSparkConfig.checkForBrownout();
+        rightSparkConfig.checkForBrownout();
     }
 }

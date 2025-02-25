@@ -1,7 +1,6 @@
 package frc.robot.command.intake;
 
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.command.intake.IntakeCommands.Direction;

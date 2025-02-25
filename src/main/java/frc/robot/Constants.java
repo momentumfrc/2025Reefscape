@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.nio.file.Path;
@@ -22,7 +21,7 @@ public class Constants {
     public static final CANAddress ELEVATORA = new CANAddress(4);
     public static final CANAddress ELEVATORB = new CANAddress(9);
     public static final CANAddress ELEVATOR_WRIST = new CANAddress(2);
-    public static final CANAddress END_EFFECTOR = new CANAddress(0);
+    public static final CANAddress END_EFFECTOR = new CANAddress(10);
 
     public static final CANAddress CLIMBER_LEFT = new CANAddress(21);
     public static final CANAddress CLIMBER_RIGHT = new CANAddress(3);
