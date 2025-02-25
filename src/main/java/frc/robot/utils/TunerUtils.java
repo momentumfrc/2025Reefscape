@@ -14,6 +14,9 @@ import frc.robot.molib.pid.MoSparkMaxArmPID;
 import frc.robot.molib.pid.MoSparkMaxElevatorPID;
 import frc.robot.molib.pid.MoSparkMaxPID;
 import frc.robot.molib.pid.MoTalonFxPID;
+import frc.robot.molib.pid.MoTrapezoidArmController;
+import frc.robot.molib.pid.MoTrapezoidController;
+import frc.robot.molib.pid.MoTrapezoidElevatorController;
 
 public class TunerUtils {
 
@@ -99,6 +102,41 @@ public class TunerUtils {
                 .withI(v -> constants.kI = v)
                 .withD(v -> constants.kD = v)
                 .withIZone(v -> constants.iZone = v)
+                .safeBuild();
+    }
+
+    private static PIDTunerBuilder forMoTrapezoidController(
+            MoTrapezoidController<?, ?, ?> controller, String controllerName) {
+        return PIDTuner.builder(controllerName)
+                .withDataStoreFile(Constants.DATA_STORE_FILE)
+                .withP(controller::setP)
+                .withI(controller::setI)
+                .withD(controller::setD)
+                .withIZone(controller::setIZone)
+                .withProperty("dFilter", controller::setDFilter)
+                .withProperty("iMaxAccum", controller::setIMaxAccum)
+                .withProperty("maxVelocity", controller::setMaxVelocity)
+                .withProperty("maxAcceleration", controller::setMaxAcceleration)
+                .withSetpoint(controller::getLastReference)
+                .withMeasurement(controller::getLastMeasurement)
+                .withStateValue("calculated_ff", controller::getLastFF);
+    }
+
+    public static PIDTuner forMoTrapezoidElevator(MoTrapezoidElevatorController elevator, String controllerName) {
+        return forMoTrapezoidController(elevator, controllerName)
+                .withProperty("kS", elevator::setKS)
+                .withProperty("kG", elevator::setKG)
+                .withProperty("kV", elevator::setKV)
+                .withProperty("kA", elevator::setKA)
+                .safeBuild();
+    }
+
+    public static PIDTuner forMoTrapezoidArm(MoTrapezoidArmController arm, String controllerName) {
+        return forMoTrapezoidController(arm, controllerName)
+                .withProperty("kS", arm::setKS)
+                .withProperty("kG", arm::setKG)
+                .withProperty("kV", arm::setKV)
+                .withProperty("kA", arm::setKA)
                 .safeBuild();
     }
 }
