@@ -123,7 +123,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorRelEncoder =
                 MoDistanceEncoder.forSparkRelative(elevatorA.getEncoder(), Units.Centimeters, elevatorAConfig);
         wristRelEncoder =
-                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorAConfig);
+                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorWristConfig);
 
         elevatorAConfig.accept(config -> {
             config.softLimit
