@@ -21,6 +21,7 @@ import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
+import frc.robot.input.DualXboxControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
@@ -92,6 +93,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         inputChooser.setDefaultOption("Joystick + F310", new ControllerInput());
+        inputChooser.addOption("Dual Xbox Control", new DualXboxControllerInput());
 
         sysidChooser.setDefaultOption(
                 "Elevator", MoShuffleboard.getInstance().getSysidCommand(elevator::getElevatorSysidMechanism));
