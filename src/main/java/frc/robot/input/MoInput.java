@@ -12,4 +12,10 @@ public interface MoInput {
     public abstract double getClimberMoveRequest();
 
     public abstract boolean getIntake();
+
+    public abstract boolean getAutoAlignCoralLeft();
+
+    public abstract boolean getAutoAlignCoralRight();
+
+    public abstract boolean getAutoAlignAlgaeMiddle();
 }

@@ -47,17 +47,20 @@ public class ControllerInput implements MoInput {
         return (-1 * elevatorController.getLeftTriggerAxis()) + elevatorController.getRightTriggerAxis();
     }
 
-    //Returns true if the driver is holding the Coral Left auto-align button.
+    @Override
+    // Returns true if the driver is holding the Coral Left auto-align button.
     public boolean getAutoAlignCoralLeft() {
         return driveController.getRawButton(AUTO_ALIGN_CORAL_LEFT_BUTTON);
     }
 
-    //Returns true if the driver is holding the Coral Right auto-align button.
+    @Override
+    // Returns true if the driver is holding the Coral Right auto-align button.
     public boolean getAutoAlignCoralRight() {
         return driveController.getRawButton(AUTO_ALIGN_CORAL_RIGHT_BUTTON);
     }
 
-    //Returns true if the driver is holding the Algae Middle auto-align button.
+    @Override
+    // Returns true if the driver is holding the Algae Middle auto-align button.
     public boolean getAutoAlignAlgaeMiddle() {
         return driveController.getRawButton(AUTO_ALIGN_ALGAE_MIDDLE_BUTTON);
     }

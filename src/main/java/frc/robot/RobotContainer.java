@@ -9,6 +9,8 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.command.AutoAlignCommand;
+import frc.robot.command.AutoAlignCommand.AutoAlignMode;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
 import frc.robot.command.intake.IntakeCommands;
@@ -39,10 +41,21 @@ public class RobotContainer {
     private final Command intakeRollersDefaultCommand = IntakeCommands.intakeRollerDefaultCommand(intakeRoller);
     private final Command intakeWristDefaultCommand = IntakeCommands.intakeWristDefaultCommand(intakeWrist);
 
+    private final Command autoAlignCoralLeftCommand =
+            new AutoAlignCommand(drive, positioning, AutoAlignMode.CORAL_LEFT);
+    private final Command autoAlignCoralRightCommand =
+            new AutoAlignCommand(drive, positioning, AutoAlignMode.CORAL_RIGHT);
+    private final Command autoAlignAlgaeMiddleCommand =
+            new AutoAlignCommand(drive, positioning, AutoAlignMode.ALGAE_MIDDLE);
+
     private Trigger intakeDeployTrigger;
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
+
+    private Trigger autoAlignCoralLeftTrigger;
+    private Trigger autoAlignCoralRightTrigger;
+    private Trigger autoAlignAlgaeMiddleTrigger;
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
@@ -64,11 +77,19 @@ public class RobotContainer {
         extendClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() > 0);
         retractClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() < 0);
 
+        autoAlignCoralLeftTrigger = new Trigger(() -> getInput().getAutoAlignCoralLeft());
+        autoAlignCoralRightTrigger = new Trigger(() -> getInput().getAutoAlignCoralRight());
+        autoAlignAlgaeMiddleTrigger = new Trigger(() -> getInput().getAutoAlignAlgaeMiddle());
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
         extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
+
+        autoAlignCoralLeftTrigger.whileTrue(autoAlignCoralLeftCommand);
+        autoAlignCoralRightTrigger.whileTrue(autoAlignCoralRightCommand);
+        autoAlignAlgaeMiddleTrigger.whileTrue(autoAlignAlgaeMiddleCommand);
     }
 
     public Command getAutonomousCommand() {
