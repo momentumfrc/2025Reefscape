@@ -8,9 +8,11 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.prefs.MoPrefs;
+import java.util.EnumMap;
 
 public class LEDsSubsystem extends SubsystemBase {
     private final AddressableLED led;
@@ -18,11 +20,10 @@ public class LEDsSubsystem extends SubsystemBase {
 
     private final int ledCount = 120; // Might want to fix this.
 
-    private final LEDPattern rainbow = LEDPattern.rainbow(255, 255);
-    private static final Distance kLedSpacing = Meters.of(1 / 60.0);
-    private final LEDPattern rainbowPattern = rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing);
+    private final EnumMap<LEDMode, LEDPattern> patterns = new EnumMap<>(LEDMode.class);
+    private final EnumMap<LEDMode, LEDPattern> dimmed = new EnumMap<>(LEDMode.class);
 
-    private LEDPattern dimmed;
+    private static final Distance kLedSpacing = Meters.of(1 / 60.0);
 
     private LEDMode currentMode;
 
@@ -35,9 +36,19 @@ public class LEDsSubsystem extends SubsystemBase {
     }
 
     public LEDsSubsystem() {
+        patterns.put(
+                LEDMode.RAINBOW,
+                LEDPattern.rainbow(255, 255).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), kLedSpacing));
+        patterns.put(LEDMode.END_EFFECTOR, LEDPattern.solid(new Color(159, 1, 255)));
+        patterns.put(LEDMode.ELEVATOR, LEDPattern.solid(new Color(5, 205, 253)));
+        patterns.put(LEDMode.GROUND_INTAKE, LEDPattern.solid(new Color(0, 255, 0)));
+        patterns.put(LEDMode.CLIMBER, LEDPattern.solid(new Color(255, 0, 0)));
+
         MoPrefs.ledBrightness.subscribe(
                 brightness -> {
-                    dimmed = rainbowPattern.atBrightness((Dimensionless) brightness);
+                    for (LEDMode mode : LEDMode.values()) {
+                        dimmed.put(mode, patterns.get(mode).atBrightness((Dimensionless) brightness));
+                    }
                 },
                 true);
 
@@ -56,52 +67,7 @@ public class LEDsSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        switch (currentMode) {
-            case RAINBOW:
-                updateRainbowPattern();
-                break;
-            case END_EFFECTOR:
-                endEffectorColor();
-                break;
-            case ELEVATOR:
-                elevatorColor();
-                break;
-            case GROUND_INTAKE:
-                groundIntakeColor();
-                break;
-            case CLIMBER:
-                climbColor();
-                break;
-        }
+        dimmed.get(currentMode).applyTo(ledBuffer);
         led.setData(ledBuffer);
     }
-
-    public void updateRainbowPattern() {
-        dimmed.applyTo(ledBuffer);
-    }
-
-    public void endEffectorColor() {
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 159, 1, 255);
-        }
-    }
-
-    public void elevatorColor() {
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 5, 205, 253);
-        }
-    }
-
-    public void groundIntakeColor() {
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 0, 255, 0);
-        }
-    }
-
-    public void climbColor() {
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 255, 0, 0);
-        }
-    }
-
 }

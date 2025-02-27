@@ -132,8 +132,10 @@ public class RobotContainer {
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
-        raiseElevatorTrigger = new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() > 0);
-        lowerElevatorTrigger = new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() < 0);
+        raiseElevatorTrigger =
+                new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() > 0);
+        lowerElevatorTrigger =
+                new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() < 0);
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
