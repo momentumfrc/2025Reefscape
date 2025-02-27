@@ -8,7 +8,6 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -73,9 +72,6 @@ public class RobotContainer {
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
 
-    private Trigger raiseElevatorTrigger;
-    private Trigger lowerElevatorTrigger;
-
     private Trigger wristInDangerTrigger;
 
     private Trigger sysidTrigger;
@@ -135,12 +131,7 @@ public class RobotContainer {
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
-        raiseElevatorTrigger =
-                new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() > 0);
-        lowerElevatorTrigger =
-                new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() < 0);
-
-        wristInDangerTrigger = new Trigger(() -> elevator.isWristInDanger() && DriverStation.isEnabled());
+        wristInDangerTrigger = new Trigger(() -> elevator.isWristInDanger());
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
@@ -162,8 +153,6 @@ public class RobotContainer {
         endEffectorInAlgaeExCoralTrigger
                 .or(endEffectorExAlgaeInCoralTrigger)
                 .whileTrue(LEDCommands.endEffectorPattern(ledsSubsystem));
-
-        raiseElevatorTrigger.or(lowerElevatorTrigger).whileTrue(LEDCommands.elevatorPattern(ledsSubsystem));
 
         wristInDangerTrigger.whileTrue(LEDCommands.wristInDangerPattern(ledsSubsystem));
 
