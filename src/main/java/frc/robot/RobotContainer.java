@@ -8,11 +8,13 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.EndEffectorCommands;
+import frc.robot.command.LEDCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
 import frc.robot.command.elevator.TeleopElevatorCommand;
@@ -67,9 +69,15 @@ public class RobotContainer {
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
-    private LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
+
+    private Trigger raiseElevatorTrigger;
+    private Trigger lowerElevatorTrigger;
+
+    private Trigger wristInDangerTrigger;
 
     private Trigger sysidTrigger;
+
+    private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive, elevator, endEffector);
@@ -108,6 +116,7 @@ public class RobotContainer {
         intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
         elevator.setDefaultCommand(elevatorCommand);
         endEffector.setDefaultCommand(endEffectorIdle);
+        ledsSubsystem.setDefaultCommand(LEDCommands.defaultPattern(ledsSubsystem));
     }
 
     private void configureBindings() {
@@ -119,6 +128,13 @@ public class RobotContainer {
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
+        raiseElevatorTrigger =
+                new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() > 0);
+        lowerElevatorTrigger =
+                new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() < 0);
+
+        wristInDangerTrigger = new Trigger(() -> elevator.isWristInDanger() && DriverStation.isEnabled());
+
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
@@ -126,9 +142,20 @@ public class RobotContainer {
 
         extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
-
         endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
         endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
+
+        intakeDeployTrigger.whileTrue(LEDCommands.groundIntakePattern(ledsSubsystem));
+
+        retractClimberTrigger.or(extendClimberTrigger).whileTrue(LEDCommands.climberPattern(ledsSubsystem));
+
+        endEffectorInAlgaeExCoralTrigger
+                .or(endEffectorExAlgaeInCoralTrigger)
+                .whileTrue(LEDCommands.endEffectorPattern(ledsSubsystem));
+
+        raiseElevatorTrigger.or(lowerElevatorTrigger).whileTrue(LEDCommands.elevatorPattern(ledsSubsystem));
+
+        wristInDangerTrigger.whileTrue(LEDCommands.wristInDangerPattern(ledsSubsystem));
 
         sysidTrigger.whileTrue(
                 Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
