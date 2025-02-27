@@ -48,6 +48,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private MutCurrent wristCurrent = Units.Amps.mutable(0);
     private MutCurrent elevatorCurrent = Units.Amps.mutable(0);
     private MutAngle wristAngleFromHorizontal = Units.Rotations.mutable(0);
+    private MutAngle wristAbsEncoderValue = Units.Rotations.mutable(0);
 
     public static enum ElevatorControlMode {
         SMARTMOTION,
@@ -218,8 +219,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .in(Units.Centimeters));
         MoShuffleboard.getInstance().elevatorTab.addDouble("Wrist Rel. Angle (R)", () -> getWristAngle()
                 .in(Units.Rotations));
-        MoShuffleboard.getInstance().elevatorTab.addDouble("Wrist Abs. Angle (R)", () -> getWristAbsAngle()
-                .in(Units.Rotations));
+        MoShuffleboard.getInstance().elevatorTab.addDouble("Wrist Abs. Angle (DEG)", () -> getWristAbsAngleZeroed()
+                .in(Units.Degrees));
         MoShuffleboard.getInstance().elevatorTab.addDouble("Wrist Horiz Angle (R)", () -> getWristAngleFromHorizontal()
                 .in(Units.Rotations));
 
@@ -249,7 +250,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean isWristInDanger() {
-        return wristRelEncoder.getPosition().lt(MoPrefs.wristNominalRevLimit.get());
+        return getWristAbsAngleZeroed().lt(MoPrefs.wristNominalRevLimit.get());
     }
 
     public void disableWristNominalReverseLimit() {
@@ -273,6 +274,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Angle getWristAbsAngle() {
         return wristAbsEncoder.getPosition();
+    }
+
+    public Angle getWristAbsAngleZeroed() {
+        wristAbsEncoderValue.mut_replace(wristAbsEncoder.getPosition());
+        wristAbsEncoderValue.mut_minus(MoPrefs.wristAbsZero.get());
+        return wristAbsEncoderValue;
     }
 
     private Angle getWristAngleFromHorizontal() {
