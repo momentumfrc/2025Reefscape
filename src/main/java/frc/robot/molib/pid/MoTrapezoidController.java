@@ -10,6 +10,7 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.measure.MutDistance;
 import frc.robot.molib.encoder.MoEncoder;
 import java.util.function.Consumer;
 
@@ -36,6 +37,8 @@ public abstract class MoTrapezoidController<
     private double lastFF;
     private double lastReference;
 
+    private MutableMeasure<Dim, ?, ?> errorZone;
+
     @SuppressWarnings("unchecked")
     public MoTrapezoidController(
             SparkClosedLoopController pidController,
@@ -58,6 +61,8 @@ public abstract class MoTrapezoidController<
         nextVelSetpoint = (MutableMeasure<VDim, ?, ?>) velUnit.mutable(0);
 
         configurator.accept(config -> config.closedLoop.velocityFF(0));
+
+        errorZone = (MutableMeasure<Dim, ?, ?>) posUnit.mutable(0);
     }
 
     public double getLastFF() {
@@ -106,24 +111,35 @@ public abstract class MoTrapezoidController<
         this.profile = null;
     }
 
+    public void setErrorZone(double errorZone) {
+        this.errorZone.mut_replace(errorZone, posUnit);
+    }
+
     protected abstract double getFF(Measure<VDim> velSetpoint, Measure<VDim> nextVelSetpoint);
 
     public void setPositionReference(Measure<Dim> reference) {
-        if (this.profile == null) {
-            this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(maxVel, maxAccel));
+        if(!encoder.getPosition().isNear(reference, errorZone)) {
+            if (this.profile == null) {
+                this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(maxVel, maxAccel));
+            }
+
+            TrapezoidProfile.State currentState = new TrapezoidProfile.State(
+                    encoder.getPosition().in(posUnit), encoder.getVelocity().in(velUnit));
+            TrapezoidProfile.State goalState = new TrapezoidProfile.State(reference.in(posUnit), 0);
+
+            TrapezoidProfile.State setpoint = profile.calculate(kDt, currentState, goalState);
+
+            posSetpoint.mut_replace(setpoint.position, posUnit);
+            velSetpoint.mut_replace(setpoint.velocity, velUnit);
+
+            TrapezoidProfile.State nextSetpoint = profile.calculate(kDt * 2, currentState, goalState);
+            nextVelSetpoint.mut_replace(nextSetpoint.velocity, velUnit);
+        } else {
+            // TODO: figure out the generics so I can skip the intermediate unitless value here
+            posSetpoint.mut_replace(reference.in(posUnit), posUnit);
+            velSetpoint.mut_replace(0, velUnit);
+            nextVelSetpoint.mut_replace(0, velUnit);
         }
-
-        TrapezoidProfile.State currentState = new TrapezoidProfile.State(
-                encoder.getPosition().in(posUnit), encoder.getVelocity().in(velUnit));
-        TrapezoidProfile.State goalState = new TrapezoidProfile.State(reference.in(posUnit), 0);
-
-        TrapezoidProfile.State setpoint = profile.calculate(kDt, currentState, goalState);
-
-        posSetpoint.mut_replace(setpoint.position, posUnit);
-        velSetpoint.mut_replace(setpoint.velocity, velUnit);
-
-        TrapezoidProfile.State nextSetpoint = profile.calculate(kDt * 2, currentState, goalState);
-        nextVelSetpoint.mut_replace(nextSetpoint.velocity, velUnit);
 
         double ff = getFF(velSetpoint, nextVelSetpoint);
         double value = posSetpoint.in(encoder.getInternalEncoderUnits());
@@ -131,6 +147,6 @@ public abstract class MoTrapezoidController<
         this.pidController.setReference(value, SparkBase.ControlType.kPosition, pidSlot, ff);
 
         this.lastFF = ff;
-        this.lastReference = value;
+        this.lastReference = posSetpoint.in(posUnit);;
     }
 }

@@ -249,7 +249,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean isWristInDanger() {
-        return wristRelEncoder.getPosition().lt(MoPrefs.wristNominalRevLimit.get());
+        return false;
+        // TODO: Fix
+        //return wristRelEncoder.getPosition().lt(MoPrefs.wristNominalRevLimit.get());
     }
 
     public void disableWristNominalReverseLimit() {

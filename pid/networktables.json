@@ -478,5 +478,13 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Input Turn Curve",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

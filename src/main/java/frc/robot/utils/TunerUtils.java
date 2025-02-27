@@ -117,6 +117,7 @@ public class TunerUtils {
                 .withProperty("iMaxAccum", controller::setIMaxAccum)
                 .withProperty("maxVelocity", controller::setMaxVelocity)
                 .withProperty("maxAcceleration", controller::setMaxAcceleration)
+                .withProperty("errorZone", controller::setErrorZone)
                 .withSetpoint(controller::getLastReference)
                 .withMeasurement(controller::getLastMeasurement)
                 .withStateValue("calculated_ff", controller::getLastFF);
