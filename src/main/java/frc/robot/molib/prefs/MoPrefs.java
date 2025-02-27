@@ -37,6 +37,7 @@ public class MoPrefs {
     // ---------- Drive ----------
     public static final Pref<Double> inputDeadzone = unitlessDoublePref("Input Deadzone", 0.05);
     public static final Pref<Double> inputCurve = unitlessDoublePref("Input Curve", 1.5);
+    public static final Pref<Double> inputTurnCurve = unitlessDoublePref("Input Turn Curve", 3);
     public static final TimeUnitPref driveRampTime = secondsPref("Drive Normal Ramp Time", Units.Seconds.of(0.1));
     public static final TimeUnitPref driveRampTimeElevatorExtended =
             secondsPref("Drive Elevator Extended Ramp Time", Units.Seconds.of(1.5));
@@ -150,6 +151,8 @@ public class MoPrefs {
     public static final DimensionlessUnitPref autoFallbackSpd =
             percentPref("Auto Fallback Power", Units.Percent.of(10));
     public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
+    public static final TimeUnitPref autoExtakePreloadTime =
+            secondsPref("Auto Extake Preload Time", Units.Seconds.of(1));
 
     public static final DimensionlessUnitPref ledBrightness = percentPref("LED Brightness", Units.Percent.of(20));
 

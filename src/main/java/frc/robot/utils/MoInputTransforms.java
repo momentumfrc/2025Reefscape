@@ -39,6 +39,10 @@ public class MoInputTransforms implements MoInput {
         return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputCurve.get());
     }
 
+    private double applyTurnInputTransforms(double value) {
+        return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputTurnCurve.get());
+    }
+
     @Override
     public Optional<ElevatorSetpoint> getElevatorSetpoints() {
         return inputSupplier.get().getElevatorSetpoints();
@@ -58,7 +62,7 @@ public class MoInputTransforms implements MoInput {
 
     @Override
     public double getTurnRequest() {
-        return applyInputTransforms(
+        return applyTurnInputTransforms(
                 driveRotationLimiter.calculate(inputSupplier.get().getTurnRequest()));
     }
 

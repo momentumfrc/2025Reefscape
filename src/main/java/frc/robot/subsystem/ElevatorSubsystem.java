@@ -33,6 +33,8 @@ import frc.robot.molib.encoder.MoRotationEncoder;
 import frc.robot.molib.pid.MoSparkMaxArmPID;
 import frc.robot.molib.pid.MoSparkMaxElevatorPID;
 import frc.robot.molib.pid.MoSparkMaxPID;
+import frc.robot.molib.pid.MoTrapezoidArmController;
+import frc.robot.molib.pid.MoTrapezoidElevatorController;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.utils.MoUtils;
 import frc.robot.utils.TunerUtils;
@@ -68,17 +70,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private final MoSparkMaxElevatorPID elevatorVelocityPid;
     private final MoSparkMaxArmPID wristVelocityPid;
-    private final MoSparkMaxElevatorPID elevatorSmartMotionPid;
-    private final MoSparkMaxArmPID wristSmartMotionPid;
     private final MoSparkMaxElevatorPID elevatorPositionPid;
     private final MoSparkMaxArmPID wristPositionPid;
+    private final MoTrapezoidElevatorController elevatorTrapPid;
+    private final MoTrapezoidArmController wristTrapPid;
 
     private final PIDTuner elevatorVelTuner;
     private final PIDTuner wristVelTuner;
-    private final PIDTuner elevatorSmartPosTuner;
-    private final PIDTuner wristSmartPosTuner;
     private final PIDTuner elevatorPosTuner;
     private final PIDTuner wristPosTuner;
+    private final PIDTuner elevatorTrapPosTuner;
+    private final PIDTuner wristTrapPosTuner;
 
     public final SendableChooser<ElevatorControlMode> controlMode;
 
@@ -123,7 +125,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorRelEncoder =
                 MoDistanceEncoder.forSparkRelative(elevatorA.getEncoder(), Units.Centimeters, elevatorAConfig);
         wristRelEncoder =
-                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorAConfig);
+                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorWristConfig);
 
         elevatorAConfig.accept(config -> {
             config.softLimit
@@ -187,31 +189,30 @@ public class ElevatorSubsystem extends SubsystemBase {
                 wristRelEncoder,
                 this::getWristAngleFromHorizontal,
                 elevatorWristConfig);
-        elevatorSmartMotionPid = new MoSparkMaxElevatorPID(
-                MoSparkMaxPID.Type.SMARTMOTION, elevatorA, ClosedLoopSlot.kSlot1, elevatorRelEncoder, elevatorAConfig);
-        wristSmartMotionPid = new MoSparkMaxArmPID(
-                MoSparkMaxPID.Type.SMARTMOTION,
+        elevatorPositionPid = new MoSparkMaxElevatorPID(
+                MoSparkMaxPID.Type.POSITION, elevatorA, ClosedLoopSlot.kSlot1, elevatorRelEncoder, elevatorAConfig);
+        wristPositionPid = new MoSparkMaxArmPID(
+                MoSparkMaxPID.Type.POSITION,
                 elevatorWrist,
                 ClosedLoopSlot.kSlot1,
                 wristRelEncoder,
                 this::getWristAngleFromHorizontal,
                 elevatorWristConfig);
-        elevatorPositionPid = new MoSparkMaxElevatorPID(
-                MoSparkMaxPID.Type.POSITION, elevatorA, ClosedLoopSlot.kSlot2, elevatorRelEncoder, elevatorAConfig);
-        wristPositionPid = new MoSparkMaxArmPID(
-                MoSparkMaxPID.Type.POSITION,
-                elevatorWrist,
+        elevatorTrapPid = new MoTrapezoidElevatorController(
+                elevatorA.getClosedLoopController(), ClosedLoopSlot.kSlot2, elevatorRelEncoder, elevatorAConfig);
+        wristTrapPid = new MoTrapezoidArmController(
+                elevatorWrist.getClosedLoopController(),
                 ClosedLoopSlot.kSlot2,
-                wristRelEncoder,
-                this::getWristAngleFromHorizontal,
-                elevatorWristConfig);
+                wristAbsEncoder,
+                elevatorWristConfig,
+                this::getWristAngleFromHorizontal);
 
         elevatorVelTuner = TunerUtils.forMoSparkElevator(elevatorVelocityPid, "Elevator Vel.");
         wristVelTuner = TunerUtils.forMoSparkArm(wristVelocityPid, "Wrist Vel.");
-        elevatorSmartPosTuner = TunerUtils.forMoSparkElevator(elevatorSmartMotionPid, "Elevator Smart Pos.");
-        wristSmartPosTuner = TunerUtils.forMoSparkArm(wristSmartMotionPid, "Wrist Smart Pos.");
         elevatorPosTuner = TunerUtils.forMoSparkElevator(elevatorPositionPid, "Elevator Pos.");
         wristPosTuner = TunerUtils.forMoSparkArm(wristPositionPid, "Wrist Pos.");
+        elevatorTrapPosTuner = TunerUtils.forMoTrapezoidElevator(elevatorTrapPid, "Elevator Trap Pos.");
+        wristTrapPosTuner = TunerUtils.forMoTrapezoidArm(wristTrapPid, "Wrist Trap Pos.");
 
         MoShuffleboard.getInstance().elevatorTab.addDouble("Elevator Height (cm)", () -> getElevatorHeight()
                 .in(Units.Centimeters));
@@ -317,11 +318,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void moveForElevatorZeroing() {
         elevatorA.setVoltage(-1 * MoPrefs.elevatorZeroPower.get().in(Units.Volts));
 
+        var stowPos = ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW);
         switch (controlMode.getSelected()) {
             case SMARTMOTION:
+                wristTrapPid.setPositionReference(stowPos.wristAngle());
+                break;
             case RAW_POSITION_PID:
-                var stowPos = ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW);
-                wristSmartMotionPid.setPositionReference(stowPos.wristAngle());
+                wristPositionPid.setPositionReference(stowPos.wristAngle());
                 break;
             case DIRECT_VELOCITY:
                 wristVelocityPid.setVelocityReference(Units.RotationsPerSecond.zero());
@@ -362,23 +365,23 @@ public class ElevatorSubsystem extends SubsystemBase {
         boolean cutElevatorPower = position.elevatorDistance.isNear(Units.Centimeters.zero(), varianceThreshold)
                 && getElevatorHeight().isNear(Units.Centimeters.zero(), varianceThreshold);
 
-        MoSparkMaxElevatorPID currModeElevatorPid;
-        MoSparkMaxArmPID currModeWristPid;
+        Consumer<Distance> currModeElevatorPid;
+        Consumer<Angle> currModeWristPid;
 
         if (controlMode.getSelected() == ElevatorControlMode.SMARTMOTION) {
-            currModeElevatorPid = elevatorSmartMotionPid;
-            currModeWristPid = wristSmartMotionPid;
+            currModeElevatorPid = elevatorTrapPid::setPositionReference;
+            currModeWristPid = wristTrapPid::setPositionReference;
         } else {
-            currModeElevatorPid = elevatorPositionPid;
-            currModeWristPid = wristPositionPid;
+            currModeElevatorPid = elevatorPositionPid::setPositionReference;
+            currModeWristPid = wristPositionPid::setPositionReference;
         }
 
         if (cutElevatorPower) {
             elevatorA.setVoltage(0);
         } else {
-            currModeElevatorPid.setPositionReference(position.elevatorDistance);
+            currModeElevatorPid.accept(position.elevatorDistance);
         }
-        currModeWristPid.setPositionReference(position.wristAngle);
+        currModeWristPid.accept(position.wristAngle);
     }
 
     public boolean atPosition(ElevatorPosition position) {

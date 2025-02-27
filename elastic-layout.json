@@ -185,6 +185,19 @@
               "period": 0.06,
               "sort_options": false
             }
+          },
+          {
+            "title": "Score L1 preload?",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/Shuffleboard/Auto/Score L1 preload?",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
           }
         ]
       }

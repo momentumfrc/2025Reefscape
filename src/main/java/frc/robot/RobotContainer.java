@@ -17,11 +17,11 @@ import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.LEDCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
-import frc.robot.command.elevator.ElevatorCommands;
 import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
 import frc.robot.input.ControllerInput;
+import frc.robot.input.DualXboxControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
@@ -77,13 +77,10 @@ public class RobotContainer {
 
     private Trigger sysidTrigger;
 
-    private Trigger tuneElevatorPid;
-    private Trigger tuneWristPid;
-
     private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
-    private AutoChooser autoChooser = new AutoChooser(positioning, drive);
+    private AutoChooser autoChooser = new AutoChooser(positioning, drive, elevator, endEffector);
     private SendableChooser<Command> sysidChooser = new SendableChooser<>();
 
     private enum PidSubsystemToTune {
@@ -99,6 +96,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         inputChooser.setDefaultOption("Joystick + F310", new ControllerInput());
+        inputChooser.addOption("Dual Xbox Control", new DualXboxControllerInput());
 
         sysidChooser.setDefaultOption(
                 "Elevator", MoShuffleboard.getInstance().getSysidCommand(elevator::getElevatorSysidMechanism));
@@ -139,11 +137,6 @@ public class RobotContainer {
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
-        tuneElevatorPid = new Trigger(() ->
-                pidSubsystemChooser.getSelected() == PidSubsystemToTune.ELEVATOR && !DriverStation.isFMSAttached());
-        tuneWristPid = new Trigger(
-                () -> pidSubsystemChooser.getSelected() == PidSubsystemToTune.WRIST && !DriverStation.isFMSAttached());
-
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
@@ -151,9 +144,6 @@ public class RobotContainer {
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
         endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
         endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
-
-        tuneElevatorPid.whileTrue(ElevatorCommands.getTuneElevatorCommand(elevator));
-        tuneWristPid.whileTrue(ElevatorCommands.getTuneWristCommand(elevator));
 
         intakeDeployTrigger.whileTrue(LEDCommands.groundIntakePattern(ledsSubsystem));
 
