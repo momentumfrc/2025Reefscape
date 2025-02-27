@@ -378,7 +378,7 @@
   {
     "name": "/Preferences/End Effector Power (%)",
     "type": "double",
-    "value": 100.0,
+    "value": 65.0,
     "properties": {
       "persistent": true
     }
@@ -434,7 +434,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_wrist",
     "type": "double",
-    "value": 0.0250925961881876,
+    "value": 0.05,
     "properties": {
       "persistent": true
     }
@@ -547,6 +547,14 @@
     "name": "/Elevator_Setpoints/L3_wrist",
     "type": "double",
     "value": 0.04953715577721596,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Auto Extake Preload Time (s)",
+    "type": "double",
+    "value": 1.0,
     "properties": {
       "persistent": true
     }
