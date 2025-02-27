@@ -51,11 +51,11 @@ public class ControllerInput implements MoInput {
         double pov = elevatorController.getPOV();
         if (pov > 0) {
             if (elevatorController.getYButton()) {
-                return Optional.of(ElevatorSetpoint.L3);
+                return Optional.of(ElevatorSetpoint.L3_CORAL);
             } else if (elevatorController.getBButton()) {
-                return Optional.of(ElevatorSetpoint.L2);
+                return Optional.of(ElevatorSetpoint.L2_CORAL);
             } else if (elevatorController.getAButton()) {
-                return Optional.of(ElevatorSetpoint.L1);
+                return Optional.of(ElevatorSetpoint.L1_CORAL);
             }
         } else {
             if (elevatorController.getYButton()) {

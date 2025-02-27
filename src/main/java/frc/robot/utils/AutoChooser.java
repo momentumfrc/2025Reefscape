@@ -153,11 +153,11 @@ public class AutoChooser {
         if (shouldScoreL1Coral) {
             auto = new ZeroElevatorCommand(elevator)
                     .andThen(Commands.deadline(
-                            ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1)
+                            ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1_CORAL)
                                     .andThen(auto.asProxy())
                                     .andThen(EndEffectorCommands.exAlgaeInCoral(endEffector)
                                             .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
-                            ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1)));
+                            ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1_CORAL)));
         }
 
         return auto;

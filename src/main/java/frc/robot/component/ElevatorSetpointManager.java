@@ -12,9 +12,9 @@ public class ElevatorSetpointManager {
     public static enum ElevatorSetpoint {
         STOW,
         PROCESSOR,
-        L1,
-        L2,
-        L3,
+        L1_CORAL,
+        L2_CORAL,
+        L3_CORAL,
         CORAL_STATION
     };
 

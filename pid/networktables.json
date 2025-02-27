@@ -290,7 +290,7 @@
   {
     "name": "/Preferences/Elevator Setpoint Variance Threshold (%)",
     "type": "double",
-    "value": 3.0,
+    "value": 10.0,
     "properties": {
       "persistent": true
     }
@@ -504,7 +504,7 @@
     }
   },
   {
-    "name": "/Elevator_Setpoints/L1_elevator",
+    "name": "/Elevator_Setpoints/L1_CORAL_elevator",
     "type": "double",
     "value": 6.494342327117921,
     "properties": {
@@ -512,7 +512,7 @@
     }
   },
   {
-    "name": "/Elevator_Setpoints/L1_wrist",
+    "name": "/Elevator_Setpoints/L1_CORAL_wrist",
     "type": "double",
     "value": 0.04157421365380287,
     "properties": {
@@ -520,7 +520,7 @@
     }
   },
   {
-    "name": "/Elevator_Setpoints/L2_elevator",
+    "name": "/Elevator_Setpoints/L2_CORAL_elevator",
     "type": "double",
     "value": 11.735044479370117,
     "properties": {
@@ -528,15 +528,15 @@
     }
   },
   {
-    "name": "/Elevator_Setpoints/L2_wrist",
+    "name": "/Elevator_Setpoints/L2_CORAL_wrist",
     "type": "double",
-    "value": 0.025727516040205956,
+    "value": 0.035,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Elevator_Setpoints/L3_elevator",
+    "name": "/Elevator_Setpoints/L3_CORAL_elevator",
     "type": "double",
     "value": 21.696378707885742,
     "properties": {
@@ -544,7 +544,7 @@
     }
   },
   {
-    "name": "/Elevator_Setpoints/L3_wrist",
+    "name": "/Elevator_Setpoints/L3_CORAL_wrist",
     "type": "double",
     "value": 0.04953715577721596,
     "properties": {
