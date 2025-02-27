@@ -77,7 +77,7 @@ public class RobotContainer {
     private Trigger tuneWristPid;
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
-    private AutoChooser autoChooser = new AutoChooser(positioning, drive);
+    private AutoChooser autoChooser = new AutoChooser(positioning, drive, elevator, endEffector);
     private SendableChooser<Command> sysidChooser = new SendableChooser<>();
 
     private enum PidSubsystemToTune {

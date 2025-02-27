@@ -18,9 +18,14 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.command.EndEffectorCommands;
+import frc.robot.command.elevator.ElevatorCommands;
+import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.DriveSubsystem;
+import frc.robot.subsystem.ElevatorSubsystem;
+import frc.robot.subsystem.EndEffectorSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
 import java.util.List;
 
@@ -46,13 +51,22 @@ public class AutoChooser {
     private final SendableChooser<AutoChoices> autoChoicesChooser = MoShuffleboard.enumToChooser(AutoChoices.class);
     private final SendableChooser<InitialPosition> initialPositionChooser =
             MoShuffleboard.enumToChooser(InitialPosition.class);
+    private final GenericEntry shouldScoreL1Coral;
 
     private final PositioningSubsystem positioning;
     private final DriveSubsystem drive;
+    private final ElevatorSubsystem elevator;
+    private final EndEffectorSubsystem endEffector;
 
-    public AutoChooser(PositioningSubsystem positioning, DriveSubsystem drive) {
+    public AutoChooser(
+            PositioningSubsystem positioning,
+            DriveSubsystem drive,
+            ElevatorSubsystem elevator,
+            EndEffectorSubsystem endEffector) {
         this.positioning = positioning;
         this.drive = drive;
+        this.elevator = elevator;
+        this.endEffector = endEffector;
 
         masterAutoSwitch = MoShuffleboard.getInstance()
                 .autoTab
@@ -62,6 +76,12 @@ public class AutoChooser {
 
         MoShuffleboard.getInstance().autoTab.add("Auto Choices", autoChoicesChooser);
         MoShuffleboard.getInstance().autoTab.add("Initial Position", initialPositionChooser);
+
+        shouldScoreL1Coral = MoShuffleboard.getInstance()
+                .autoTab
+                .add("Score L1 preload?", false)
+                .withWidget(BuiltInWidgets.kToggleSwitch)
+                .getEntry();
     }
 
     private Command leaveFromPose(Pose2d initialPos, boolean assumeRobotAtPos) {
@@ -115,15 +135,28 @@ public class AutoChooser {
                 .withName("FallbackLeaveCommand");
     }
 
+    private Command scoreL1Preload() {
+        return Commands.deadline(
+                ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1)
+                        .andThen(EndEffectorCommands.inAlgaeExCoral(endEffector)
+                                .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
+                ElevatorCommands.moveToSetpoint(elevator, ElevatorSetpoint.L1));
+    }
+
     public Command getAutoCommand() {
         if (!masterAutoSwitch.getBoolean(true)) {
             return Commands.print("Autonomous disabled by master switch");
         }
 
-        return switch (autoChoicesChooser.getSelected()) {
-            case DYNAMIC_LEAVE -> dynamicLeave();
-            case INITIAL_POSITION_LEAVE -> leaveFromInitialPosition(initialPositionChooser.getSelected());
-            case FALLBACK_LEAVE -> fallbackLeave();
-        };
+        var driveCmd =
+                switch (autoChoicesChooser.getSelected()) {
+                    case DYNAMIC_LEAVE -> dynamicLeave();
+                    case INITIAL_POSITION_LEAVE -> leaveFromInitialPosition(initialPositionChooser.getSelected());
+                    case FALLBACK_LEAVE -> fallbackLeave();
+                };
+
+        var scoreCmd = Commands.either(scoreL1Preload(), Commands.none(), () -> shouldScoreL1Coral.getBoolean(false));
+
+        return driveCmd.andThen(scoreCmd);
     }
 }
