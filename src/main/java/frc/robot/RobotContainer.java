@@ -8,7 +8,6 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
-import frc.robot.command.elevator.ElevatorCommands;
 import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
@@ -73,9 +71,6 @@ public class RobotContainer {
 
     private Trigger sysidTrigger;
 
-    private Trigger tuneElevatorPid;
-    private Trigger tuneWristPid;
-
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive, elevator, endEffector);
     private SendableChooser<Command> sysidChooser = new SendableChooser<>();
@@ -126,11 +121,6 @@ public class RobotContainer {
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
-        tuneElevatorPid = new Trigger(() ->
-                pidSubsystemChooser.getSelected() == PidSubsystemToTune.ELEVATOR && !DriverStation.isFMSAttached());
-        tuneWristPid = new Trigger(
-                () -> pidSubsystemChooser.getSelected() == PidSubsystemToTune.WRIST && !DriverStation.isFMSAttached());
-
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
 
@@ -139,9 +129,6 @@ public class RobotContainer {
 
         endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
         endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
-
-        tuneElevatorPid.whileTrue(ElevatorCommands.getTuneElevatorCommand(elevator));
-        tuneWristPid.whileTrue(ElevatorCommands.getTuneWristCommand(elevator));
 
         sysidTrigger.whileTrue(
                 Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
