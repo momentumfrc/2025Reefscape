@@ -14,11 +14,12 @@ public class ElevatorCommands {
     }
 
     public static Command holdSetpoint(ElevatorSubsystem elevator, ElevatorSetpoint setpoint) {
-        return Commands.run(
-                        () -> elevator.adjustPosition(
-                                ElevatorSetpointManager.getInstance().getSetpoint(setpoint)),
-                        elevator)
-                .withName(String.format("HoldElevatorSetpoint(%s)", setpoint.name()));
+        return Commands.runOnce(() -> elevator.reZeroWrist(), elevator)
+                .andThen(Commands.run(
+                                () -> elevator.adjustPosition(
+                                        ElevatorSetpointManager.getInstance().getSetpoint(setpoint)),
+                                elevator)
+                        .withName(String.format("HoldElevatorSetpoint(%s)", setpoint.name())));
     }
 
     public static Command moveToSetpoint(ElevatorSubsystem elevator, ElevatorSetpoint setpoint) {
