@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.EndEffectorCommands;
-import frc.robot.command.LEDsCommand;
+import frc.robot.command.LEDCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
 import frc.robot.command.elevator.ElevatorCommands;
@@ -73,6 +73,8 @@ public class RobotContainer {
     private Trigger raiseElevatorTrigger;
     private Trigger lowerElevatorTrigger;
 
+    private Trigger wristInDangerTrigger;
+
     private Trigger sysidTrigger;
 
     private Trigger tuneElevatorPid;
@@ -80,11 +82,6 @@ public class RobotContainer {
 
     private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
-    private final LEDsCommand rainbowDefault = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.RAINBOW);
-    private final LEDsCommand intakeColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.GROUND_INTAKE);
-    private final LEDsCommand climberColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.CLIMBER);
-    private final LEDsCommand endEffectorColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.END_EFFECTOR);
-    private final LEDsCommand elevatorColor = new LEDsCommand(ledsSubsystem, LEDsSubsystem.LEDMode.ELEVATOR);
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive);
     private SendableChooser<Command> sysidChooser = new SendableChooser<>();
@@ -121,6 +118,7 @@ public class RobotContainer {
         intakeWrist.setDefaultCommand(intakeWristDefaultCommand);
         elevator.setDefaultCommand(elevatorCommand);
         endEffector.setDefaultCommand(endEffectorIdle);
+        ledsSubsystem.setDefaultCommand(LEDCommands.defaultPattern(ledsSubsystem));
     }
 
     private void configureBindings() {
@@ -136,6 +134,8 @@ public class RobotContainer {
                 new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() > 0);
         lowerElevatorTrigger =
                 new Trigger(() -> getInput().getElevatorMovementRequest().elevatorPower() < 0);
+
+        wristInDangerTrigger = new Trigger(() -> elevator.isWristInDanger() && DriverStation.isEnabled());
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
@@ -155,23 +155,17 @@ public class RobotContainer {
         tuneElevatorPid.whileTrue(ElevatorCommands.getTuneElevatorCommand(elevator));
         tuneWristPid.whileTrue(ElevatorCommands.getTuneWristCommand(elevator));
 
-        intakeDeployTrigger.onFalse(rainbowDefault);
-        intakeDeployTrigger.onTrue(intakeColor);
+        intakeDeployTrigger.whileTrue(LEDCommands.groundIntakePattern(ledsSubsystem));
 
-        extendClimberTrigger.whileFalse(rainbowDefault);
-        retractClimberTrigger.whileFalse(rainbowDefault);
-        extendClimberTrigger.whileTrue(climberColor);
-        retractClimberTrigger.whileTrue(climberColor);
+        retractClimberTrigger.or(extendClimberTrigger).whileTrue(LEDCommands.climberPattern(ledsSubsystem));
 
-        endEffectorExAlgaeInCoralTrigger.whileFalse(rainbowDefault);
-        endEffectorInAlgaeExCoralTrigger.whileFalse(rainbowDefault);
-        endEffectorExAlgaeInCoralTrigger.whileTrue(endEffectorColor);
-        endEffectorInAlgaeExCoralTrigger.whileTrue(endEffectorColor);
+        endEffectorInAlgaeExCoralTrigger
+                .or(endEffectorExAlgaeInCoralTrigger)
+                .whileTrue(LEDCommands.endEffectorPattern(ledsSubsystem));
 
-        raiseElevatorTrigger.whileFalse(rainbowDefault);
-        lowerElevatorTrigger.whileFalse(rainbowDefault);
-        raiseElevatorTrigger.whileTrue(elevatorColor);
-        lowerElevatorTrigger.whileTrue(elevatorColor);
+        raiseElevatorTrigger.or(lowerElevatorTrigger).whileTrue(LEDCommands.elevatorPattern(ledsSubsystem));
+
+        wristInDangerTrigger.whileTrue(LEDCommands.wristInDangerPattern(ledsSubsystem));
 
         sysidTrigger.whileTrue(
                 Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
