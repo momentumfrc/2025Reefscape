@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.elevator.ElevatorCommands;
+import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
 import frc.robot.molib.prefs.MoPrefs;
@@ -135,28 +136,30 @@ public class AutoChooser {
                 .withName("FallbackLeaveCommand");
     }
 
-    private Command scoreL1Preload() {
-        return Commands.deadline(
-                ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1)
-                        .andThen(EndEffectorCommands.inAlgaeExCoral(endEffector)
-                                .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
-                ElevatorCommands.moveToSetpoint(elevator, ElevatorSetpoint.L1));
-    }
-
     public Command getAutoCommand() {
         if (!masterAutoSwitch.getBoolean(true)) {
             return Commands.print("Autonomous disabled by master switch");
         }
 
-        var driveCmd =
+        var auto =
                 switch (autoChoicesChooser.getSelected()) {
                     case DYNAMIC_LEAVE -> dynamicLeave();
                     case INITIAL_POSITION_LEAVE -> leaveFromInitialPosition(initialPositionChooser.getSelected());
                     case FALLBACK_LEAVE -> fallbackLeave();
                 };
 
-        var scoreCmd = Commands.either(scoreL1Preload(), Commands.none(), () -> shouldScoreL1Coral.getBoolean(false));
+        boolean shouldScoreL1Coral = this.shouldScoreL1Coral.getBoolean(false);
 
-        return driveCmd.andThen(scoreCmd);
+        if (shouldScoreL1Coral) {
+            auto = new ZeroElevatorCommand(elevator)
+                    .andThen(Commands.deadline(
+                            ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1)
+                                    .andThen(auto.asProxy())
+                                    .andThen(EndEffectorCommands.exAlgaeInCoral(endEffector)
+                                            .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
+                            ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1)));
+        }
+
+        return auto;
     }
 }
