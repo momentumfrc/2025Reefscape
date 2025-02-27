@@ -64,7 +64,7 @@ public class DualXboxControllerInput implements MoInput {
             }
         } else {
             if (elevatorController.getYButton()) {
-                return Optional.of(ElevatorSetpoint.INTAKE);
+                return Optional.of(ElevatorSetpoint.CORAL_STATION);
             } else if (elevatorController.getBButton()) {
                 return Optional.of(ElevatorSetpoint.STOW);
             } else if (elevatorController.getAButton()) {

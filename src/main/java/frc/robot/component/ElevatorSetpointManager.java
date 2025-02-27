@@ -12,7 +12,6 @@ public class ElevatorSetpointManager {
     public static enum ElevatorSetpoint {
         STOW,
         PROCESSOR,
-        INTAKE,
         L1,
         L2,
         L3,
