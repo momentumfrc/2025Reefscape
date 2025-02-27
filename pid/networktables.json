@@ -130,7 +130,7 @@
   {
     "name": "/Preferences/Intake Hold Wrist Power (V)",
     "type": "double",
-    "value": 1.0,
+    "value": 0.35,
     "properties": {
       "persistent": true
     }
@@ -154,7 +154,7 @@
   {
     "name": "/Preferences/Intake Roller Velocity Threshold (R_s)",
     "type": "double",
-    "value": 20.0,
+    "value": 12.0,
     "properties": {
       "persistent": true
     }
@@ -234,7 +234,7 @@
   {
     "name": "/Preferences/Intake Roller Hold Power (V)",
     "type": "double",
-    "value": 9.0,
+    "value": 3.5,
     "properties": {
       "persistent": true
     }
@@ -242,7 +242,7 @@
   {
     "name": "/Preferences/Intake Wrist Soft Hold For Intake Power (V)",
     "type": "double",
-    "value": 0.2,
+    "value": 0.4,
     "properties": {
       "persistent": true
     }
@@ -386,7 +386,7 @@
   {
     "name": "/Preferences/Climber FWD Soft Limit",
     "type": "double",
-    "value": 60.5,
+    "value": 52.643062591552734,
     "properties": {
       "persistent": true
     }
@@ -426,7 +426,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_elevator",
     "type": "double",
-    "value": 8.0,
+    "value": 0.6801024675369263,
     "properties": {
       "persistent": true
     }
@@ -434,7 +434,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_wrist",
     "type": "double",
-    "value": 0.05,
+    "value": 0.0250925961881876,
     "properties": {
       "persistent": true
     }
@@ -483,6 +483,70 @@
     "name": "/Preferences/Input Turn Curve",
     "type": "double",
     "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/PROCESSOR_elevator",
+    "type": "double",
+    "value": 6.494342327117921,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/PROCESSOR_wrist",
+    "type": "double",
+    "value": 0.04157421365380287,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L1_elevator",
+    "type": "double",
+    "value": 6.494342327117921,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L1_wrist",
+    "type": "double",
+    "value": 0.04157421365380287,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L2_elevator",
+    "type": "double",
+    "value": 11.735044479370117,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L2_wrist",
+    "type": "double",
+    "value": 0.025727516040205956,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L3_elevator",
+    "type": "double",
+    "value": 21.696378707885742,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L3_wrist",
+    "type": "double",
+    "value": 0.04953715577721596,
     "properties": {
       "persistent": true
     }

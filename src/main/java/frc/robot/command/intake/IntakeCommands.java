@@ -57,6 +57,13 @@ public class IntakeCommands {
                 .withName("RetractThenHoldIntakeWristCommand");
     }
 
+    public static Command intakeExtakeOverrideCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
+        return Commands.parallel(
+            new MoveIntakeWristCommand(wrist, Direction.OUT).andThen(holdIntakeWristCommand(wrist, Direction.OUT)),
+            Commands.run(roller::rollerShoot, roller)
+        );
+    }
+
     private IntakeCommands() {
         throw new UnsupportedOperationException("IntakeCommands is a static class");
     }

@@ -102,4 +102,9 @@ public class DualXboxControllerInput implements MoInput {
     public double getClimberMoveRequest() {
         return (-1 * elevatorController.getLeftTriggerAxis()) + elevatorController.getRightTriggerAxis();
     }
+
+    @Override
+    public boolean getIntakeExtakeOverride() {
+        return false;
+    }
 }

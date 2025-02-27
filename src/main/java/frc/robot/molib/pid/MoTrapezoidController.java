@@ -10,7 +10,6 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.measure.MutDistance;
 import frc.robot.molib.encoder.MoEncoder;
 import java.util.function.Consumer;
 
@@ -118,7 +117,7 @@ public abstract class MoTrapezoidController<
     protected abstract double getFF(Measure<VDim> velSetpoint, Measure<VDim> nextVelSetpoint);
 
     public void setPositionReference(Measure<Dim> reference) {
-        if(!encoder.getPosition().isNear(reference, errorZone)) {
+        if (!encoder.getPosition().isNear(reference, errorZone)) {
             if (this.profile == null) {
                 this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(maxVel, maxAccel));
             }
@@ -147,6 +146,6 @@ public abstract class MoTrapezoidController<
         this.pidController.setReference(value, SparkBase.ControlType.kPosition, pidSlot, ff);
 
         this.lastFF = ff;
-        this.lastReference = posSetpoint.in(posUnit);;
+        this.lastReference = posSetpoint.in(posUnit);
     }
 }

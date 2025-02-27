@@ -113,4 +113,9 @@ public class MoInputTransforms implements MoInput {
     public boolean getIntake() {
         return inputSupplier.get().getIntake();
     }
+
+    @Override
+    public boolean getIntakeExtakeOverride() {
+        return inputSupplier.get().getIntakeExtakeOverride();
+    }
 }

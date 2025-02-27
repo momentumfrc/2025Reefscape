@@ -29,4 +29,6 @@ public interface MoInput {
     public abstract boolean getIntake();
 
     public abstract boolean getRunSysid();
+
+    public abstract boolean getIntakeExtakeOverride();
 }

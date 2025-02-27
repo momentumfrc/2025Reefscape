@@ -251,7 +251,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public boolean isWristInDanger() {
         return false;
         // TODO: Fix
-        //return wristRelEncoder.getPosition().lt(MoPrefs.wristNominalRevLimit.get());
+        // return wristRelEncoder.getPosition().lt(MoPrefs.wristNominalRevLimit.get());
     }
 
     public void disableWristNominalReverseLimit() {
@@ -372,7 +372,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if (controlMode.getSelected() == ElevatorControlMode.SMARTMOTION) {
             currModeElevatorPid = elevatorTrapPid::setPositionReference;
-            currModeWristPid = wristTrapPid::setPositionReference;
+            currModeWristPid = wristPositionPid::setPositionReference; //wristTrapPid::setPositionReference;
         } else {
             currModeElevatorPid = elevatorPositionPid::setPositionReference;
             currModeWristPid = wristPositionPid::setPositionReference;

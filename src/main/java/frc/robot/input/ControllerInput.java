@@ -38,7 +38,7 @@ public class ControllerInput implements MoInput {
 
     @Override
     public boolean getSaveElevatorSetpoint() {
-        return elevatorController.getStartButtonPressed();
+        return elevatorController.getStartButton();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ControllerInput implements MoInput {
     @Override
     public Optional<ElevatorSetpoint> getElevatorSetpoints() {
         double pov = elevatorController.getPOV();
-        if (pov == 0) {
+        if (pov > 0) {
             if (elevatorController.getYButton()) {
                 return Optional.of(ElevatorSetpoint.L3);
             } else if (elevatorController.getBButton()) {
@@ -96,5 +96,10 @@ public class ControllerInput implements MoInput {
     @Override
     public double getClimberMoveRequest() {
         return (-1 * elevatorController.getLeftTriggerAxis()) + elevatorController.getRightTriggerAxis();
+    }
+
+    @Override
+    public boolean getIntakeExtakeOverride() {
+        return driveController.getRawButton(2);
     }
 }

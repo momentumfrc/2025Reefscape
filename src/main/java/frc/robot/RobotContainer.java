@@ -66,6 +66,7 @@ public class RobotContainer {
     private final Command intakeWristDefaultCommand = IntakeCommands.intakeWristDefaultCommand(intakeWrist);
 
     private Trigger intakeDeployTrigger;
+    private Trigger intakeExtakeOverrideTrigger;
 
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
@@ -137,8 +138,11 @@ public class RobotContainer {
 
         sysidTrigger = new Trigger(() -> getInput().getRunSysid());
 
+        intakeExtakeOverrideTrigger = new Trigger(() -> getInput().getIntakeExtakeOverride());
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
-        intakeDeployTrigger.onFalse(teleopIntakeRetractCommand);
+        intakeExtakeOverrideTrigger.onTrue(IntakeCommands.intakeExtakeOverrideCommand(intakeWrist, intakeRoller));
+        intakeDeployTrigger.or(intakeExtakeOverrideTrigger).onFalse(teleopIntakeRetractCommand);
 
         extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
         retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
