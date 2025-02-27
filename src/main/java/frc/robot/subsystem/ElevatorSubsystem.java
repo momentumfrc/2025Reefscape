@@ -370,7 +370,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if (controlMode.getSelected() == ElevatorControlMode.SMARTMOTION) {
             currModeElevatorPid = elevatorTrapPid::setPositionReference;
-            currModeWristPid = wristPositionPid::setPositionReference; //wristTrapPid::setPositionReference;
+            currModeWristPid = wristPositionPid::setPositionReference; // wristTrapPid::setPositionReference;
         } else {
             currModeElevatorPid = elevatorPositionPid::setPositionReference;
             currModeWristPid = wristPositionPid::setPositionReference;

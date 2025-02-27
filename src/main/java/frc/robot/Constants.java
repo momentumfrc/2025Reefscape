@@ -35,6 +35,8 @@ public class Constants {
 
     public static final PWMPort leds = new PWMPort(1);
 
+    public static final int END_EFFECTOR_ROLLERS_PDH_PORT = 15;
+
     public static Path DATA_STORE_FILE;
 
     public static RobotConfig pathPlannerRobotConfig;
