@@ -82,7 +82,7 @@
   {
     "name": "/Preferences/SWRV Max Angular Speed (R_s)",
     "type": "double",
-    "value": 2.0,
+    "value": 1.5,
     "properties": {
       "persistent": true
     }
@@ -226,7 +226,7 @@
   {
     "name": "/Preferences/Auto Fallback Time (s)",
     "type": "double",
-    "value": 4.0,
+    "value": 6.0,
     "properties": {
       "persistent": true
     }
@@ -250,7 +250,7 @@
   {
     "name": "/Preferences/Drive Normal Ramp Time (s)",
     "type": "double",
-    "value": 0.05,
+    "value": 0.1,
     "properties": {
       "persistent": true
     }
@@ -258,7 +258,7 @@
   {
     "name": "/Preferences/Drive Elevator Extended Ramp Time (s)",
     "type": "double",
-    "value": 0.05,
+    "value": 0.1,
     "properties": {
       "persistent": true
     }
@@ -338,7 +338,7 @@
   {
     "name": "/Preferences/Wrist Max Extension (R)",
     "type": "double",
-    "value": 0.15,
+    "value": 0.25,
     "properties": {
       "persistent": true
     }
@@ -378,7 +378,7 @@
   {
     "name": "/Preferences/End Effector Power (%)",
     "type": "double",
-    "value": 65.0,
+    "value": 75.0,
     "properties": {
       "persistent": true
     }
@@ -442,7 +442,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_elevator",
     "type": "double",
-    "value": 0.0,
+    "value": 12.0,
     "properties": {
       "persistent": true
     }
@@ -450,7 +450,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_wrist",
     "type": "double",
-    "value": 0.0,
+    "value": 0.005,
     "properties": {
       "persistent": true
     }
@@ -555,6 +555,70 @@
     "name": "/Preferences/Auto Extake Preload Time (s)",
     "type": "double",
     "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber Max Power (%)",
+    "type": "double",
+    "value": 25.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Intake Roller Probe Power (V)",
+    "type": "double",
+    "value": 5.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L2_ALGAE_elevator",
+    "type": "double",
+    "value": 11.735044,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L2_ALGAE_wrist",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L1_ALGAE_elevator",
+    "type": "double",
+    "value": 6.494342,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L1_ALGAE_wrist",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L3_ALGAE_elevator",
+    "type": "double",
+    "value": 21.696379,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Elevator_Setpoints/L3_ALGAE_wrist",
+    "type": "double",
+    "value": 0.1,
     "properties": {
       "persistent": true
     }
