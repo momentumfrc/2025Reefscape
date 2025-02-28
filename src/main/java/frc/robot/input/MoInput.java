@@ -10,6 +10,8 @@ public interface MoInput {
 
     public abstract Vec2 getMoveRequest();
 
+    public abstract boolean getDriveRobotOriented();
+
     public abstract double getTurnRequest();
 
     public abstract boolean getReZeroGyro();

@@ -64,6 +64,10 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         roller.setVoltage(-1 * MoPrefs.intakeRollerPower.get().in(Units.Volts));
     }
 
+    public void rollerProbe() {
+        roller.setVoltage(-1 * MoPrefs.intakeRollerProbePower.get().in(Units.Volts));
+    }
+
     public void holdBall() {
         roller.setVoltage(MoPrefs.intakeRollerHoldPower.get().in(Units.Volts));
     }

@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import java.util.logging.LogManager;
-
 import com.momentum4999.motune.PIDTuner;
 import com.pathplanner.lib.commands.FollowPathCommand;
-
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.util.datalog.IntegerLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;

@@ -111,6 +111,8 @@ public class MoPrefs {
     public static final Pref<Double> climberRvsSoftLimit = unitlessDoublePref("Climber RVS Soft Limit", 0.1);
     public static final DimensionlessUnitPref climberZeroPwr = percentPref("Climber Zero Power", Units.Percent.of(10));
 
+    public static final DimensionlessUnitPref climberMaxPwr = percentPref("Climber Max Power", Units.Percent.of(75));
+
     // ---------- Intake ----------
     public static final UnitPref<VoltageUnit> intakeWristPower = voltsPref("Intake Wrist Power", Units.Volts.of(8));
     public static final UnitPref<VoltageUnit> intakeRollerPower = voltsPref("Intake Roller Power", Units.Volts.of(10));
@@ -137,6 +139,8 @@ public class MoPrefs {
             secondsPref("Intake Roller Threshold Time", Units.Seconds.of(0.5));
     public static final TimeUnitPref intakeRollerExtakeTime =
             secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
+
+    public static final UnitPref<VoltageUnit> intakeRollerProbePower = voltsPref("Intake Roller Probe Power", Units.Volts.of(3));
 
     // ---------- Auto ----------
     public static final LinearVelocityUnitPref autoMaxLinVel =

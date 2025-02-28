@@ -2,6 +2,7 @@ package frc.robot.utils;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.units.Units;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.MoInput;
 import frc.robot.molib.prefs.MoPrefs;
@@ -67,6 +68,11 @@ public class MoInputTransforms implements MoInput {
     }
 
     @Override
+    public boolean getDriveRobotOriented() {
+        return inputSupplier.get().getDriveRobotOriented();
+    }
+
+    @Override
     public boolean getReZeroGyro() {
         return inputSupplier.get().getReZeroGyro();
     }
@@ -106,7 +112,9 @@ public class MoInputTransforms implements MoInput {
 
     @Override
     public double getClimberMoveRequest() {
-        return inputSupplier.get().getClimberMoveRequest();
+        double value = inputSupplier.get().getClimberMoveRequest();
+        double maxPwr = MoPrefs.climberMaxPwr.get().in(Units.Value);
+        return Math.signum(value) * MathUtil.interpolate(0, maxPwr, Math.abs(value));
     }
 
     @Override

@@ -32,6 +32,11 @@ public class DualXboxControllerInput implements MoInput {
     }
 
     @Override
+    public boolean getDriveRobotOriented() {
+        return false;
+    }
+
+    @Override
     public double getTurnRequest() {
         return -1 * driveController.getRightX() * getThrottle();
     }

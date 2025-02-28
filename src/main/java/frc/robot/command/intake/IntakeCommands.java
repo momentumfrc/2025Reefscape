@@ -60,7 +60,7 @@ public class IntakeCommands {
     public static Command intakeExtakeOverrideCommand(IntakeWristSubsystem wrist, IntakeRollerSubsystem roller) {
         return Commands.parallel(
                 new MoveIntakeWristCommand(wrist, Direction.OUT).andThen(holdIntakeWristCommand(wrist, Direction.OUT)),
-                Commands.run(roller::rollerShoot, roller));
+                Commands.run(roller::rollerProbe, roller));
     }
 
     private IntakeCommands() {

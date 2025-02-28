@@ -27,6 +27,11 @@ public class ControllerInput implements MoInput {
     }
 
     @Override
+    public boolean getDriveRobotOriented() {
+        return driveController.getRawButton(3);
+    }
+
+    @Override
     public double getTurnRequest() {
         return -1 * driveController.getZ() * getThrottle();
     }
@@ -43,13 +48,21 @@ public class ControllerInput implements MoInput {
 
     @Override
     public ElevatorMovementRequest getElevatorMovementRequest() {
-        return new ElevatorMovementRequest(elevatorController.getLeftY(), elevatorController.getRightY());
+        return new ElevatorMovementRequest(-1 * elevatorController.getLeftY(), elevatorController.getRightY());
     }
 
     @Override
     public Optional<ElevatorSetpoint> getElevatorSetpoints() {
         double pov = elevatorController.getPOV();
-        if (pov > 0) {
+        if(pov > 90 && pov < 270) {
+            if (elevatorController.getYButton()) {
+                return Optional.of(ElevatorSetpoint.L3_ALGAE);
+            } else if (elevatorController.getBButton()) {
+                return Optional.of(ElevatorSetpoint.L2_ALGAE);
+            } else if (elevatorController.getAButton()) {
+                return Optional.of(ElevatorSetpoint.L1_ALGAE);
+            }
+        } else if (pov >= 0) {
             if (elevatorController.getYButton()) {
                 return Optional.of(ElevatorSetpoint.L3_CORAL);
             } else if (elevatorController.getBButton()) {

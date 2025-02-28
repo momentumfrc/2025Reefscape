@@ -15,6 +15,9 @@ public class ElevatorSetpointManager {
         L1_CORAL,
         L2_CORAL,
         L3_CORAL,
+        L1_ALGAE,
+        L2_ALGAE,
+        L3_ALGAE,
         CORAL_STATION
     };
 

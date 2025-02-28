@@ -32,7 +32,8 @@ public class TeleopDriveCommand extends Command {
         Vec2 moveRequest = input.getMoveRequest();
         double turnRequest = input.getTurnRequest();
 
-        Rotation2d foHeading = positioning.getFieldOrientedDriveHeading();
+        Rotation2d foHeading =
+                input.getDriveRobotOriented() ? Rotation2d.kZero : positioning.getFieldOrientedDriveHeading();
 
         drive.driveCartesian(moveRequest.getY(), moveRequest.getX(), turnRequest, foHeading);
     }
