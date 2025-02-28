@@ -22,12 +22,14 @@ public class MoTrapezoidArmController
     private ArmFeedforward armFF;
 
     public MoTrapezoidArmController(
+            String name,
             SparkClosedLoopController pidController,
             ClosedLoopSlot pidSlot,
             MoRotationEncoder encoder,
             Consumer<Consumer<SparkBaseConfig>> configurator,
             Supplier<Angle> getAngleFromHorizontal) {
         super(
+                name,
                 pidController,
                 pidSlot,
                 encoder,

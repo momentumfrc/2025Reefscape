@@ -200,8 +200,13 @@ public class ElevatorSubsystem extends SubsystemBase {
                 this::getWristAngleFromHorizontal,
                 elevatorWristConfig);
         elevatorTrapPid = new MoTrapezoidElevatorController(
-                elevatorA.getClosedLoopController(), ClosedLoopSlot.kSlot2, elevatorRelEncoder, elevatorAConfig);
+                "Elevator",
+                elevatorA.getClosedLoopController(),
+                ClosedLoopSlot.kSlot2,
+                elevatorRelEncoder,
+                elevatorAConfig);
         wristTrapPid = new MoTrapezoidArmController(
+                "Wrist",
                 elevatorWrist.getClosedLoopController(),
                 ClosedLoopSlot.kSlot2,
                 wristAbsEncoder,

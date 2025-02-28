@@ -10,6 +10,9 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
+import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.IntegerLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import frc.robot.molib.encoder.MoEncoder;
 import java.util.function.Consumer;
 
@@ -38,8 +41,11 @@ public abstract class MoTrapezoidController<
 
     private MutableMeasure<Dim, ?, ?> errorZone;
 
+    private IntegerLogEntry loopTimeLog;
+
     @SuppressWarnings("unchecked")
     public MoTrapezoidController(
+            String name,
             SparkClosedLoopController pidController,
             ClosedLoopSlot pidSlot,
             MoEncoder<Dim, VDim> encoder,
@@ -62,6 +68,8 @@ public abstract class MoTrapezoidController<
         configurator.accept(config -> config.closedLoop.velocityFF(0));
 
         errorZone = (MutableMeasure<Dim, ?, ?>) posUnit.mutable(0);
+
+        loopTimeLog = new IntegerLogEntry(DataLogManager.getLog(), "/Time/Trapezoid/" + name);
     }
 
     public double getLastFF() {
@@ -117,6 +125,8 @@ public abstract class MoTrapezoidController<
     protected abstract double getFF(Measure<VDim> velSetpoint, Measure<VDim> nextVelSetpoint);
 
     public void setPositionReference(Measure<Dim> reference) {
+        long time = WPIUtilJNI.getSystemTime();
+
         if (!encoder.getPosition().isNear(reference, errorZone)) {
             if (this.profile == null) {
                 this.profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(maxVel, maxAccel));
@@ -147,5 +157,8 @@ public abstract class MoTrapezoidController<
 
         this.lastFF = ff;
         this.lastReference = posSetpoint.in(posUnit);
+
+        time = WPIUtilJNI.getSystemTime() - time;
+        loopTimeLog.append(time);
     }
 }

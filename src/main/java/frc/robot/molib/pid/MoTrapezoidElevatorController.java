@@ -19,11 +19,13 @@ public class MoTrapezoidElevatorController
     private ElevatorFeedforward elevatorFF;
 
     public MoTrapezoidElevatorController(
+            String name,
             SparkClosedLoopController pidController,
             ClosedLoopSlot pidSlot,
             MoDistanceEncoder encoder,
             Consumer<Consumer<SparkBaseConfig>> configurator) {
         super(
+                name,
                 pidController,
                 pidSlot,
                 encoder,

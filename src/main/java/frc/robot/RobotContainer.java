@@ -8,6 +8,8 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -94,6 +96,9 @@ public class RobotContainer {
     private final MoInput input;
 
     public RobotContainer() {
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
+
         inputChooser.setDefaultOption("Joystick + F310", new ControllerInput());
         inputChooser.addOption("Dual Xbox Control", new DualXboxControllerInput());
 

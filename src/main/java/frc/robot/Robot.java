@@ -4,8 +4,14 @@
 
 package frc.robot;
 
+import java.util.logging.LogManager;
+
 import com.momentum4999.motune.PIDTuner;
 import com.pathplanner.lib.commands.FollowPathCommand;
+
+import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.IntegerLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,8 +22,11 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
+    private IntegerLogEntry commandSchedulerRunTime;
+
     public Robot() {
         m_robotContainer = new RobotContainer();
+        commandSchedulerRunTime = new IntegerLogEntry(DataLogManager.getLog(), "/Time/CommandScheduler");
     }
 
     @Override
@@ -28,7 +37,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        long time = WPIUtilJNI.getSystemTime();
         CommandScheduler.getInstance().run();
+        time = WPIUtilJNI.getSystemTime() - time;
+        commandSchedulerRunTime.append(time);
 
         PIDTuner.pollAllStateValues();
     }
