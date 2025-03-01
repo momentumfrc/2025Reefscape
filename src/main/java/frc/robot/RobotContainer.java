@@ -11,7 +11,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,7 +41,7 @@ import frc.robot.utils.MoInputTransforms;
 
 public class RobotContainer {
     private AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
-    private PowerDistribution pdh = new PowerDistribution();
+    // private PowerDistribution pdh = new PowerDistribution();
 
     private DriveSubsystem drive = new DriveSubsystem();
     private PositioningSubsystem positioning = new PositioningSubsystem(gyro, drive);
@@ -117,9 +116,9 @@ public class RobotContainer {
         MoShuffleboard.getInstance().settingsTab.add("Sysid Mechanism", sysidChooser);
         MoShuffleboard.getInstance().settingsTab.add("Pid Subsystem to Tune", pidSubsystemChooser);
 
-        MoShuffleboard.getInstance()
-                .elevatorTab
-                .addDouble("End Effector Current", () -> pdh.getCurrent(Constants.END_EFFECTOR_ROLLERS_PDH_PORT));
+        // MoShuffleboard.getInstance()
+        //         .elevatorTab
+        //         .addDouble("End Effector Current", () -> pdh.getCurrent(Constants.END_EFFECTOR_ROLLERS_PDH_PORT));
 
         input = new MoInputTransforms(inputChooser::getSelected, this::getDriveSlewRate);
 
