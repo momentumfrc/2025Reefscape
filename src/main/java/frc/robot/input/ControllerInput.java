@@ -54,7 +54,7 @@ public class ControllerInput implements MoInput {
     @Override
     public Optional<ElevatorSetpoint> getElevatorSetpoints() {
         double pov = elevatorController.getPOV();
-        if(pov > 90 && pov < 270) {
+        if (pov > 90 && pov < 270) {
             if (elevatorController.getYButton()) {
                 return Optional.of(ElevatorSetpoint.L3_ALGAE);
             } else if (elevatorController.getBButton()) {

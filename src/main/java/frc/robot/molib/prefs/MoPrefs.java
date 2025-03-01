@@ -140,7 +140,8 @@ public class MoPrefs {
     public static final TimeUnitPref intakeRollerExtakeTime =
             secondsPref("Intake Roller Extake Time", Units.Seconds.of(0.75));
 
-    public static final UnitPref<VoltageUnit> intakeRollerProbePower = voltsPref("Intake Roller Probe Power", Units.Volts.of(3));
+    public static final UnitPref<VoltageUnit> intakeRollerProbePower =
+            voltsPref("Intake Roller Probe Power", Units.Volts.of(3));
 
     // ---------- Auto ----------
     public static final LinearVelocityUnitPref autoMaxLinVel =

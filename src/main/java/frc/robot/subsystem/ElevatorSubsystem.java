@@ -52,8 +52,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public static enum ElevatorControlMode {
         SMARTMOTION,
-        RAW_POSITION_PID,
         DIRECT_VELOCITY,
+        RAW_POSITION_PID,
         FALLBACK_DIRECT_POWER
     };
 
