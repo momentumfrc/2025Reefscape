@@ -24,7 +24,7 @@ public class RollerExtakeAlgaeCommand extends Command {
 
     @Override
     public void execute() {
-        this.roller.rollerShoot();
+        this.roller.rollerProbe();
     }
 
     @Override
