@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.elevator.ElevatorCommands;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
@@ -155,7 +154,11 @@ public class AutoChooser {
                     .andThen(Commands.deadline(
                             ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1_CORAL)
                                     .andThen(auto.asProxy())
-                                    .andThen(EndEffectorCommands.exAlgaeInCoral(endEffector)
+                                    .andThen(Commands.run(
+                                                    () -> endEffector.setEndEffector(-MoPrefs.autoExtakeCoralPower
+                                                            .get()
+                                                            .in(Units.Value)),
+                                                    endEffector)
                                             .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
                             ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1_CORAL)));
         }

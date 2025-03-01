@@ -158,6 +158,8 @@ public class MoPrefs {
     public static final TimeUnitPref autoFallbackTime = secondsPref("Auto Fallback Time", Units.Seconds.of(4));
     public static final TimeUnitPref autoExtakePreloadTime =
             secondsPref("Auto Extake Preload Time", Units.Seconds.of(1));
+    public static final DimensionlessUnitPref autoExtakeCoralPower =
+            percentPref("Auto Extake Coral Power", Units.Percent.of(80));
 
     public static final DimensionlessUnitPref ledBrightness = percentPref("LED Brightness", Units.Percent.of(20));
 

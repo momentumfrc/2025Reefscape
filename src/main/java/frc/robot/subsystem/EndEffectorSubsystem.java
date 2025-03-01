@@ -29,6 +29,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 ControlMode.PercentOutput, -MoPrefs.endEffectorPower.get().in(Units.Value));
     }
 
+    public void setEndEffector(double power) {
+        endEffector.set(ControlMode.PercentOutput, power);
+    }
+
     public void endEffectorStop() {
         endEffector.set(ControlMode.PercentOutput, 0);
     }
