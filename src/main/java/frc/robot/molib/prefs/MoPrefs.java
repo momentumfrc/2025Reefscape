@@ -99,6 +99,8 @@ public class MoPrefs {
     public static final DimensionlessUnitPref endEffectorPower =
             percentPref("End Effector Power", Units.Percent.of(20));
 
+    public static final TimeUnitPref wristRampTime = secondsPref("Wrist Ramp Time", Units.Seconds.of(0.2));
+
     // ---------- Climber ----------
     public static final TimeUnitPref climberRachetLockoutTime =
             secondsPref("Climber Rachet Lockout", Units.Seconds.of(0.5));

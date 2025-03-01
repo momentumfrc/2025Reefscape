@@ -338,7 +338,7 @@
   {
     "name": "/Preferences/Wrist Max Extension (R)",
     "type": "double",
-    "value": 0.25,
+    "value": 0.15,
     "properties": {
       "persistent": true
     }
@@ -619,6 +619,22 @@
     "name": "/Elevator_Setpoints/L3_ALGAE_wrist",
     "type": "double",
     "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Auto Extake Coral Power (%)",
+    "type": "double",
+    "value": 100.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Wrist Ramp Time (s)",
+    "type": "double",
+    "value": 0.8,
     "properties": {
       "persistent": true
     }
