@@ -7,6 +7,7 @@ package frc.robot;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,6 +27,7 @@ import frc.robot.input.ControllerInput;
 import frc.robot.input.DualXboxControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
@@ -78,11 +80,16 @@ public class RobotContainer {
 
     private Trigger sysidTrigger;
 
+    private Trigger burnSparksTrigger;
+
     private final LEDsSubsystem ledsSubsystem = new LEDsSubsystem();
 
     private SendableChooser<MoInput> inputChooser = new SendableChooser<>();
     private AutoChooser autoChooser = new AutoChooser(positioning, drive, elevator, endEffector);
     private SendableChooser<Command> sysidChooser = new SendableChooser<>();
+
+    private final GenericEntry burnSparks =
+            MoShuffleboard.getInstance().settingsTab.add("Burn sparks?", false).getEntry();
 
     private enum PidSubsystemToTune {
         NONE,
@@ -142,6 +149,8 @@ public class RobotContainer {
 
         intakeExtakeOverrideTrigger = new Trigger(() -> getInput().getIntakeExtakeOverride());
 
+        burnSparksTrigger = new Trigger(() -> burnSparks.getBoolean(false));
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeExtakeOverrideTrigger.onTrue(IntakeCommands.intakeExtakeOverrideCommand(intakeWrist, intakeRoller));
         intakeDeployTrigger.or(intakeExtakeOverrideTrigger).onFalse(teleopIntakeRetractCommand);
@@ -163,6 +172,9 @@ public class RobotContainer {
 
         sysidTrigger.whileTrue(
                 Commands.print("STARTING SYSID...").andThen(Commands.deferredProxy(sysidChooser::getSelected)));
+
+        burnSparksTrigger.onTrue(
+                Commands.runOnce(MoSparkConfigurator::persistAllParameters).ignoringDisable(true));
     }
 
     private double getDriveSlewRate() {

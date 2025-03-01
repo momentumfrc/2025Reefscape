@@ -26,6 +26,13 @@ public class MoSparkConfigurator implements Consumer<Consumer<SparkBaseConfig>> 
         resetSafeParameters();
     }
 
+    public static void persistAllParameters() {
+        DriverStation.reportWarning("Persisting spark configurations", false);
+        for(MoSparkConfigurator c : instances.values()) {
+            c.persistConfiguration();
+        }
+    }
+
     public static MoSparkConfigurator forSparkMax(SparkMax spark) {
         return instances.computeIfAbsent(spark, s -> new MoSparkConfigurator(s, new SparkMaxConfig()));
     }
