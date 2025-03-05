@@ -190,7 +190,10 @@ public class RobotContainer {
     }
 
     private double getMaxThrottle() {
-        // TODO: Check for zero
+        if (!climber.isZeroed()) {
+            return 1;
+        }
+
         double climberRetractedZone = MoPrefs.climberRetractedZone.get();
         double climberPos = (climber.getClimberPosition() - climberRetractedZone)
                 / (MoPrefs.climberFwdSoftLimit.get() - climberRetractedZone);
