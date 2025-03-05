@@ -120,7 +120,7 @@ public class RobotContainer {
         //         .elevatorTab
         //         .addDouble("End Effector Current", () -> pdh.getCurrent(Constants.END_EFFECTOR_ROLLERS_PDH_PORT));
 
-        input = new MoInputTransforms(inputChooser::getSelected, this::getDriveSlewRate);
+        input = new MoInputTransforms(inputChooser::getSelected, this::getDriveSlewRate, this::getMaxThrottle);
 
         configureBindings();
 
@@ -184,6 +184,14 @@ public class RobotContainer {
                 MoPrefs.driveRampTimeElevatorExtended.get().in(Units.Seconds),
                 elevatorExtensionPercent);
         return 1.0 / rampTime;
+    }
+
+    private double getMaxThrottle() {
+        double climberRetractedZone = MoPrefs.climberRetractedZone.get();
+        double climberPos = (climber.getClimberPosition() - climberRetractedZone)
+                / (MoPrefs.climberFwdSoftLimit.get() - climberRetractedZone);
+        return MathUtil.interpolate(
+                1, MoPrefs.driveMaxThrottleClimberExtended.get().in(Units.Value), climberPos);
     }
 
     public Command getAutonomousCommand() {

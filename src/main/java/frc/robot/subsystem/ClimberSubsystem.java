@@ -161,6 +161,10 @@ public class ClimberSubsystem extends SubsystemBase {
         return reverseLimitSwitch.isPressed();
     }
 
+    public double getClimberPosition() {
+        return encoder.getPosition();
+    }
+
     @Override
     public void periodic() {
         if (currRachetState != null) {

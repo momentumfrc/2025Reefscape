@@ -8,20 +8,26 @@ import frc.robot.input.MoInput;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class MoInputTransforms implements MoInput {
     private final Supplier<MoInput> inputSupplier;
+    private final DoubleSupplier maxThrottleSupplier;
 
-    private VariableSlewRateLimiter driveTranslationLimiter;
-    private VariableSlewRateLimiter driveRotationLimiter;
+    private final VariableSlewRateLimiter driveTranslationLimiter;
+    private final VariableSlewRateLimiter driveRotationLimiter;
     private SlewRateLimiter elevatorLimiter;
     private SlewRateLimiter wristLimiter;
 
     private Vec2 mutMoveRequest = new Vec2(0, 0);
 
-    public MoInputTransforms(Supplier<MoInput> inputSupplier, Supplier<Double> driveSlewRateSupplier) {
+    public MoInputTransforms(
+            Supplier<MoInput> inputSupplier,
+            Supplier<Double> driveSlewRateSupplier,
+            DoubleSupplier maxThrottleSupplier) {
         this.inputSupplier = inputSupplier;
+        this.maxThrottleSupplier = maxThrottleSupplier;
 
         driveTranslationLimiter = new VariableSlewRateLimiter(driveSlewRateSupplier);
         driveRotationLimiter = new VariableSlewRateLimiter(driveSlewRateSupplier);
@@ -56,6 +62,7 @@ public class MoInputTransforms implements MoInput {
         double norm = mutMoveRequest.normalize();
         norm = applyInputTransforms(norm);
         norm = driveTranslationLimiter.calculate(norm);
+        norm *= this.maxThrottleSupplier.getAsDouble();
         mutMoveRequest.scale(norm);
 
         return mutMoveRequest;
@@ -64,7 +71,8 @@ public class MoInputTransforms implements MoInput {
     @Override
     public double getTurnRequest() {
         return applyTurnInputTransforms(
-                driveRotationLimiter.calculate(inputSupplier.get().getTurnRequest()));
+                        driveRotationLimiter.calculate(inputSupplier.get().getTurnRequest()))
+                * maxThrottleSupplier.getAsDouble();
     }
 
     @Override

@@ -61,6 +61,9 @@ public class MoPrefs {
     public static final AngularVelocityUnitPref swerveMaxAngularSpeed =
             rotationsPerSecPref("SWRV Max Angular Speed", Units.RotationsPerSecond.of(1));
 
+    public static final DimensionlessUnitPref driveMaxThrottleClimberExtended =
+            percentPref("SWRV Max Throttle Climber Extended", Units.Percent.of(30));
+
     // ---------- Elevator ----------
     public static final Pref<Double> elevatorRampTime = unitlessDoublePref("Elevator Ramp Time", 0.15);
 
@@ -112,6 +115,7 @@ public class MoPrefs {
     public static final Pref<Double> climberFwdSoftLimit = unitlessDoublePref("Climber FWD Soft Limit", 10);
     public static final Pref<Double> climberRvsSoftLimit = unitlessDoublePref("Climber RVS Soft Limit", 0.1);
     public static final DimensionlessUnitPref climberZeroPwr = percentPref("Climber Zero Power", Units.Percent.of(10));
+    public static final Pref<Double> climberRetractedZone = unitlessDoublePref("Climber Retracted Zone", 5);
 
     public static final DimensionlessUnitPref climberMaxPwr = percentPref("Climber Max Power", Units.Percent.of(75));
 
