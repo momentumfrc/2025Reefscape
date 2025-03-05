@@ -148,7 +148,10 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .reverseSoftLimitEnabled(true)
                     .forwardSoftLimit(MoPrefs.wristMaxExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
                     .forwardSoftLimitEnabled(true);
-            config.closedLoopRampRate(MoPrefs.wristRampTime.get().in(Units.Seconds)).inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(WRIST_CURRENT_LIMIT);
+            config.closedLoopRampRate(MoPrefs.wristRampTime.get().in(Units.Seconds))
+                    .inverted(true)
+                    .idleMode(IdleMode.kBrake)
+                    .smartCurrentLimit(WRIST_CURRENT_LIMIT);
         });
 
         // TODO: this syntax sucks. Make a nice MoTables wrapper
@@ -173,7 +176,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 config -> config.softLimit.reverseSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
         MoPrefs.wristMaxExtension.subscribe(value -> elevatorWristConfig.accept(
                 config -> config.softLimit.forwardSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
-        MoPrefs.wristRampTime.subscribe(value -> elevatorWristConfig.accept(config -> config.closedLoopRampRate(value.in(Units.Seconds))));
+        MoPrefs.wristRampTime.subscribe(
+                value -> elevatorWristConfig.accept(config -> config.closedLoopRampRate(value.in(Units.Seconds))));
 
         MoPrefs.elevatorEncoderScale.subscribe(value -> elevatorRelEncoder.setConversionFactor(value), true);
 
