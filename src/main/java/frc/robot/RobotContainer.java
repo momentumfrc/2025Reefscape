@@ -77,6 +77,8 @@ public class RobotContainer {
 
     private Trigger wristInDangerTrigger;
 
+    private Trigger climberSlowedTrigger;
+
     private Trigger sysidTrigger;
 
     private Trigger burnSparksTrigger;
@@ -150,6 +152,8 @@ public class RobotContainer {
 
         burnSparksTrigger = new Trigger(() -> burnSparks.getBoolean(false));
 
+        climberSlowedTrigger = new Trigger(() -> getMaxThrottle() < 0.95);
+
         intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
         intakeExtakeOverrideTrigger.onTrue(IntakeCommands.intakeExtakeOverrideCommand(intakeWrist, intakeRoller));
         intakeDeployTrigger.or(intakeExtakeOverrideTrigger).onFalse(teleopIntakeRetractCommand);
@@ -160,8 +164,7 @@ public class RobotContainer {
         endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
 
         intakeDeployTrigger.whileTrue(LEDCommands.groundIntakePattern(ledsSubsystem));
-
-        retractClimberTrigger.or(extendClimberTrigger).whileTrue(LEDCommands.climberPattern(ledsSubsystem));
+        climberSlowedTrigger.whileTrue(LEDCommands.climberSlowedPattern(ledsSubsystem));
 
         endEffectorInAlgaeExCoralTrigger
                 .or(endEffectorExAlgaeInCoralTrigger)
@@ -187,6 +190,7 @@ public class RobotContainer {
     }
 
     private double getMaxThrottle() {
+        // TODO: Check for zero
         double climberRetractedZone = MoPrefs.climberRetractedZone.get();
         double climberPos = (climber.getClimberPosition() - climberRetractedZone)
                 / (MoPrefs.climberFwdSoftLimit.get() - climberRetractedZone);

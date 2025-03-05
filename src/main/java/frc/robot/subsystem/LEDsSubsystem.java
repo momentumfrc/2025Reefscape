@@ -17,7 +17,7 @@ public class LEDsSubsystem extends SubsystemBase {
     private final AddressableLED led;
     private final AddressableLEDBuffer ledBuffer;
 
-    private final int ledCount = 120; // Might want to fix this.
+    public static final int ledCount = 120; // Might want to fix this.
     public static final Distance kLedSpacing = Meters.of(1 / 60.0);
 
     private final LEDWriter dimmer;
