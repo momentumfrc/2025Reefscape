@@ -15,6 +15,11 @@ public class ZeroEncodersCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        climber.disableReverseLimit();
+    }
+
+    @Override
     public void execute() {
         climber.retractClimber(-MoPrefs.climberZeroPwr.get().in(Units.Value));
 

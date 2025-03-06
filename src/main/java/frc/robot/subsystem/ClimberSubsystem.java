@@ -146,6 +146,10 @@ public class ClimberSubsystem extends SubsystemBase {
         return currRachetState;
     }
 
+    public void disableReverseLimit() {
+        leftSparkConfig.accept(config -> config.softLimit.reverseSoftLimitEnabled(false));
+    }
+
     public void rezeroEncoder() {
         encodersZeroed.setBoolean(true);
         encoder.setPosition(0);
