@@ -1,5 +1,9 @@
 package frc.robot.utils;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -53,6 +57,8 @@ public class AutoChooser {
             MoShuffleboard.enumToChooser(InitialPosition.class);
     private final GenericEntry shouldScoreL1Coral;
 
+    private final GenericEntry scoreOneL2CoralCycle;
+
     private final PositioningSubsystem positioning;
     private final DriveSubsystem drive;
     private final ElevatorSubsystem elevator;
@@ -82,6 +88,36 @@ public class AutoChooser {
                 .add("Score L1 preload?", false)
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
+
+        scoreOneL2CoralCycle = MoShuffleboard.getInstance()
+                .autoTab
+                .add("Score one L2 preload?", false)
+                .withWidget(BuiltInWidgets.kToggleSwitch)
+                .getEntry();
+
+                RobotConfig config;
+        try {
+            config = RobotConfig.fromGUISettings();
+
+            AutoBuilder.configure(
+                    positioning::getRobotPose,
+                    positioning::setRobotPose,
+                    drive::getRobotRelativeSpeeds,
+                    (speeds, feedforwards) -> drive.driveRobotRelativeSpeeds(speeds),
+                    new PPHolonomicDriveController(new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                    config,
+                    () -> {
+                        var alliance = DriverStation.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == DriverStation.Alliance.Red;
+                        }
+                        return false;
+                    },
+                    drive
+                    );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Command leaveFromPose(Pose2d initialPos, boolean assumeRobotAtPos) {
@@ -162,6 +198,9 @@ public class AutoChooser {
                                             .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
                             ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1_CORAL)));
         }
+        boolean scoreOneL2CoralCycle = this.scoreOneL2CoralCycle.getBoolean(false);
+
+        if (scoreOneL2CoralCycle) {}
 
         return auto;
     }
