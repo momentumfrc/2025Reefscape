@@ -3,48 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.082786885245901,
-        "y": 5.35563524590164
+        "x": 5.05,
+        "y": 5.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.46639344262295,
-        "y": 6.0029713114754095
+        "x": 4.195065789473684,
+        "y": 5.7280427631578945
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7641393442622952,
-        "y": 6.614344262295082
+        "x": 1.4,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 4.399487704918033,
-        "y": 6.35061475409836
-      },
-      "nextControl": {
-        "x": 3.2476688757698335,
-        "y": 6.828728230348556
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.3306352459016395,
-        "y": 6.9380122950819665
-      },
-      "prevControl": {
-        "x": 1.8580942622950813,
-        "y": 6.818135245901638
+        "x": 2.2464802631578946,
+        "y": 6.595483552631579
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.27811366384521996,
+      "rotationDegrees": -119.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 127.3493490446406
+    "rotation": 125.00000000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "coralAutos",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -124.1274239088365
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }
