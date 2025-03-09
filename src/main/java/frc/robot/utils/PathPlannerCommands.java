@@ -60,7 +60,7 @@ public class PathPlannerCommands {
             String pathName,
             boolean shouldAssumeRobotIsAtStart) {
         try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+            PathPlannerPath path = PathPlannerPath.fromPathFile("TEST");
             return getFollowPathCommand(drive, positioning, path, shouldAssumeRobotIsAtStart);
         } catch (Exception e) {
             DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());

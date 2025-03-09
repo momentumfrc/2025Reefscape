@@ -1,6 +1,9 @@
 package frc.robot.utils;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -10,6 +13,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.FlippingUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -31,7 +35,6 @@ import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.EndEffectorSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
-import java.util.List;
 
 public class AutoChooser {
     private enum AutoChoices {
@@ -57,7 +60,7 @@ public class AutoChooser {
             MoShuffleboard.enumToChooser(InitialPosition.class);
     private final GenericEntry shouldScoreL1Coral;
 
-    private final GenericEntry scoreOneL2CoralCycle;
+    private final GenericEntry scoreL2CoralCycle;
 
     private final PositioningSubsystem positioning;
     private final DriveSubsystem drive;
@@ -89,13 +92,13 @@ public class AutoChooser {
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
 
-        scoreOneL2CoralCycle = MoShuffleboard.getInstance()
+        scoreL2CoralCycle = MoShuffleboard.getInstance()
                 .autoTab
-                .add("Score one L2 preload?", false)
+                .add("Cycle L2?", false)
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
 
-                RobotConfig config;
+        RobotConfig config;
         try {
             config = RobotConfig.fromGUISettings();
 
@@ -113,8 +116,7 @@ public class AutoChooser {
                         }
                         return false;
                     },
-                    drive
-                    );
+                    drive);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,9 +200,12 @@ public class AutoChooser {
                                             .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
                             ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1_CORAL)));
         }
-        boolean scoreOneL2CoralCycle = this.scoreOneL2CoralCycle.getBoolean(false);
 
-        if (scoreOneL2CoralCycle) {}
+        boolean scoreL2CoralCycle = this.scoreL2CoralCycle.getBoolean(false);
+
+
+        if (scoreL2CoralCycle) {
+        }
 
         return auto;
     }
