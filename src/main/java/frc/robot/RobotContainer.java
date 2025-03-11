@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
@@ -19,9 +20,11 @@ import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.LEDCommands;
 import frc.robot.command.TeleopDriveCommand;
 import frc.robot.command.climb.ClimberCommands;
+import frc.robot.command.elevator.ElevatorCommands;
 import frc.robot.command.elevator.TeleopElevatorCommand;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.command.intake.IntakeCommands;
+import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.ControllerInput;
 import frc.robot.input.DualXboxControllerInput;
 import frc.robot.input.MoInput;
@@ -133,6 +136,16 @@ public class RobotContainer {
         elevator.setDefaultCommand(elevatorCommand);
         endEffector.setDefaultCommand(endEffectorIdle);
         ledsSubsystem.setDefaultCommand(LEDCommands.defaultPattern(ledsSubsystem));
+
+        NamedCommands.registerCommand(
+                "KeepElevatorAtL2", ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L2_CORAL));
+        NamedCommands.registerCommand(
+                "WaitForElevatorAtL2", ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L2_CORAL));
+        NamedCommands.registerCommand("ShootCoral", EndEffectorCommands.inAlgaeExCoral(endEffector));
+        NamedCommands.registerCommand(
+                "StowElevator", ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.STOW));
+        NamedCommands.registerCommand("IntakeCoral", EndEffectorCommands.exAlgaeInCoral(endEffector));
+        // intake coral from coral station setpoint?????
     }
 
     private void configureBindings() {
