@@ -5,9 +5,41 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "TEST_PATH"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "KeepElevatorAtL2"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WaitForElevatorAtL2"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "TEST_PATH"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ShootCoral"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
