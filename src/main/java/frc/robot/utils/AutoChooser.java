@@ -3,7 +3,6 @@ package frc.robot.utils;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -205,6 +204,8 @@ public class AutoChooser {
 
 
         if (scoreL2CoralCycle) {
+            auto = new ZeroElevatorCommand(elevator)
+                    .andThen(PathPlannerCommands.getFollowPathCommand(drive, positioning, "TEST", scoreL2CoralCycle));
         }
 
         return auto;
