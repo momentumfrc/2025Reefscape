@@ -338,7 +338,7 @@
   {
     "name": "/Preferences/Wrist Max Extension (R)",
     "type": "double",
-    "value": 0.15,
+    "value": 0.25,
     "properties": {
       "persistent": true
     }
@@ -378,7 +378,7 @@
   {
     "name": "/Preferences/End Effector Power (%)",
     "type": "double",
-    "value": 75.0,
+    "value": 80.0,
     "properties": {
       "persistent": true
     }
@@ -442,7 +442,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_elevator",
     "type": "double",
-    "value": 12.0,
+    "value": 13.0,
     "properties": {
       "persistent": true
     }
@@ -458,7 +458,7 @@
   {
     "name": "/Elevator_Setpoints/INTAKE_elevator",
     "type": "double",
-    "value": 15.3,
+    "value": 18.0,
     "properties": {
       "persistent": true
     }
@@ -490,7 +490,7 @@
   {
     "name": "/Elevator_Setpoints/PROCESSOR_elevator",
     "type": "double",
-    "value": 6.494342327117921,
+    "value": 6.040938377380371,
     "properties": {
       "persistent": true
     }
@@ -498,7 +498,7 @@
   {
     "name": "/Elevator_Setpoints/PROCESSOR_wrist",
     "type": "double",
-    "value": 0.04157421365380287,
+    "value": 0.0429331436753273,
     "properties": {
       "persistent": true
     }
@@ -506,7 +506,7 @@
   {
     "name": "/Elevator_Setpoints/L1_CORAL_elevator",
     "type": "double",
-    "value": 6.494342327117921,
+    "value": 6.040938377380371,
     "properties": {
       "persistent": true
     }
@@ -514,7 +514,7 @@
   {
     "name": "/Elevator_Setpoints/L1_CORAL_wrist",
     "type": "double",
-    "value": 0.04157421365380287,
+    "value": 0.0429331436753273,
     "properties": {
       "persistent": true
     }
@@ -522,7 +522,7 @@
   {
     "name": "/Elevator_Setpoints/L2_CORAL_elevator",
     "type": "double",
-    "value": 11.735044479370117,
+    "value": 13.721977233886717,
     "properties": {
       "persistent": true
     }
@@ -530,7 +530,7 @@
   {
     "name": "/Elevator_Setpoints/L2_CORAL_wrist",
     "type": "double",
-    "value": 0.035,
+    "value": 0.11102821677923201,
     "properties": {
       "persistent": true
     }
@@ -538,7 +538,7 @@
   {
     "name": "/Elevator_Setpoints/L3_CORAL_elevator",
     "type": "double",
-    "value": 21.696378707885742,
+    "value": 22.5364933013916,
     "properties": {
       "persistent": true
     }
@@ -546,7 +546,7 @@
   {
     "name": "/Elevator_Setpoints/L3_CORAL_wrist",
     "type": "double",
-    "value": 0.04953715577721596,
+    "value": 0.11102821677923201,
     "properties": {
       "persistent": true
     }
@@ -562,7 +562,7 @@
   {
     "name": "/Preferences/Climber Max Power (%)",
     "type": "double",
-    "value": 25.0,
+    "value": 35.0,
     "properties": {
       "persistent": true
     }
@@ -635,6 +635,22 @@
     "name": "/Preferences/Wrist Ramp Time (s)",
     "type": "double",
     "value": 0.8,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/SWRV Max Throttle Climber Extended (%)",
+    "type": "double",
+    "value": 20.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber Retracted Zone",
+    "type": "double",
+    "value": 20.0,
     "properties": {
       "persistent": true
     }
