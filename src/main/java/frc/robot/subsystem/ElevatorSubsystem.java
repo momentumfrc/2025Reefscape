@@ -4,7 +4,6 @@ import com.momentum4999.motune.PIDTuner;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.MathUtil;
@@ -126,8 +125,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorRelEncoder =
                 MoDistanceEncoder.forSparkRelative(elevatorA.getEncoder(), Units.Centimeters, elevatorAConfig);
-        wristRelEncoder = MoRotationEncoder.forSparkRelative(
-                elevatorWrist.getAlternateEncoder(), Units.Rotations, elevatorWristConfig);
+        wristRelEncoder =
+                MoRotationEncoder.forSparkRelative(elevatorWrist.getEncoder(), Units.Rotations, elevatorWristConfig);
 
         elevatorAConfig.accept(config -> {
             config.softLimit
@@ -136,7 +135,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .forwardSoftLimit(
                             MoPrefs.elevatorMaxExtension.get().in(elevatorRelEncoder.getInternalEncoderUnits()))
                     .forwardSoftLimitEnabled(false);
-            config.closedLoop.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder);
             config.inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(ELEVATOR_CURRENT_LIMIT);
         });
 
