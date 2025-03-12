@@ -141,11 +141,13 @@ public class RobotContainer {
                 "KeepElevatorAtL2", ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L2_CORAL));
         NamedCommands.registerCommand(
                 "WaitForElevatorAtL2", ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L2_CORAL));
-        NamedCommands.registerCommand("ShootCoral", EndEffectorCommands.inAlgaeExCoral(endEffector));
+        NamedCommands.registerCommand(
+                "ElevatorCoralStation", ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.CORAL_STATION));
         NamedCommands.registerCommand(
                 "StowElevator", ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.STOW));
+
+        NamedCommands.registerCommand("ShootCoral", EndEffectorCommands.inAlgaeExCoral(endEffector));
         NamedCommands.registerCommand("IntakeCoral", EndEffectorCommands.exAlgaeInCoral(endEffector));
-        // intake coral from coral station setpoint?????
     }
 
     private void configureBindings() {

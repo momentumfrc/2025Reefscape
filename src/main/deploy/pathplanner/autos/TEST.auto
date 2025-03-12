@@ -21,7 +21,19 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "WaitForElevatorAtL2"
+                        "name": "ElevatorCoralStation"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeCoral"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "StowElevator"
                       }
                     },
                     {
@@ -33,7 +45,19 @@
                     {
                       "type": "named",
                       "data": {
+                        "name": "WaitForElevatorAtL2"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
                         "name": "ShootCoral"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "StowElevator"
                       }
                     }
                   ]
