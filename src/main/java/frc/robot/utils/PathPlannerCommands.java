@@ -8,31 +8,17 @@ import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
-import java.util.Optional;
 
 public class PathPlannerCommands {
     public static Command getFollowPathCommand(
-            DriveSubsystem drive,
-            PositioningSubsystem positioning,
-            PathPlannerPath path,
-            boolean shouldAssumeRobotIsAtStart) {
-        // Manually flip the path ourselves, since we need the starting pose
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red && !path.preventFlipping) {
-            path = path.flipPath();
-        }
-
-        Optional<Pose2d> startPose = path.getStartingHolonomicPose();
-
+            DriveSubsystem drive, PositioningSubsystem positioning, PathPlannerPath path) {
         PathFollowingController controller = drive.getDriveController();
         RobotConfig config = Constants.pathPlannerRobotConfig;
 
@@ -43,25 +29,17 @@ public class PathPlannerCommands {
                 drive::driveRobotRelativeSpeeds,
                 controller,
                 config,
-                () -> false, // Do not allow PathPlanner to flip the path, we already did manually
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 drive);
 
-        if (shouldAssumeRobotIsAtStart && startPose.isPresent()) {
-            return new SequentialCommandGroup(
-                    new InstantCommand(() -> positioning.setRobotPose(startPose.get())), driveControllerCommand);
-        } else {
-            return driveControllerCommand;
-        }
+        return driveControllerCommand;
     }
 
     public static Command getFollowPathCommand(
-            DriveSubsystem drive,
-            PositioningSubsystem positioning,
-            String pathName,
-            boolean shouldAssumeRobotIsAtStart) {
+            DriveSubsystem drive, PositioningSubsystem positioning, String pathName) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-            return getFollowPathCommand(drive, positioning, path, shouldAssumeRobotIsAtStart);
+            return getFollowPathCommand(drive, positioning, path);
         } catch (Exception e) {
             DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
             return Commands.print("Failed to load autonomous path!");
