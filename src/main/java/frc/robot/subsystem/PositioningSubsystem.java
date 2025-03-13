@@ -29,7 +29,7 @@ public class PositioningSubsystem extends SubsystemBase {
 
     private GenericEntry shouldUseAprilTags = MoShuffleboard.getInstance()
             .settingsTab
-            .add("Detect AprilTags", true)
+            .add("Detect AprilTags", false)
             .withWidget(BuiltInWidgets.kToggleSwitch)
             .getEntry();
 
@@ -112,8 +112,8 @@ public class PositioningSubsystem extends SubsystemBase {
         // See:
         // https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-robot-localization-megatag2#using-wpilibs-pose-estimator
         LimelightHelpers.SetRobotOrientation(
-                "limelight", estimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+                "limelight-aprl", estimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-aprl");
 
         if (llPos != null
                 && Math.abs(gyro.getRate()) < 720

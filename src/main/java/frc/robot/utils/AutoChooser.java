@@ -109,9 +109,9 @@ public class AutoChooser {
     private Pose2d getPoseForInitialPosition(DriverRelativeInitialPosition position) {
         double halfWidth = MoPrefs.robotWidthWithBumpers.get().in(Units.Meters) / 2;
         return switch (position) {
-            case LEFT_WALL -> new Pose2d(7.582, 8.056 - halfWidth, Rotation2d.kZero);
-            case CENTER -> new Pose2d(7.582, 4.028, Rotation2d.kZero);
-            case RIGHT_WALL -> new Pose2d(7.582, 0 + halfWidth, Rotation2d.kZero);
+            case LEFT_WALL -> new Pose2d(7.582, 8.056 - halfWidth, Rotation2d.k180deg);
+            case CENTER -> new Pose2d(7.582, 4.028, Rotation2d.k180deg);
+            case RIGHT_WALL -> new Pose2d(7.582, 0 + halfWidth, Rotation2d.k180deg);
         };
     }
 
@@ -195,7 +195,7 @@ public class AutoChooser {
             }
         }
 
-        Pose2d startPose = robotPose.plus(new Transform2d(0, 0, Rotation2d.k180deg));
+        Pose2d startPose = robotPose;
         EnumSet<FieldGeometry.ReefFace> permissibleFaces = permissibleTargets.get(currPosition);
         FieldGeometry.ReefFace requestedFace = destChooser.getSelected();
         if (permissibleFaces.contains(requestedFace)) {
@@ -208,7 +208,7 @@ public class AutoChooser {
                     new Transform2d(-1 * MoPrefs.autoReefApproachDistance.get().in(Units.Meters), 0, Rotation2d.kZero));
             return planPath(
                     new IdealStartingState(0, robotPose.getRotation()),
-                    new GoalEndState(0, facePose.getRotation().plus(Rotation2d.k180deg)),
+                    new GoalEndState(0, facePose.getRotation()),
                     startPose,
                     approachPose,
                     facePose);
@@ -239,7 +239,7 @@ public class AutoChooser {
                     .andThen(fallbackLeave());
         }
 
-        Pose2d startPose = robotPose.plus(new Transform2d(0, 0, Rotation2d.k180deg));
+        Pose2d startPose = robotPose;
         Transform2d transform = new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
         Pose2d destPose = startPose.plus(transform);
 
