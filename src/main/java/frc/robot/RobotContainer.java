@@ -181,10 +181,6 @@ public class RobotContainer {
         intakeDeployTrigger.whileTrue(LEDCommands.groundIntakePattern(ledsSubsystem));
         climberSlowedTrigger.whileTrue(LEDCommands.climberSlowedPattern(ledsSubsystem));
 
-        endEffectorInAlgaeExCoralTrigger
-                .or(endEffectorExAlgaeInCoralTrigger)
-                .whileTrue(LEDCommands.endEffectorPattern(ledsSubsystem));
-
         wristInDangerTrigger.whileTrue(LEDCommands.wristInDangerPattern(ledsSubsystem));
 
         sysidTrigger.whileTrue(

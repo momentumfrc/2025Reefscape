@@ -166,6 +166,10 @@ public class MoPrefs {
             secondsPref("Auto Extake Preload Time", Units.Seconds.of(1));
     public static final DimensionlessUnitPref autoExtakeCoralPower =
             percentPref("Auto Extake Coral Power", Units.Percent.of(80));
+    public static final DistanceUnitPref robotWidthWithBumpers =
+            inchesPref("Robot Width with Bumpers", Units.Inches.of(37));
+    public static final DistanceUnitPref autoReefApproachDistance =
+            metersPref("Auto Reef Approach Distance", Units.Meters.of(0.5));
 
     public static final DimensionlessUnitPref ledBrightness = percentPref("LED Brightness", Units.Percent.of(20));
 
@@ -249,6 +253,10 @@ public class MoPrefs {
 
     private static DistanceUnitPref metersPref(String key, Distance defaultValue) {
         return new DistanceUnitPref(key, Units.Meters, defaultValue);
+    }
+
+    private static DistanceUnitPref inchesPref(String key, Distance defaultValue) {
+        return new DistanceUnitPref(key, Units.Inches, defaultValue);
     }
 
     private static DistanceUnitPref centimetersPref(String key, Distance defaultValue) {

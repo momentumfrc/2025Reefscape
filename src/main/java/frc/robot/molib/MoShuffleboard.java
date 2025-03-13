@@ -127,13 +127,14 @@ public class MoShuffleboard {
     }
 
     public static <T extends Enum<?>> SendableChooser<T> enumToChooser(Class<T> toConvert) {
-        boolean setDefault = true;
+        return enumToChooser(toConvert, toConvert.getEnumConstants()[0]);
+    }
+
+    public static <T extends Enum<?>> SendableChooser<T> enumToChooser(Class<T> toConvert, T defaultValue) {
         var chooser = new SendableChooser<T>();
+        chooser.setDefaultOption(defaultValue.name(), defaultValue);
         for (T entry : toConvert.getEnumConstants()) {
-            if (setDefault) {
-                chooser.setDefaultOption(entry.name(), entry);
-                setDefault = false;
-            } else {
+            if (entry != defaultValue) {
                 chooser.addOption(entry.name(), entry);
             }
         }

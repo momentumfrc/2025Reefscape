@@ -352,6 +352,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
+    public void disableReverseLimit() {
+        elevatorAConfig.accept(config -> config.softLimit.reverseSoftLimitEnabled(false));
+    }
+
     public void zeroElevator() {
         hasZero.setBoolean(true);
         elevatorRelEncoder.setPosition(Units.Centimeters.zero());

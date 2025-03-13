@@ -21,6 +21,7 @@ public class ZeroElevatorCommand extends Command {
     @Override
     public void initialize() {
         currentSenseTimer.restart();
+        elevator.disableReverseLimit();
     }
 
     @Override

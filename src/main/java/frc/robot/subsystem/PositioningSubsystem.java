@@ -100,6 +100,7 @@ public class PositioningSubsystem extends SubsystemBase {
         }
         this.didEstablishInitialPosition.setBoolean(true);
         this.estimator.resetPosition(gyro.getRotation2d(), drive.getWheelPositions(), pose);
+        this.robotPose = pose;
     }
 
     public void resetFieldOrientedFwd() {
