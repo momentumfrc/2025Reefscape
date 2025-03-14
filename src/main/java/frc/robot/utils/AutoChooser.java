@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -35,9 +37,6 @@ import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.EndEffectorSubsystem;
 import frc.robot.subsystem.PositioningSubsystem;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
 
 public class AutoChooser {
     private enum AutoChoices {
@@ -70,7 +69,10 @@ public class AutoChooser {
     private final EnumMap<DriverRelativeInitialPosition, EnumSet<FieldGeometry.ReefFace>> permissibleTargets =
             new EnumMap<>(DriverRelativeInitialPosition.class);
 
-    private final GenericEntry scoreL2CoralCycle;
+    private final GenericEntry BWBA_L2CoralCycle;
+    private final GenericEntry BWRA_L2CoralCycle;
+    private final GenericEntry RWBA_L2CoralCycle;
+    private final GenericEntry RWRA_L2CoralCycle;
 
     private final PositioningSubsystem positioning;
     private final DriveSubsystem drive;
@@ -114,9 +116,27 @@ public class AutoChooser {
         permissibleTargets.put(
                 DriverRelativeInitialPosition.RIGHT_WALL, EnumSet.of(ReefFace.GH, ReefFace.EF, ReefFace.CD));
 
-        scoreL2CoralCycle = MoShuffleboard.getInstance()
+        BWBA_L2CoralCycle = MoShuffleboard.getInstance()
                 .autoTab
-                .add("Cycle L2?", false)
+                .add("Blue Wall Blue Alliance Cycle L2?", false)
+                .withWidget(BuiltInWidgets.kToggleSwitch)
+                .getEntry();
+
+        BWRA_L2CoralCycle = MoShuffleboard.getInstance()
+                .autoTab
+                .add("Blue Wall Red Alliance Cycle L2?", false)
+                .withWidget(BuiltInWidgets.kToggleSwitch)
+                .getEntry();
+
+        RWBA_L2CoralCycle = MoShuffleboard.getInstance()
+                .autoTab
+                .add("Red Wall Blue Alliance Cycle L2?", false)
+                .withWidget(BuiltInWidgets.kToggleSwitch)
+                .getEntry();
+
+        RWRA_L2CoralCycle = MoShuffleboard.getInstance()
+                .autoTab
+                .add("Red Wall Red Alliance Cycle L2?", false)
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
 
@@ -323,12 +343,33 @@ public class AutoChooser {
                             ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1_CORAL)));
         }
 
-        boolean scoreL2CoralCycle = this.scoreL2CoralCycle.getBoolean(false);
+        boolean BWBA_L2CoralCycle = this.BWBA_L2CoralCycle.getBoolean(false);
 
-
-        if (scoreL2CoralCycle) {
+        if (BWBA_L2CoralCycle) {
             auto = new ZeroElevatorCommand(elevator)
-                    .andThen(PathPlannerCommands.getFollowPathCommand(drive, positioning, "TEST"));
+                    .andThen(PathPlannerCommands.followBWBACommand(drive, positioning, "TEST"));
+        }
+
+        boolean BWRA_L2CoralCycle = this.BWRA_L2CoralCycle.getBoolean(false);
+
+        if (BWRA_L2CoralCycle) {
+            auto = new ZeroElevatorCommand(elevator)
+                    .andThen(PathPlannerCommands.followBWRACommand(drive, positioning, "TEST"));
+        }
+
+
+        boolean RWBA_L2CoralCycle = this.RWBA_L2CoralCycle.getBoolean(false);
+
+        if (RWBA_L2CoralCycle) {
+            auto = new ZeroElevatorCommand(elevator)
+                    .andThen(PathPlannerCommands.followRWBACommand(drive, positioning, "TEST"));
+        }
+
+        boolean RWRA_L2CoralCycle = this.RWRA_L2CoralCycle.getBoolean(false);
+
+        if (RWRA_L2CoralCycle) {
+            auto = new ZeroElevatorCommand(elevator)
+                    .andThen(PathPlannerCommands.followRWRACommand(drive, positioning, "TEST"));
         }
 
         return auto;

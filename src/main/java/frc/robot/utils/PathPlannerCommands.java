@@ -45,4 +45,49 @@ public class PathPlannerCommands {
             return Commands.print("Failed to load autonomous path!");
         }
     }
+
+    public static Command followBWBACommand(
+            DriveSubsystem drive, PositioningSubsystem positioning, String pathName) {
+    try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("BWBA_4PieceAuto");
+            return getFollowPathCommand(drive, positioning, path);
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
+            return Commands.print("Failed to load autonomous path!");
+        }
+    }
+
+    public static Command followBWRACommand(
+            DriveSubsystem drive, PositioningSubsystem positioning, String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("BWRA_4PieceAuto");
+            return getFollowPathCommand(drive, positioning, path);
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
+            return Commands.print("Failed to load autonomous path!");
+        }
+    }
+
+    public static Command followRWBACommand(
+            DriveSubsystem drive, PositioningSubsystem positioning, String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("RWBA_4PieceAuto");
+            return getFollowPathCommand(drive, positioning, path);
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
+            return Commands.print("Failed to load autonomous path!");
+        }
+    }
+
+    public static Command followRWRACommand(
+            DriveSubsystem drive, PositioningSubsystem positioning, String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("RWRA_4PieceAuto");
+            return getFollowPathCommand(drive, positioning, path);
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
+            return Commands.print("Failed to load autonomous path!");
+        }
+    }
+
 }
