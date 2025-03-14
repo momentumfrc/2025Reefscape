@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 7.0
+        "x": 5.35,
+        "y": 2.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8967927631578942,
-        "y": 5.891611842105262
+        "x": 4.297345890413738,
+        "y": 1.5157106164334035
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.05,
-        "y": 5.35
+        "x": 1.25,
+        "y": 1.1
       },
       "prevControl": {
-        "x": 3.8871710526315786,
-        "y": 5.891611842105262
+        "x": 3.455907534249355,
+        "y": 1.8462756849265543
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.655380894800474,
-      "rotationDegrees": -119.99999999999999
+      "waypointRelativePos": 0.05925030229746022,
+      "rotationDegrees": 119.99999999999999
     }
   ],
   "constraintZones": [],
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": "coralPaths",
+  "folder": "RWBA_CoralPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }

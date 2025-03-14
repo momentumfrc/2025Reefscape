@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.0,
+        "x": 10.0,
         "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.276640494180436,
-        "y": 6.340253356120811
+        "x": 11.315290600569325,
+        "y": 6.336513320749601
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.349671052631578,
+        "x": 12.2,
         "y": 5.2
       },
       "prevControl": {
-        "x": 6.3075386605300885,
-        "y": 6.729048316429431
+        "x": 11.935048088522787,
+        "y": 5.307811035539736
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "coralPaths",
+  "folder": "RWRA_CoralPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

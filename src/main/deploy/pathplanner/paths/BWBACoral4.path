@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 3.85
+        "x": 1.4,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1073314587937642,
-        "y": 8.325295640488163
+        "x": 1.0322514654218167,
+        "y": 7.082180094954688
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.4,
-        "y": 7.0
+        "x": 3.0,
+        "y": 3.85
       },
       "prevControl": {
-        "x": 1.3482970162239027,
-        "y": 6.5441730761153885
+        "x": 2.2535626632535264,
+        "y": 7.1265774767473165
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2684401451027867,
+      "waypointRelativePos": 0.29866989117291426,
       "rotationDegrees": 125.00000000000001
     }
   ],
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "coralPaths",
+  "folder": "BWBA_CoralPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.0
+    "rotation": 125.00000000000001
   },
   "useDefaultConstraints": true
 }
