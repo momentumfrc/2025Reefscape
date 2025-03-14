@@ -95,6 +95,11 @@ public class ElevatorSubsystem extends SubsystemBase {
             .add("Wrist Nominal Reverse Limit Enabled", true)
             .getEntry();
 
+    private final GenericEntry cutElevatorPower = MoShuffleboard.getInstance()
+            .elevatorTab
+            .add("Cut elevator power", false)
+            .getEntry();
+
     public static record ElevatorPosition(Distance elevatorDistance, Angle wristAngle) {}
 
     public static record ElevatorMovementRequest(double elevatorPower, double wristPower) {
@@ -380,11 +385,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         wristVelocityPid.setVelocityReference(wristVelocity);
     }
 
+    private static final Distance ELEVATOR_CUT_POWER_ZONE = Units.Centimeters.of(1);
+
     public void adjustPosition(ElevatorPosition position) {
-        double varianceThreshold =
-                MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
-        boolean cutElevatorPower = position.elevatorDistance.isNear(Units.Centimeters.zero(), varianceThreshold)
-                && getElevatorHeight().isNear(Units.Centimeters.zero(), varianceThreshold);
+        boolean cutElevatorPower = position.elevatorDistance.lt(ELEVATOR_CUT_POWER_ZONE)
+                && getElevatorHeight().lt(ELEVATOR_CUT_POWER_ZONE);
+
+        this.cutElevatorPower.setBoolean(cutElevatorPower);
 
         Consumer<Distance> currModeElevatorPid;
         Consumer<Angle> currModeWristPid;
