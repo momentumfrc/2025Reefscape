@@ -338,7 +338,7 @@
   {
     "name": "/Preferences/Wrist Max Extension (R)",
     "type": "double",
-    "value": 0.35,
+    "value": 0.4,
     "properties": {
       "persistent": true
     }
@@ -394,7 +394,7 @@
   {
     "name": "/Preferences/Climber RVS Soft Limit",
     "type": "double",
-    "value": 8.0,
+    "value": 10.0,
     "properties": {
       "persistent": true
     }
@@ -426,7 +426,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_elevator",
     "type": "double",
-    "value": 0.30671265721321106,
+    "value": 0.3,
     "properties": {
       "persistent": true
     }
@@ -434,7 +434,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_wrist",
     "type": "double",
-    "value": 0.032761361449956894,
+    "value": 0.05,
     "properties": {
       "persistent": true
     }
@@ -442,7 +442,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_elevator",
     "type": "double",
-    "value": 14.455409049987795,
+    "value": 13.0,
     "properties": {
       "persistent": true
     }
@@ -450,7 +450,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_wrist",
     "type": "double",
-    "value": 0.025282330811023712,
+    "value": 0.005,
     "properties": {
       "persistent": true
     }
