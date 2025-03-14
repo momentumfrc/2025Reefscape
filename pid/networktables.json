@@ -258,7 +258,7 @@
   {
     "name": "/Preferences/Drive Elevator Extended Ramp Time (s)",
     "type": "double",
-    "value": 0.1,
+    "value": 0.3,
     "properties": {
       "persistent": true
     }
@@ -338,7 +338,7 @@
   {
     "name": "/Preferences/Wrist Max Extension (R)",
     "type": "double",
-    "value": 0.25,
+    "value": 0.35,
     "properties": {
       "persistent": true
     }
@@ -378,7 +378,7 @@
   {
     "name": "/Preferences/End Effector Power (%)",
     "type": "double",
-    "value": 80.0,
+    "value": 60.0,
     "properties": {
       "persistent": true
     }
@@ -394,7 +394,7 @@
   {
     "name": "/Preferences/Climber RVS Soft Limit",
     "type": "double",
-    "value": 5.0,
+    "value": 8.0,
     "properties": {
       "persistent": true
     }
@@ -426,7 +426,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_elevator",
     "type": "double",
-    "value": 0.6801024675369263,
+    "value": 0.30671265721321106,
     "properties": {
       "persistent": true
     }
@@ -434,7 +434,7 @@
   {
     "name": "/Elevator_Setpoints/STOW_wrist",
     "type": "double",
-    "value": 0.05,
+    "value": 0.032761361449956894,
     "properties": {
       "persistent": true
     }
@@ -442,7 +442,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_elevator",
     "type": "double",
-    "value": 13.0,
+    "value": 14.455409049987795,
     "properties": {
       "persistent": true
     }
@@ -450,7 +450,7 @@
   {
     "name": "/Elevator_Setpoints/CORAL_STATION_wrist",
     "type": "double",
-    "value": 0.005,
+    "value": 0.025282330811023712,
     "properties": {
       "persistent": true
     }
@@ -522,7 +522,7 @@
   {
     "name": "/Elevator_Setpoints/L2_CORAL_elevator",
     "type": "double",
-    "value": 13.721977233886717,
+    "value": 13.601961135864258,
     "properties": {
       "persistent": true
     }
@@ -530,7 +530,7 @@
   {
     "name": "/Elevator_Setpoints/L2_CORAL_wrist",
     "type": "double",
-    "value": 0.11102821677923201,
+    "value": 0.13291962444782257,
     "properties": {
       "persistent": true
     }
@@ -651,6 +651,22 @@
     "name": "/Preferences/Climber Retracted Zone",
     "type": "double",
     "value": 20.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Robot Width with Bumpers (in)",
+    "type": "double",
+    "value": 37.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Auto Reef Approach Distance (m)",
+    "type": "double",
+    "value": 0.5,
     "properties": {
       "persistent": true
     }
