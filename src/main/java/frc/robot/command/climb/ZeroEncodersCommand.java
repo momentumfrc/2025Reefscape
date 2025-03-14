@@ -32,4 +32,9 @@ public class ZeroEncodersCommand extends Command {
     public boolean isFinished() {
         return climber.isZeroed();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        climber.enableReverseLimit();
+    }
 }

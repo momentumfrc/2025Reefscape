@@ -150,6 +150,10 @@ public class ClimberSubsystem extends SubsystemBase {
         leftSparkConfig.accept(config -> config.softLimit.reverseSoftLimitEnabled(false));
     }
 
+    public void enableReverseLimit() {
+        leftSparkConfig.accept(config -> config.softLimit.reverseSoftLimitEnabled(true));
+    }
+
     public void rezeroEncoder() {
         encodersZeroed.setBoolean(true);
         encoder.setPosition(0);
