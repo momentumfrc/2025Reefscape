@@ -44,7 +44,7 @@ public class FieldGeometry {
 
     private static FieldGeometry instance;
 
-    public static FieldGeometry getInstance() {
+    public static synchronized FieldGeometry getInstance() {
         if (instance == null) {
             instance = new FieldGeometry();
         }
