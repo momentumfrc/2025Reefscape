@@ -108,7 +108,17 @@ public class ControllerInput implements MoInput {
 
     @Override
     public double getClimberMoveRequest() {
-        return (-1 * elevatorController.getLeftTriggerAxis()) + elevatorController.getRightTriggerAxis();
+        double input = 0;
+        if(driveController.getRawButton(11)) {
+            input += 1;
+        }
+        if(driveController.getRawButton(12)) {
+            input -= 1;
+        }
+
+        input += (-1 * elevatorController.getLeftTriggerAxis()) + elevatorController.getRightTriggerAxis();
+
+        return input;
     }
 
     @Override
