@@ -1,9 +1,11 @@
 package frc.robot.input;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
+import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import frc.robot.utils.Vec2;
 import java.util.Optional;
@@ -16,7 +18,14 @@ public class ControllerInput implements MoInput {
     private Vec2 moveRequest = new Vec2(0, 0);
 
     private double getThrottle() {
-        return ((-1 * driveController.getThrottle()) + 1) / 2;
+        double throttle = ((-1 * driveController.getThrottle()) + 1) / 2;
+
+        int pov = driveController.getPOV();
+        if (pov >= 90 && pov <= 270) {
+            throttle = Math.min(MoPrefs.driveSlowSpeed.get().in(Units.Value), throttle);
+        }
+
+        return throttle;
     }
 
     @Override
@@ -109,10 +118,10 @@ public class ControllerInput implements MoInput {
     @Override
     public double getClimberMoveRequest() {
         double input = 0;
-        if(driveController.getRawButton(11)) {
+        if (driveController.getRawButton(11)) {
             input += 1;
         }
-        if(driveController.getRawButton(12)) {
+        if (driveController.getRawButton(12)) {
             input -= 1;
         }
 

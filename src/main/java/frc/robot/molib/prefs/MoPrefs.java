@@ -51,6 +51,8 @@ public class MoPrefs {
     public static final AngleUnitPref swerveRLZero = rotationsPref("SWRV Zero RL", Units.Rotations.of(0.895));
     public static final AngleUnitPref swerveRRZero = rotationsPref("SWRV Zero RR", Units.Rotations.of(0.968));
 
+    public static final DimensionlessUnitPref driveSlowSpeed = percentPref("Drive Slow Speed", Units.Percent.of(30));
+
     /**
      * The yaw offset between "forward" on the robot and "angle zero" on the gyro
      */
