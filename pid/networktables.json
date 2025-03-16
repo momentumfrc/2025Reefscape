@@ -394,7 +394,7 @@
   {
     "name": "/Preferences/Climber RVS Soft Limit",
     "type": "double",
-    "value": 10.0,
+    "value": 12.5,
     "properties": {
       "persistent": true
     }
