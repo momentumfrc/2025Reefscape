@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command.EndEffectorCommands;
 import frc.robot.command.LEDCommands;
@@ -125,7 +126,10 @@ public class RobotContainer {
         input = new MoInputTransforms(inputChooser::getSelected, this::getDriveSlewRate, this::getMaxThrottle);
 
         configureBindings();
+        setDefaultCommands();
+    }
 
+    public void setDefaultCommands() {
         drive.setDefaultCommand(driveCommand);
         climber.setDefaultCommand(ClimberCommands.idleClimber(climber));
         intakeRoller.setDefaultCommand(intakeRollersDefaultCommand);
@@ -133,6 +137,14 @@ public class RobotContainer {
         elevator.setDefaultCommand(elevatorCommand);
         endEffector.setDefaultCommand(endEffectorIdle);
         ledsSubsystem.setDefaultCommand(LEDCommands.defaultPattern(ledsSubsystem));
+    }
+
+    public void setDefaultCommandsForAuto() {
+        drive.setDefaultCommand(
+                Commands.run(() -> drive.driveCartesian(0, 0, 0), drive).withName("IdleDriveCommand"));
+        elevator.setDefaultCommand(Commands.run(
+                        () -> elevator.adjustVelocity(new ElevatorSubsystem.ElevatorMovementRequest(0, 0)), elevator)
+                .withName("IdleElevatorCommand"));
     }
 
     private void configureBindings() {
@@ -154,14 +166,18 @@ public class RobotContainer {
 
         climberSlowedTrigger = new Trigger(() -> getMaxThrottle() < 0.95);
 
-        intakeDeployTrigger.onTrue(teleopIntakeDeployCommand);
-        intakeExtakeOverrideTrigger.onTrue(IntakeCommands.intakeExtakeOverrideCommand(intakeWrist, intakeRoller));
+        var teleopTrigger = RobotModeTriggers.teleop();
+
+        intakeDeployTrigger.and(teleopTrigger).onTrue(teleopIntakeDeployCommand);
+        intakeExtakeOverrideTrigger
+                .and(teleopTrigger)
+                .onTrue(IntakeCommands.intakeExtakeOverrideCommand(intakeWrist, intakeRoller));
         intakeDeployTrigger.or(intakeExtakeOverrideTrigger).onFalse(teleopIntakeRetractCommand);
 
-        extendClimberTrigger.whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
-        retractClimberTrigger.whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
-        endEffectorExAlgaeInCoralTrigger.whileTrue(algaeOutCommand);
-        endEffectorInAlgaeExCoralTrigger.whileTrue(algaeInCommand);
+        extendClimberTrigger.and(teleopTrigger).whileTrue(ClimberCommands.extendClimber(climber, this::getInput));
+        retractClimberTrigger.and(teleopTrigger).whileTrue(ClimberCommands.retractClimber(climber, this::getInput));
+        endEffectorExAlgaeInCoralTrigger.and(teleopTrigger).whileTrue(algaeOutCommand);
+        endEffectorInAlgaeExCoralTrigger.and(teleopTrigger).whileTrue(algaeInCommand);
 
         intakeDeployTrigger.whileTrue(LEDCommands.groundIntakePattern(ledsSubsystem));
         climberSlowedTrigger.whileTrue(LEDCommands.climberSlowedPattern(ledsSubsystem));

@@ -12,7 +12,7 @@ public class IntakeCommands {
     }
 
     public static Command idleIntakeRollerCommand(IntakeRollerSubsystem roller) {
-        return Commands.run(roller::stopRollerMotor, roller);
+        return Commands.run(roller::stopRollerMotor, roller).withName("IdleIntakeRollerCommand");
     }
 
     public static Command holdIntakeRollerCommand(IntakeRollerSubsystem roller) {
