@@ -111,12 +111,23 @@ public class PositioningSubsystem extends SubsystemBase {
     public void periodic() {
         // See:
         // https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-robot-localization-megatag2#using-wpilibs-pose-estimator
-        LimelightHelpers.SetRobotOrientation(
-                "limelight-aprl", estimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-aprl");
+        LimelightHelpers.PoseEstimate llPos;
+        if (hasInitialPosition()) {
+            LimelightHelpers.SetRobotOrientation(
+                    "limelight-aprl",
+                    estimator.getEstimatedPosition().getRotation().getDegrees(),
+                    0,
+                    0,
+                    0,
+                    0,
+                    0);
+            llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-aprl");
+        } else {
+            llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-aprl");
+        }
 
         if (llPos != null
-                && Math.abs(gyro.getRate()) < 720
+                && Math.abs(gyro.getRate()) < 360
                 && llPos.tagCount > 0
                 && shouldUseAprilTags.getBoolean(true)) {
             if (!hasInitialPosition()) {
