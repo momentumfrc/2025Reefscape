@@ -17,6 +17,8 @@ import frc.robot.molib.prefs.MoPrefs;
 import java.util.Map;
 
 public class PositioningSubsystem extends SubsystemBase {
+    private static final String LIMELIGHT_ID = "limelight-aprl";
+
     private Pose2d robotPose = new Pose2d();
 
     private Field2d field = MoShuffleboard.getInstance().field;
@@ -114,16 +116,10 @@ public class PositioningSubsystem extends SubsystemBase {
         LimelightHelpers.PoseEstimate llPos;
         if (hasInitialPosition()) {
             LimelightHelpers.SetRobotOrientation(
-                    "limelight-aprl",
-                    estimator.getEstimatedPosition().getRotation().getDegrees(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    0);
-            llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-aprl");
+                    LIMELIGHT_ID, estimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+            llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMELIGHT_ID);
         } else {
-            llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-aprl");
+            llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_ID);
         }
 
         if (llPos != null
