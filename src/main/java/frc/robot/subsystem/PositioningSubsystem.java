@@ -35,6 +35,8 @@ public class PositioningSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kToggleSwitch)
             .getEntry();
 
+    private GenericEntry tagInView = MoShuffleboard.getInstance().driveTab.add("AprilTag in view", false).getEntry();
+
     private final AHRS gyro;
     private final DriveSubsystem drive;
 
@@ -121,6 +123,8 @@ public class PositioningSubsystem extends SubsystemBase {
         } else {
             llPos = LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_ID);
         }
+
+        tagInView.setBoolean(llPos != null && llPos.tagCount > 0);
 
         if (llPos != null
                 && Math.abs(gyro.getRate()) < 360
