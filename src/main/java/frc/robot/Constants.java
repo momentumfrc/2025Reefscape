@@ -34,6 +34,7 @@ public class Constants {
     public static final HIDPort XBOX_CONTROLLER_1 = new HIDPort(1);
 
     public static final PWMPort leds = new PWMPort(1);
+    public static final PWMPort CAGE_SENSOR = new PWMPort(9);
 
     public static final int END_EFFECTOR_ROLLERS_PDH_PORT = 15;
 

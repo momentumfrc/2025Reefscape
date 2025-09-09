@@ -13,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.DimensionlessUnit;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -47,6 +48,8 @@ public class ClimberSubsystem extends SubsystemBase {
     private final SparkLimitSwitch reverseLimitSwitch;
     private final RelativeEncoder encoder;
 
+    private final DigitalInput cageSensor;
+
     private final GenericEntry encodersZeroed = MoShuffleboard.getInstance()
             .climberTab
             .add("Encoders Zeroed", false)
@@ -65,6 +68,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
         this.leftSparkConfig = MoSparkConfigurator.forSparkMax(leftSpark);
         this.rightSparkConfig = MoSparkConfigurator.forSparkMax(rightSpark);
+
+        this.cageSensor = new DigitalInput(Constants.CAGE_SENSOR.port());
 
         leftSparkConfig.accept(config -> {
             config.idleMode(IdleMode.kBrake).inverted(false);
@@ -93,6 +98,8 @@ public class ClimberSubsystem extends SubsystemBase {
                 .withWidget(BuiltInWidgets.kTextView);
         MoShuffleboard.getInstance().climberTab.addDouble("Encoder", encoder::getPosition);
         MoShuffleboard.getInstance().climberTab.addBoolean("Limit Switch", reverseLimitSwitch::isPressed);
+
+        MoShuffleboard.getInstance().climberTab.addBoolean("Cage Sensor", () -> !cageSensor.get());
 
         // TODO: this syntax sucks. Make a nice MoTables wrapper
         var coastMotorsEntry = NetworkTableInstance.getDefault()
