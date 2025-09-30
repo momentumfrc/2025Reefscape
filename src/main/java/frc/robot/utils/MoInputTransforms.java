@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.momentum4999.molib.Utils;
+
 public class MoInputTransforms implements MoInput {
     private final Supplier<MoInput> inputSupplier;
     private final DoubleSupplier maxThrottleSupplier;
@@ -43,11 +45,11 @@ public class MoInputTransforms implements MoInput {
     }
 
     private double applyInputTransforms(double value) {
-        return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputCurve.get());
+        return Utils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputCurve.get());
     }
 
     private double applyTurnInputTransforms(double value) {
-        return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputTurnCurve.get());
+        return Utils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputTurnCurve.get());
     }
 
     @Override

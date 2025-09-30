@@ -1,5 +1,14 @@
 package frc.robot.subsystem;
 
+import com.momentum4999.molib.MoSparkConfigurator;
+import com.momentum4999.molib.Utils;
+import com.momentum4999.molib.encoder.MoDistanceEncoder;
+import com.momentum4999.molib.encoder.MoRotationEncoder;
+import com.momentum4999.molib.pid.MoSparkMaxArmPID;
+import com.momentum4999.molib.pid.MoSparkMaxElevatorPID;
+import com.momentum4999.molib.pid.MoSparkMaxPID;
+import com.momentum4999.molib.pid.MoTrapezoidArmController;
+import com.momentum4999.molib.pid.MoTrapezoidElevatorController;
 import com.momentum4999.motune.PIDTuner;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -27,16 +36,7 @@ import frc.robot.Constants;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.MoSparkConfigurator;
-import frc.robot.molib.encoder.MoDistanceEncoder;
-import frc.robot.molib.encoder.MoRotationEncoder;
-import frc.robot.molib.pid.MoSparkMaxArmPID;
-import frc.robot.molib.pid.MoSparkMaxElevatorPID;
-import frc.robot.molib.pid.MoSparkMaxPID;
-import frc.robot.molib.pid.MoTrapezoidArmController;
-import frc.robot.molib.pid.MoTrapezoidElevatorController;
 import frc.robot.molib.prefs.MoPrefs;
-import frc.robot.utils.MoUtils;
 import frc.robot.utils.TunerUtils;
 import java.util.EnumSet;
 import java.util.function.Consumer;
@@ -186,9 +186,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         MoPrefs.elevatorEncoderScale.subscribe(value -> elevatorRelEncoder.setConversionFactor(value), true);
 
-        MoPrefs.wristAbsZero.subscribe(value -> MoUtils.setupRelativeEncoder(
+        MoPrefs.wristAbsZero.subscribe(value -> Utils.setupRelativeEncoder(
                 wristRelEncoder, wristAbsEncoder.getPosition(), value, MoPrefs.wristEncoderScale.get()));
-        MoPrefs.wristEncoderScale.subscribe(value -> MoUtils.setupRelativeEncoder(
+        MoPrefs.wristEncoderScale.subscribe(value -> Utils.setupRelativeEncoder(
                 wristRelEncoder, wristAbsEncoder.getPosition(), MoPrefs.wristAbsZero.get(), value));
 
         elevatorVelocityPid = new MoSparkMaxElevatorPID(
@@ -253,7 +253,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void reZeroWrist() {
-        MoUtils.setupRelativeEncoder(
+        Utils.setupRelativeEncoder(
                 wristRelEncoder,
                 wristAbsEncoder.getPosition(),
                 MoPrefs.wristAbsZero.get(),

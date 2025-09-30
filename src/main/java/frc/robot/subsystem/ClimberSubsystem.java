@@ -1,5 +1,6 @@
 package frc.robot.subsystem;
 
+import com.momentum4999.molib.MoSparkConfigurator;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -20,7 +21,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.molib.prefs.UnitPref;
 import java.util.EnumSet;

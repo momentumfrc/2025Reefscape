@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.momentum4999.molib.MoSparkConfigurator;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
@@ -27,7 +28,6 @@ import frc.robot.input.ControllerInput;
 import frc.robot.input.DualXboxControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.MoSparkConfigurator;
 import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
