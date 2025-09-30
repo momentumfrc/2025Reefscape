@@ -3,8 +3,8 @@ package frc.robot.command.intake;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Prefs;
 import frc.robot.command.intake.IntakeCommands.Direction;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.IntakeWristSubsystem;
 
 public class MoveIntakeWristCommand extends Command {
@@ -36,6 +36,6 @@ public class MoveIntakeWristCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return wristCurrentTimer.hasElapsed(MoPrefs.intakeWristTime.get().in(Units.Seconds));
+        return wristCurrentTimer.hasElapsed(Prefs.intakeWristTime.get().in(Units.Seconds));
     }
 }

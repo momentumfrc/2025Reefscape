@@ -21,9 +21,9 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.component.SwerveModule;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.utils.MutablePIDConstants;
 import frc.robot.utils.TunerUtils;
 import java.util.Map;
@@ -68,33 +68,33 @@ public class DriveSubsystem extends SubsystemBase {
                 "SWRV FL",
                 new SparkMax(Constants.SWERVE_TURN_LEFT_FRONT.address(), MotorType.kBrushless),
                 new TalonFX(Constants.SWERVE_DRIVE_LEFT_FRONT.address()),
-                MoPrefs.swerveFLZero,
-                MoPrefs.swerveRotScale,
-                MoPrefs.swerveDistScale);
+                Prefs.swerveFLZero,
+                Prefs.swerveRotScale,
+                Prefs.swerveDistScale);
 
         this.frontRight = new SwerveModule(
                 "SWRV FR",
                 new SparkMax(Constants.SWERVE_TURN_RIGHT_FRONT.address(), MotorType.kBrushless),
                 new TalonFX(Constants.SWERVE_DRIVE_RIGHT_FRONT.address()),
-                MoPrefs.swerveFRZero,
-                MoPrefs.swerveRotScale,
-                MoPrefs.swerveDistScale);
+                Prefs.swerveFRZero,
+                Prefs.swerveRotScale,
+                Prefs.swerveDistScale);
 
         this.rearLeft = new SwerveModule(
                 "SWRV RL",
                 new SparkMax(Constants.SWERVE_TURN_LEFT_REAR.address(), MotorType.kBrushless),
                 new TalonFX(Constants.SWERVE_DRIVE_LEFT_REAR.address()),
-                MoPrefs.swerveRLZero,
-                MoPrefs.swerveRotScale,
-                MoPrefs.swerveDistScale);
+                Prefs.swerveRLZero,
+                Prefs.swerveRotScale,
+                Prefs.swerveDistScale);
 
         this.rearRight = new SwerveModule(
                 "SWRV RR",
                 new SparkMax(Constants.SWERVE_TURN_RIGHT_REAR.address(), MotorType.kBrushless),
                 new TalonFX(Constants.SWERVE_DRIVE_RIGHT_REAR.address()),
-                MoPrefs.swerveRRZero,
-                MoPrefs.swerveRotScale,
-                MoPrefs.swerveDistScale);
+                Prefs.swerveRRZero,
+                Prefs.swerveRotScale,
+                Prefs.swerveDistScale);
 
         resetEncoderTimer.start();
 
@@ -169,8 +169,8 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void driveCartesian(
             double fwdRequest, double leftRequest, double turnRequest, Rotation2d fieldOrientedDriveAngle) {
-        var maxLinearSpeed = MoPrefs.swerveMaxLinearSpeed.get();
-        var maxAngularSpeed = MoPrefs.swerveMaxAngularSpeed.get();
+        var maxLinearSpeed = Prefs.swerveMaxLinearSpeed.get();
+        var maxAngularSpeed = Prefs.swerveMaxAngularSpeed.get();
 
         mutFwdRequest.mut_replace(maxLinearSpeed);
         mutLeftRequest.mut_replace(maxLinearSpeed);
@@ -206,7 +206,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveSwerveStates(SwerveModuleState[] states) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, MoPrefs.swerveMaxLinearSpeed.get());
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, Prefs.swerveMaxLinearSpeed.get());
 
         frontLeft.drive(states[0]);
         frontRight.drive(states[1]);

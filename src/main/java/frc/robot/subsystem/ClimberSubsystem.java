@@ -1,6 +1,7 @@
 package frc.robot.subsystem;
 
 import com.momentum4999.molib.MoSparkConfigurator;
+import com.momentum4999.molib.prefs.UnitPref;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -20,16 +21,15 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
-import frc.robot.molib.prefs.UnitPref;
 import java.util.EnumSet;
 import java.util.function.Consumer;
 
 public class ClimberSubsystem extends SubsystemBase {
     public enum RachetState {
-        ENGAGED(MoPrefs.rachetEngagedServoPosition),
-        DISENGAGED(MoPrefs.rachetDisengagedServoPosition);
+        ENGAGED(Prefs.rachetEngagedServoPosition),
+        DISENGAGED(Prefs.rachetDisengagedServoPosition);
 
         public final UnitPref<DimensionlessUnit> posPref;
 
@@ -78,15 +78,15 @@ public class ClimberSubsystem extends SubsystemBase {
                     .reverseLimitSwitchEnabled(true)
                     .reverseLimitSwitchType(Type.kNormallyOpen);
             config.softLimit
-                    .forwardSoftLimit(MoPrefs.climberFwdSoftLimit.get())
+                    .forwardSoftLimit(Prefs.climberFwdSoftLimit.get())
                     .forwardSoftLimitEnabled(false)
-                    .reverseSoftLimit(MoPrefs.climberRvsSoftLimit.get())
+                    .reverseSoftLimit(Prefs.climberRvsSoftLimit.get())
                     .reverseSoftLimitEnabled(false);
         });
 
-        MoPrefs.climberFwdSoftLimit.subscribe(
+        Prefs.climberFwdSoftLimit.subscribe(
                 fwdLimit -> leftSparkConfig.accept(config -> config.softLimit.forwardSoftLimit(fwdLimit)));
-        MoPrefs.climberRvsSoftLimit.subscribe(
+        Prefs.climberRvsSoftLimit.subscribe(
                 rvsLimit -> leftSparkConfig.accept(config -> config.softLimit.reverseSoftLimit(rvsLimit)));
 
         rightSparkConfig.accept(config -> config.idleMode(IdleMode.kBrake).follow(leftSpark, true));

@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Prefs;
 import frc.robot.command.elevator.ElevatorCommands;
 import frc.robot.command.elevator.ZeroElevatorCommand;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.component.FieldGeometry;
 import frc.robot.component.FieldGeometry.ReefFace;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.EndEffectorSubsystem;
@@ -107,7 +107,7 @@ public class AutoChooser {
     }
 
     private Pose2d getPoseForInitialPosition(DriverRelativeInitialPosition position) {
-        double halfWidth = MoPrefs.robotWidthWithBumpers.get().in(Units.Meters) / 2;
+        double halfWidth = Prefs.robotWidthWithBumpers.get().in(Units.Meters) / 2;
         return switch (position) {
             case LEFT_WALL -> new Pose2d(7.582, 8.056 - halfWidth, Rotation2d.k180deg);
             case CENTER -> new Pose2d(7.582, 4.028, Rotation2d.k180deg);
@@ -164,10 +164,10 @@ public class AutoChooser {
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(poses);
         PathConstraints constraints = new PathConstraints(
-                MoPrefs.autoMaxLinVel.get(),
-                MoPrefs.autoMaxLinAccel.get(),
-                MoPrefs.autoMaxAngVel.get(),
-                MoPrefs.autoMaxAngAccel.get());
+                Prefs.autoMaxLinVel.get(),
+                Prefs.autoMaxLinAccel.get(),
+                Prefs.autoMaxAngVel.get(),
+                Prefs.autoMaxAngAccel.get());
         PathPlannerPath path = new PathPlannerPath(waypoints, constraints, startingState, endState);
 
         return PathPlannerCommands.getFollowPathCommand(drive, positioning, path);
@@ -203,9 +203,9 @@ public class AutoChooser {
             // then, if necessary, the path is flipped to the red side once we start following
             Pose2d facePose = FieldGeometry.getInstance().getFacePose(requestedFace, Alliance.Blue);
             facePose = facePose.plus(
-                    new Transform2d(MoPrefs.robotWidthWithBumpers.get().in(Units.Meters) / 2, 0, Rotation2d.k180deg));
+                    new Transform2d(Prefs.robotWidthWithBumpers.get().in(Units.Meters) / 2, 0, Rotation2d.k180deg));
             Pose2d approachPose = facePose.plus(
-                    new Transform2d(-1 * MoPrefs.autoReefApproachDistance.get().in(Units.Meters), 0, Rotation2d.kZero));
+                    new Transform2d(-1 * Prefs.autoReefApproachDistance.get().in(Units.Meters), 0, Rotation2d.kZero));
             return planPath(
                     new IdealStartingState(0, robotPose.getRotation()),
                     new GoalEndState(0, facePose.getRotation()),
@@ -218,7 +218,7 @@ public class AutoChooser {
                             + " is not navigatable from current starting position " + currPosition
                             + ". Falling back to LEAVE autonomous.",
                     false);
-            Transform2d transform = new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
+            Transform2d transform = new Transform2d(Prefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
             Pose2d destPose = startPose.plus(transform);
             return planPath(
                     new IdealStartingState(0, robotPose.getRotation()),
@@ -240,7 +240,7 @@ public class AutoChooser {
         }
 
         Pose2d startPose = robotPose;
-        Transform2d transform = new Transform2d(MoPrefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
+        Transform2d transform = new Transform2d(Prefs.autoLeaveDist.get().in(Units.Meters), 0, Rotation2d.kZero);
         Pose2d destPose = startPose.plus(transform);
 
         return planPath(
@@ -252,8 +252,8 @@ public class AutoChooser {
 
     private Command fallbackLeave() {
         return Commands.run(
-                        () -> drive.driveCartesian(MoPrefs.autoFallbackSpd.get().in(Units.Value), 0, 0), drive)
-                .withTimeout(MoPrefs.autoFallbackTime.get())
+                        () -> drive.driveCartesian(Prefs.autoFallbackSpd.get().in(Units.Value), 0, 0), drive)
+                .withTimeout(Prefs.autoFallbackTime.get())
                 .withName("FallbackLeaveCommand");
     }
 
@@ -277,11 +277,11 @@ public class AutoChooser {
                             ElevatorCommands.waitForSetpoint(elevator, ElevatorSetpoint.L1_CORAL)
                                     .andThen(auto.asProxy())
                                     .andThen(Commands.run(
-                                                    () -> endEffector.setEndEffector(-MoPrefs.autoExtakeCoralPower
+                                                    () -> endEffector.setEndEffector(-Prefs.autoExtakeCoralPower
                                                             .get()
                                                             .in(Units.Value)),
                                                     endEffector)
-                                            .withTimeout(MoPrefs.autoExtakePreloadTime.get())),
+                                            .withTimeout(Prefs.autoExtakePreloadTime.get())),
                             ElevatorCommands.holdSetpoint(elevator, ElevatorSetpoint.L1_CORAL)));
         }
 

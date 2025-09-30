@@ -3,7 +3,7 @@ package frc.robot.command.intake;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.molib.prefs.MoPrefs;
+import frc.robot.Prefs;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 
 public class RollerExtakeAlgaeCommand extends Command {
@@ -30,7 +30,7 @@ public class RollerExtakeAlgaeCommand extends Command {
     @Override
     public boolean isFinished() {
         return !this.roller.isBallHeld()
-                || this.timer.hasElapsed(MoPrefs.intakeRollerExtakeTime.get().in(Units.Seconds));
+                || this.timer.hasElapsed(Prefs.intakeRollerExtakeTime.get().in(Units.Seconds));
     }
 
     @Override

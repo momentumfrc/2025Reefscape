@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Prefs;
 import frc.robot.component.LimelightHelpers;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 import java.util.Map;
 
 public class PositioningSubsystem extends SubsystemBase {
@@ -108,7 +108,7 @@ public class PositioningSubsystem extends SubsystemBase {
     }
 
     public void resetFieldOrientedFwd() {
-        this.fieldOrientedFwd = gyro.getRotation2d().plus(new Rotation2d(MoPrefs.navxYawOffset.get()));
+        this.fieldOrientedFwd = gyro.getRotation2d().plus(new Rotation2d(Prefs.navxYawOffset.get()));
     }
 
     @Override

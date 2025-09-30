@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.momentum4999.molib.prefs.MoPrefsImpl;
 import com.momentum4999.motune.PIDTuner;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.util.WPIUtilJNI;
@@ -13,7 +14,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.component.FieldGeometry;
-import frc.robot.molib.prefs.MoPrefs;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        MoPrefs.cleanUpPrefs();
+        MoPrefsImpl.cleanUpPrefs();
         FollowPathCommand.warmupCommand().schedule();
         FieldGeometry.getInstance();
     }

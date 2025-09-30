@@ -4,8 +4,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import frc.robot.utils.Vec2;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class ControllerInput implements MoInput {
 
         int pov = driveController.getPOV();
         if (pov >= 90 && pov <= 270) {
-            throttle = Math.min(MoPrefs.driveSlowSpeed.get().in(Units.Value), throttle);
+            throttle = Math.min(Prefs.driveSlowSpeed.get().in(Units.Value), throttle);
         }
 
         return throttle;
