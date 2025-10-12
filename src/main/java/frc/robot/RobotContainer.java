@@ -233,4 +233,8 @@ public class RobotContainer {
     private MoInput getInput() {
         return input;
     }
+
+    public void resetFieldOrientedFwd() {
+        positioning.resetFieldOrientedFwd();
+    }
 }

@@ -63,8 +63,6 @@ public class PositioningSubsystem extends SubsystemBase {
         estimator = new SwerveDrivePoseEstimator(
                 drive.kinematics, gyro.getRotation2d(), drive.getWheelPositions(), new Pose2d());
 
-        resetFieldOrientedFwd();
-
         var posGroup = MoShuffleboard.getInstance()
                 .driveTab
                 .getLayout("Relative Pos", BuiltInLayouts.kList)

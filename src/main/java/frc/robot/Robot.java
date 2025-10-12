@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
         MoPrefsImpl.cleanUpPrefs();
         FollowPathCommand.warmupCommand().schedule();
         FieldGeometry.getInstance();
+        m_robotContainer.resetFieldOrientedFwd();
     }
 
     @Override
