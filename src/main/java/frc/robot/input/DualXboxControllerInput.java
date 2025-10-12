@@ -3,9 +3,9 @@ package frc.robot.input;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import frc.robot.utils.Vec2;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class DualXboxControllerInput implements MoInput {
     private double throttle;
 
     public DualXboxControllerInput() {
-        throttle = MoPrefs.defaultThrottle.get();
+        throttle = Prefs.defaultThrottle.get();
         MoShuffleboard.getInstance().driveTab.addDouble("XBoxThrottle", () -> throttle);
     }
 
