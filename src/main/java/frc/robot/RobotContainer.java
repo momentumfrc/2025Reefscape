@@ -194,13 +194,15 @@ public class RobotContainer {
         burnSparksTrigger.onTrue(
                 Commands.runOnce(MoSparkConfigurator::persistAllParameters).ignoringDisable(true));
 
-        rezeroElevatorTrigger.whileTrue(Commands.runOnce(() -> elevator.setElevatorHasZero(false), elevator)
-                .andThen(new ZeroElevatorCommand(elevator))
-                .finallyDo(interrupted -> {
-                    if (interrupted) {
-                        elevator.setElevatorHasZero(true);
-                    }
-                }));
+        rezeroElevatorTrigger
+                .and(RobotModeTriggers.teleop())
+                .whileTrue(Commands.runOnce(() -> elevator.setElevatorHasZero(false), elevator)
+                        .andThen(new ZeroElevatorCommand(elevator))
+                        .finallyDo(interrupted -> {
+                            if (interrupted) {
+                                elevator.setElevatorHasZero(true);
+                            }
+                        }));
     }
 
     private double getDriveSlewRate() {
