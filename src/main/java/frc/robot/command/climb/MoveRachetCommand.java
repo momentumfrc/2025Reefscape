@@ -3,7 +3,7 @@ package frc.robot.command.climb;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.molib.prefs.MoPrefs;
+import frc.robot.Prefs;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.ClimberSubsystem.RachetState;
 
@@ -38,7 +38,7 @@ public class MoveRachetCommand extends Command {
     @Override
     public boolean isFinished() {
         return skipTimer
-                || timer.hasElapsed(MoPrefs.climberRachetLockoutTime.get().in(Units.Seconds));
+                || timer.hasElapsed(Prefs.climberRachetLockoutTime.get().in(Units.Seconds));
     }
 
     @Override

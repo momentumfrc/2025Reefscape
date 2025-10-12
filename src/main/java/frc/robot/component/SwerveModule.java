@@ -3,6 +3,13 @@ package frc.robot.component;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.momentum4999.molib.MoSparkConfigurator;
+import com.momentum4999.molib.MoUnits;
+import com.momentum4999.molib.encoder.MoDistanceEncoder;
+import com.momentum4999.molib.encoder.MoRotationEncoder;
+import com.momentum4999.molib.pid.MoSparkMaxPID;
+import com.momentum4999.molib.pid.MoTalonFxPID;
+import com.momentum4999.molib.prefs.UnitPref;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -20,13 +27,6 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutLinearVelocity;
-import frc.robot.molib.MoSparkConfigurator;
-import frc.robot.molib.MoUnits;
-import frc.robot.molib.encoder.MoDistanceEncoder;
-import frc.robot.molib.encoder.MoRotationEncoder;
-import frc.robot.molib.pid.MoSparkMaxPID;
-import frc.robot.molib.pid.MoTalonFxPID;
-import frc.robot.molib.prefs.UnitPref;
 import frc.robot.utils.TunerUtils;
 
 public class SwerveModule {

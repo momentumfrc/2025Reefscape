@@ -1,5 +1,6 @@
 package frc.robot.subsystem;
 
+import com.momentum4999.molib.MoSparkConfigurator;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -13,9 +14,8 @@ import edu.wpi.first.units.measure.MutCurrent;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.MoSparkConfigurator;
-import frc.robot.molib.prefs.MoPrefs;
 
 public class IntakeRollerSubsystem extends SubsystemBase {
     private final SparkMax roller;
@@ -38,11 +38,11 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         this.rollerConfig = MoSparkConfigurator.forSparkMax(roller);
         rollerConfig.accept(config -> {
             config.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit((int)
-                    MoPrefs.intakeRollersSmartCurrentLimit.get().in(Units.Amps));
+                    Prefs.intakeRollersSmartCurrentLimit.get().in(Units.Amps));
             config.encoder.inverted(true);
         });
 
-        MoPrefs.intakeRollersSmartCurrentLimit.subscribe(
+        Prefs.intakeRollersSmartCurrentLimit.subscribe(
                 limit -> rollerConfig.accept(config -> config.smartCurrentLimit((int) limit.in(Units.Amps))));
 
         this.encoder = roller.getEncoder();
@@ -57,19 +57,19 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     }
 
     public void rollerIntake() {
-        roller.setVoltage(MoPrefs.intakeRollerPower.get().in(Units.Volts));
+        roller.setVoltage(Prefs.intakeRollerPower.get().in(Units.Volts));
     }
 
     public void rollerShoot() {
-        roller.setVoltage(-1 * MoPrefs.intakeRollerPower.get().in(Units.Volts));
+        roller.setVoltage(-1 * Prefs.intakeRollerPower.get().in(Units.Volts));
     }
 
     public void rollerProbe() {
-        roller.setVoltage(-1 * MoPrefs.intakeRollerProbePower.get().in(Units.Volts));
+        roller.setVoltage(-1 * Prefs.intakeRollerProbePower.get().in(Units.Volts));
     }
 
     public void holdBall() {
-        roller.setVoltage(MoPrefs.intakeRollerHoldPower.get().in(Units.Volts));
+        roller.setVoltage(Prefs.intakeRollerHoldPower.get().in(Units.Volts));
     }
 
     public void stopRollerMotor() {

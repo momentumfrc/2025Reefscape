@@ -3,7 +3,7 @@ package frc.robot.command.intake;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.molib.prefs.MoPrefs;
+import frc.robot.Prefs;
 import frc.robot.subsystem.IntakeRollerSubsystem;
 
 public class RollerIntakeAlgaeCommand extends Command {
@@ -34,7 +34,7 @@ public class RollerIntakeAlgaeCommand extends Command {
         roller.rollerIntake();
 
         if (this.state == State.SPINUP) {
-            if (timer.hasElapsed(MoPrefs.intakeRollerSpinupTime.get().in(Units.Seconds))) {
+            if (timer.hasElapsed(Prefs.intakeRollerSpinupTime.get().in(Units.Seconds))) {
                 timer.reset();
                 this.state = State.SPINNING;
             }
@@ -47,8 +47,8 @@ public class RollerIntakeAlgaeCommand extends Command {
             return false;
         }
 
-        if (roller.getIntakeVelocity().lt(MoPrefs.intakeVelocityThreshold.get())) {
-            if (this.timer.hasElapsed(MoPrefs.intakeRollerThesholdTime.get().in(Units.Seconds))) {
+        if (roller.getIntakeVelocity().lt(Prefs.intakeVelocityThreshold.get())) {
+            if (this.timer.hasElapsed(Prefs.intakeRollerThesholdTime.get().in(Units.Seconds))) {
                 return true;
             }
         } else {

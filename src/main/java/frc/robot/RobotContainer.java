@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.momentum4999.molib.MoSparkConfigurator;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.MathUtil;
@@ -27,8 +28,6 @@ import frc.robot.input.ControllerInput;
 import frc.robot.input.DualXboxControllerInput;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.MoSparkConfigurator;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ClimberSubsystem;
 import frc.robot.subsystem.DriveSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem;
@@ -207,10 +206,10 @@ public class RobotContainer {
 
     private double getDriveSlewRate() {
         double elevatorExtensionPercent = elevator.getElevatorHeight().in(Units.Centimeters)
-                / MoPrefs.elevatorMaxExtension.get().in(Units.Centimeters);
+                / Prefs.elevatorMaxExtension.get().in(Units.Centimeters);
         double rampTime = MathUtil.interpolate(
-                MoPrefs.driveRampTime.get().in(Units.Seconds),
-                MoPrefs.driveRampTimeElevatorExtended.get().in(Units.Seconds),
+                Prefs.driveRampTime.get().in(Units.Seconds),
+                Prefs.driveRampTimeElevatorExtended.get().in(Units.Seconds),
                 elevatorExtensionPercent);
         return 1.0 / rampTime;
     }
@@ -220,11 +219,11 @@ public class RobotContainer {
             return 1;
         }
 
-        double climberRetractedZone = MoPrefs.climberRetractedZone.get();
+        double climberRetractedZone = Prefs.climberRetractedZone.get();
         double climberPos = (climber.getClimberPosition() - climberRetractedZone)
-                / (MoPrefs.climberFwdSoftLimit.get() - climberRetractedZone);
+                / (Prefs.climberFwdSoftLimit.get() - climberRetractedZone);
         return MathUtil.interpolate(
-                1, MoPrefs.driveMaxThrottleClimberExtended.get().in(Units.Value), climberPos);
+                1, Prefs.driveMaxThrottleClimberExtended.get().in(Units.Value), climberPos);
     }
 
     public Command getAutonomousCommand() {

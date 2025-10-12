@@ -2,7 +2,7 @@ package frc.robot.command.climb;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.molib.prefs.MoPrefs;
+import frc.robot.Prefs;
 import frc.robot.subsystem.ClimberSubsystem;
 
 public class ZeroEncodersCommand extends Command {
@@ -21,7 +21,7 @@ public class ZeroEncodersCommand extends Command {
 
     @Override
     public void execute() {
-        climber.retractClimber(-MoPrefs.climberZeroPwr.get().in(Units.Value));
+        climber.retractClimber(-Prefs.climberZeroPwr.get().in(Units.Value));
 
         if (climber.isLimitSwitchPressed()) {
             climber.rezeroEncoder();

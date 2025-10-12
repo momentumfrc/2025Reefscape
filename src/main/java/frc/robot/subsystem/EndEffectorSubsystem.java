@@ -5,8 +5,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 
 public class EndEffectorSubsystem extends SubsystemBase {
     private final VictorSPX endEffector;
@@ -20,13 +20,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     public void intakeAlgaeCoralExtake() {
-        endEffector.set(
-                ControlMode.PercentOutput, MoPrefs.endEffectorPower.get().in(Units.Value));
+        endEffector.set(ControlMode.PercentOutput, Prefs.endEffectorPower.get().in(Units.Value));
     }
 
     public void extakeAlgaeCoralIntake() {
-        endEffector.set(
-                ControlMode.PercentOutput, -MoPrefs.endEffectorPower.get().in(Units.Value));
+        endEffector.set(ControlMode.PercentOutput, -Prefs.endEffectorPower.get().in(Units.Value));
     }
 
     public void setEndEffector(double power) {

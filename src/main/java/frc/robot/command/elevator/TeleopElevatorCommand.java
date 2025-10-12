@@ -4,11 +4,11 @@ import edu.wpi.first.networktables.GenericPublisher;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Prefs;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.MoInput;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorControlMode;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
@@ -67,7 +67,7 @@ public class TeleopElevatorCommand extends Command {
         ElevatorPosition requestedPosition =
                 ElevatorSetpointManager.getInstance().getSetpoint(setpoint);
 
-        double varianceThresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        double varianceThresh = Prefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
 
         ElevatorPosition coralStationPosition =
                 ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.CORAL_STATION);
@@ -105,7 +105,7 @@ public class TeleopElevatorCommand extends Command {
     }
 
     public ElevatorMovementRequest checkLimits(ElevatorMovementRequest request) {
-        double varianceThresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        double varianceThresh = Prefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
 
         ElevatorPosition coralStationPosition =
                 ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.CORAL_STATION);

@@ -1,5 +1,14 @@
 package frc.robot.subsystem;
 
+import com.momentum4999.molib.MoSparkConfigurator;
+import com.momentum4999.molib.Utils;
+import com.momentum4999.molib.encoder.MoDistanceEncoder;
+import com.momentum4999.molib.encoder.MoRotationEncoder;
+import com.momentum4999.molib.pid.MoSparkMaxArmPID;
+import com.momentum4999.molib.pid.MoSparkMaxElevatorPID;
+import com.momentum4999.molib.pid.MoSparkMaxPID;
+import com.momentum4999.molib.pid.MoTrapezoidArmController;
+import com.momentum4999.molib.pid.MoTrapezoidElevatorController;
 import com.momentum4999.motune.PIDTuner;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -24,19 +33,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Prefs;
 import frc.robot.component.ElevatorSetpointManager;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.molib.MoShuffleboard;
-import frc.robot.molib.MoSparkConfigurator;
-import frc.robot.molib.encoder.MoDistanceEncoder;
-import frc.robot.molib.encoder.MoRotationEncoder;
-import frc.robot.molib.pid.MoSparkMaxArmPID;
-import frc.robot.molib.pid.MoSparkMaxElevatorPID;
-import frc.robot.molib.pid.MoSparkMaxPID;
-import frc.robot.molib.pid.MoTrapezoidArmController;
-import frc.robot.molib.pid.MoTrapezoidElevatorController;
-import frc.robot.molib.prefs.MoPrefs;
-import frc.robot.utils.MoUtils;
 import frc.robot.utils.TunerUtils;
 import java.util.EnumSet;
 import java.util.function.Consumer;
@@ -137,8 +137,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             config.softLimit
                     .reverseSoftLimit(0)
                     .reverseSoftLimitEnabled(false)
-                    .forwardSoftLimit(
-                            MoPrefs.elevatorMaxExtension.get().in(elevatorRelEncoder.getInternalEncoderUnits()))
+                    .forwardSoftLimit(Prefs.elevatorMaxExtension.get().in(elevatorRelEncoder.getInternalEncoderUnits()))
                     .forwardSoftLimitEnabled(false);
             config.inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(ELEVATOR_CURRENT_LIMIT);
         });
@@ -149,11 +148,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorWristConfig.accept(config -> {
             config.softLimit
-                    .reverseSoftLimit(MoPrefs.wristNominalRevLimit.get().in(wristRelEncoder.getInternalEncoderUnits()))
+                    .reverseSoftLimit(Prefs.wristNominalRevLimit.get().in(wristRelEncoder.getInternalEncoderUnits()))
                     .reverseSoftLimitEnabled(true)
-                    .forwardSoftLimit(MoPrefs.wristMaxExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
+                    .forwardSoftLimit(Prefs.wristMaxExtension.get().in(wristRelEncoder.getInternalEncoderUnits()))
                     .forwardSoftLimitEnabled(true);
-            config.closedLoopRampRate(MoPrefs.wristRampTime.get().in(Units.Seconds))
+            config.closedLoopRampRate(Prefs.wristRampTime.get().in(Units.Seconds))
                     .inverted(true)
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(WRIST_CURRENT_LIMIT);
@@ -175,21 +174,21 @@ public class ElevatorSubsystem extends SubsystemBase {
                 });
 
         // Setup listeners for config values
-        MoPrefs.elevatorMaxExtension.subscribe(value -> elevatorAConfig.accept(
+        Prefs.elevatorMaxExtension.subscribe(value -> elevatorAConfig.accept(
                 config -> config.softLimit.forwardSoftLimit(value.in(elevatorRelEncoder.getInternalEncoderUnits()))));
-        MoPrefs.wristNominalRevLimit.subscribe(value -> elevatorWristConfig.accept(
+        Prefs.wristNominalRevLimit.subscribe(value -> elevatorWristConfig.accept(
                 config -> config.softLimit.reverseSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
-        MoPrefs.wristMaxExtension.subscribe(value -> elevatorWristConfig.accept(
+        Prefs.wristMaxExtension.subscribe(value -> elevatorWristConfig.accept(
                 config -> config.softLimit.forwardSoftLimit(value.in(wristRelEncoder.getInternalEncoderUnits()))));
-        MoPrefs.wristRampTime.subscribe(
+        Prefs.wristRampTime.subscribe(
                 value -> elevatorWristConfig.accept(config -> config.closedLoopRampRate(value.in(Units.Seconds))));
 
-        MoPrefs.elevatorEncoderScale.subscribe(value -> elevatorRelEncoder.setConversionFactor(value), true);
+        Prefs.elevatorEncoderScale.subscribe(value -> elevatorRelEncoder.setConversionFactor(value), true);
 
-        MoPrefs.wristAbsZero.subscribe(value -> MoUtils.setupRelativeEncoder(
-                wristRelEncoder, wristAbsEncoder.getPosition(), value, MoPrefs.wristEncoderScale.get()));
-        MoPrefs.wristEncoderScale.subscribe(value -> MoUtils.setupRelativeEncoder(
-                wristRelEncoder, wristAbsEncoder.getPosition(), MoPrefs.wristAbsZero.get(), value));
+        Prefs.wristAbsZero.subscribe(value -> Utils.setupRelativeEncoder(
+                wristRelEncoder, wristAbsEncoder.getPosition(), value, Prefs.wristEncoderScale.get()));
+        Prefs.wristEncoderScale.subscribe(value -> Utils.setupRelativeEncoder(
+                wristRelEncoder, wristAbsEncoder.getPosition(), Prefs.wristAbsZero.get(), value));
 
         elevatorVelocityPid = new MoSparkMaxElevatorPID(
                 MoSparkMaxPID.Type.VELOCITY, elevatorA, ClosedLoopSlot.kSlot0, elevatorRelEncoder, elevatorAConfig);
@@ -253,11 +252,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void reZeroWrist() {
-        MoUtils.setupRelativeEncoder(
+        Utils.setupRelativeEncoder(
                 wristRelEncoder,
                 wristAbsEncoder.getPosition(),
-                MoPrefs.wristAbsZero.get(),
-                MoPrefs.wristEncoderScale.get());
+                Prefs.wristAbsZero.get(),
+                Prefs.wristEncoderScale.get());
     }
 
     public boolean isWristNominalReverseLimitEnabled() {
@@ -265,7 +264,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean isWristInDanger() {
-        return getWristAbsAngleZeroed().lt(MoPrefs.wristNominalRevLimit.get());
+        return getWristAbsAngleZeroed().lt(Prefs.wristNominalRevLimit.get());
     }
 
     public void disableWristNominalReverseLimit() {
@@ -276,7 +275,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void enableWristNominalReverseLimit() {
         nominalReverseLimitEnabled.setBoolean(true);
         elevatorWristConfig.accept(config -> config.softLimit.reverseSoftLimit(
-                MoPrefs.wristNominalRevLimit.get().in(wristRelEncoder.getInternalEncoderUnits())));
+                Prefs.wristNominalRevLimit.get().in(wristRelEncoder.getInternalEncoderUnits())));
     }
 
     public Distance getElevatorHeight() {
@@ -293,14 +292,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Angle getWristAbsAngleZeroed() {
         wristAbsEncoderValue.mut_replace(wristAbsEncoder.getPosition());
-        wristAbsEncoderValue.mut_minus(MoPrefs.wristAbsZero.get());
+        wristAbsEncoderValue.mut_minus(Prefs.wristAbsZero.get());
         return wristAbsEncoderValue;
     }
 
     private Angle getWristAngleFromHorizontal() {
 
         return wristAngleFromHorizontal
-                .mut_replace(MoPrefs.wristHorizontal.get())
+                .mut_replace(Prefs.wristHorizontal.get())
                 .mut_minus(wristRelEncoder.getPosition());
         // return wristAngleFromHorizontal
         //         .mut_replace(wristRelEncoder.getPosition())
@@ -315,7 +314,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         var wristPos = wristRelEncoder.getPosition();
 
         if (hasZero.getBoolean(false)) {
-            if (elevatorPower > 0 && elevatorPos.gt(MoPrefs.elevatorMaxExtension.get())) {
+            if (elevatorPower > 0 && elevatorPos.gt(Prefs.elevatorMaxExtension.get())) {
                 elevatorPower = 0;
             }
             if (elevatorPower < 0 && elevatorPos.lt(Units.Centimeters.zero())) {
@@ -323,7 +322,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             }
         }
 
-        if (wristPower > 0 && wristPos.gt(MoPrefs.wristMaxExtension.get())) {
+        if (wristPower > 0 && wristPos.gt(Prefs.wristMaxExtension.get())) {
             wristPower = 0;
         }
         if (wristPower < 0 && wristPos.lt(Units.Rotations.zero())) {
@@ -341,7 +340,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (isWristInDanger()) {
             elevatorA.setVoltage(0);
         } else {
-            elevatorA.setVoltage(-1 * MoPrefs.elevatorZeroPower.get().in(Units.Volts));
+            elevatorA.setVoltage(-1 * Prefs.elevatorZeroPower.get().in(Units.Volts));
         }
 
         var stowPos = ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW);
@@ -386,8 +385,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         request = limitElevatorMovementRequest(request);
 
         Measure<LinearVelocityUnit> elevatorVelocity =
-                MoPrefs.elevatorMaxRps.get().times(request.elevatorPower);
-        Measure<AngularVelocityUnit> wristVelocity = MoPrefs.wristMaxRps.get().times(request.wristPower);
+                Prefs.elevatorMaxRps.get().times(request.elevatorPower);
+        Measure<AngularVelocityUnit> wristVelocity = Prefs.wristMaxRps.get().times(request.wristPower);
 
         elevatorVelocityPid.setVelocityReference(elevatorVelocity);
         wristVelocityPid.setVelocityReference(wristVelocity);
@@ -421,7 +420,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean atPosition(ElevatorPosition position) {
-        double thresh = MoPrefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
+        double thresh = Prefs.elevatorSetpointVarianceThreshold.get().in(Units.Value);
         return elevatorRelEncoder.getPosition().isNear(position.elevatorDistance(), thresh)
                 && wristRelEncoder.getPosition().isNear(position.wristAngle(), thresh);
     }

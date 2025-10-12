@@ -3,7 +3,7 @@ package frc.robot.command.elevator;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.molib.prefs.MoPrefs;
+import frc.robot.Prefs;
 import frc.robot.subsystem.ElevatorSubsystem;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 
@@ -33,9 +33,8 @@ public class ZeroElevatorCommand extends Command {
 
         elevator.moveForElevatorZeroing();
 
-        if (elevator.getElevatorCurrent().gte(MoPrefs.elevatorZeroCurrentThresh.get())) {
-            if (currentSenseTimer.hasElapsed(
-                    MoPrefs.elevatorZeroCurrentTime.get().in(Units.Seconds))) {
+        if (elevator.getElevatorCurrent().gte(Prefs.elevatorZeroCurrentThresh.get())) {
+            if (currentSenseTimer.hasElapsed(Prefs.elevatorZeroCurrentTime.get().in(Units.Seconds))) {
                 elevator.zeroElevator();
             }
         } else {

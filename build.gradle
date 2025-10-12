@@ -108,6 +108,17 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                'src/main/java',
+                'molib/src/main/java'
+            ]
+        }
+    }
+}
+
 // See https://docs.wpilib.org/en/stable/docs/software/advanced-gradlerio/code-formatting.html
 spotless {
     java {

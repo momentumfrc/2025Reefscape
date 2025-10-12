@@ -1,11 +1,12 @@
 package frc.robot.utils;
 
+import com.momentum4999.molib.Utils;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.Units;
+import frc.robot.Prefs;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
 import frc.robot.input.MoInput;
-import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -32,7 +33,7 @@ public class MoInputTransforms implements MoInput {
         driveTranslationLimiter = new VariableSlewRateLimiter(driveSlewRateSupplier);
         driveRotationLimiter = new VariableSlewRateLimiter(driveSlewRateSupplier);
 
-        MoPrefs.elevatorRampTime.subscribe(
+        Prefs.elevatorRampTime.subscribe(
                 rampTime -> {
                     double slewRate = 1.0 / rampTime;
 
@@ -43,11 +44,11 @@ public class MoInputTransforms implements MoInput {
     }
 
     private double applyInputTransforms(double value) {
-        return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputCurve.get());
+        return Utils.curve(MathUtil.applyDeadband(value, Prefs.inputDeadzone.get()), Prefs.inputCurve.get());
     }
 
     private double applyTurnInputTransforms(double value) {
-        return MoUtils.curve(MathUtil.applyDeadband(value, MoPrefs.inputDeadzone.get()), MoPrefs.inputTurnCurve.get());
+        return Utils.curve(MathUtil.applyDeadband(value, Prefs.inputDeadzone.get()), Prefs.inputTurnCurve.get());
     }
 
     @Override
@@ -126,7 +127,7 @@ public class MoInputTransforms implements MoInput {
     @Override
     public double getClimberMoveRequest() {
         double value = inputSupplier.get().getClimberMoveRequest();
-        double maxPwr = MoPrefs.climberMaxPwr.get().in(Units.Value);
+        double maxPwr = Prefs.climberMaxPwr.get().in(Units.Value);
         return Math.signum(value) * MathUtil.interpolate(0, maxPwr, Math.abs(value));
     }
 
