@@ -15,7 +15,12 @@ public class DualXboxControllerInput implements MoInput {
 
     private Vec2 moveRequest = new Vec2(0, 0);
 
-    private double throttle = 0;
+    private double throttle;
+
+    public DualXboxControllerInput() {
+        throttle = MoPrefs.defaultThrottle.get();
+        MoShuffleboard.getInstance().driveTab.addDouble("XBoxThrottle", () -> throttle);
+    }
 
     private double getThrottle() {
         if (driveController.getAButtonPressed()) throttle -= .05;

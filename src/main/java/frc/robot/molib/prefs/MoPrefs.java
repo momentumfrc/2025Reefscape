@@ -42,6 +42,8 @@ public class MoPrefs {
     public static final TimeUnitPref driveRampTimeElevatorExtended =
             secondsPref("Drive Elevator Extended Ramp Time", Units.Seconds.of(1.5));
 
+    public static final Pref<Double> defaultThrottle = unitlessDoublePref("Default Xbox Throttle", 0.5);
+
     public static final UnitPref<PerUnit<DimensionlessUnit, AngleUnit>> swerveRotScale =
             encoderTicksPerRotationPref("SWRV ROT Scale", MoUnits.EncoderTicksPerRotation.ofNative(12.8));
     public static final UnitPref<PerUnit<DimensionlessUnit, DistanceUnit>> swerveDistScale =
