@@ -338,7 +338,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void moveForElevatorZeroing() {
-        elevatorA.setVoltage(-1 * MoPrefs.elevatorZeroPower.get().in(Units.Volts));
+        if (isWristInDanger()) {
+            elevatorA.setVoltage(0);
+        } else {
+            elevatorA.setVoltage(-1 * MoPrefs.elevatorZeroPower.get().in(Units.Volts));
+        }
 
         var stowPos = ElevatorSetpointManager.getInstance().getSetpoint(ElevatorSetpoint.STOW);
         switch (controlMode.getSelected()) {
@@ -359,6 +363,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void disableReverseLimit() {
         elevatorAConfig.accept(config -> config.softLimit.reverseSoftLimitEnabled(false));
+    }
+
+    public void setElevatorHasZero(boolean value) {
+        hasZero.setBoolean(value);
     }
 
     public void zeroElevator() {

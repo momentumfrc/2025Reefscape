@@ -131,7 +131,7 @@ public class TeleopElevatorCommand extends Command {
         MoInput input = inputSupplier.get();
         var controlMode = elevator.controlMode.getSelected();
 
-        if (input.getReZeroElevator()) {
+        if (input.getReZeroWrist()) {
             elevator.reZeroWrist();
         }
 

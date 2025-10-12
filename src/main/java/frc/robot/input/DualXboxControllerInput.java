@@ -4,6 +4,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import frc.robot.component.ElevatorSetpointManager.ElevatorSetpoint;
+import frc.robot.molib.MoShuffleboard;
+import frc.robot.molib.prefs.MoPrefs;
 import frc.robot.subsystem.ElevatorSubsystem.ElevatorMovementRequest;
 import frc.robot.utils.Vec2;
 import java.util.Optional;
@@ -85,13 +87,18 @@ public class DualXboxControllerInput implements MoInput {
     }
 
     @Override
-    public boolean getReZeroElevator() {
+    public boolean getReZeroWrist() {
         return elevatorController.getBackButtonPressed();
     }
 
     @Override
+    public boolean getReZeroElevator() {
+        return elevatorController.getStartButtonPressed();
+    }
+
+    @Override
     public boolean getRunSysid() {
-        return elevatorController.getStartButton();
+        return false;
     }
 
     @Override

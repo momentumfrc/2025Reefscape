@@ -73,6 +73,8 @@ public class RobotContainer {
     private Trigger intakeDeployTrigger;
     private Trigger intakeExtakeOverrideTrigger;
 
+    private Trigger rezeroElevatorTrigger;
+
     private Trigger extendClimberTrigger;
     private Trigger retractClimberTrigger;
 
@@ -153,6 +155,8 @@ public class RobotContainer {
         extendClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() > 0);
         retractClimberTrigger = new Trigger(() -> getInput().getClimberMoveRequest() < 0);
 
+        rezeroElevatorTrigger = new Trigger(() -> getInput().getReZeroElevator());
+
         endEffectorExAlgaeInCoralTrigger = new Trigger(() -> getInput().getEndEffectorIn());
         endEffectorInAlgaeExCoralTrigger = new Trigger(() -> getInput().getEndEffectorOut());
 
@@ -189,6 +193,14 @@ public class RobotContainer {
 
         burnSparksTrigger.onTrue(
                 Commands.runOnce(MoSparkConfigurator::persistAllParameters).ignoringDisable(true));
+
+        rezeroElevatorTrigger.whileTrue(Commands.runOnce(() -> elevator.setElevatorHasZero(false), elevator)
+                .andThen(new ZeroElevatorCommand(elevator))
+                .finallyDo(interrupted -> {
+                    if (interrupted) {
+                        elevator.setElevatorHasZero(true);
+                    }
+                }));
     }
 
     private double getDriveSlewRate() {

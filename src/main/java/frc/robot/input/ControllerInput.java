@@ -92,13 +92,18 @@ public class ControllerInput implements MoInput {
     }
 
     @Override
-    public boolean getReZeroElevator() {
+    public boolean getReZeroWrist() {
         return elevatorController.getBackButtonPressed();
     }
 
     @Override
-    public boolean getRunSysid() {
+    public boolean getReZeroElevator() {
         return elevatorController.getStartButton();
+    }
+
+    @Override
+    public boolean getRunSysid() {
+        return false;
     }
 
     @Override

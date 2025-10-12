@@ -104,6 +104,11 @@ public class MoInputTransforms implements MoInput {
     }
 
     @Override
+    public boolean getReZeroWrist() {
+        return inputSupplier.get().getReZeroWrist();
+    }
+
+    @Override
     public boolean getReZeroElevator() {
         return inputSupplier.get().getReZeroElevator();
     }
