@@ -38,7 +38,7 @@ public class PathPlannerCommands {
     public static Command getFollowPathCommand(
             DriveSubsystem drive, PositioningSubsystem positioning, String pathName) {
         try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
             return getFollowPathCommand(drive, positioning, path);
         } catch (Exception e) {
             DriverStation.reportError("Failed to load autonomous path: " + e.getLocalizedMessage(), e.getStackTrace());
